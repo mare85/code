@@ -29,7 +29,7 @@ namespace Game
 		unsigned int currentElem_ = 0;
 		void _LoadScript( const char* filename);
 
-		vmath::Vector4 menuColor_ = vmath::Vector4(.0f, .0f, .0f, .3f);
+		vmath::Vector4 menuColor_ = vmath::Vector4(1.0f, 1.0f, 1.0f, .3f);
 		vmath::Vector4 selectionColor_ = vmath::Vector4(0.3f, 0.0f, 0.0f, 1.0f);
 	public:
 		Menu( Game::Scene* scene, char* scriptName );
