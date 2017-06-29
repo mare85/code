@@ -15,6 +15,7 @@ float __lightness[16 * 4];
 
 void MusicRoom::Walls::loadData(Graphics::GdiContext* gdiContext)
 {
+	Sound::loadBank("music.bnk");
 	Graphics::VertexDesc vDescPos = Graphics::VertexDesc::get(Graphics::POS3COL3UV2);
 	sh_ = gdiContext->createShader("assets/Shaders/Walls.fx", &vDescPos, "Walls");
 
@@ -46,7 +47,7 @@ void MusicRoom::Walls::loadData(Graphics::GdiContext* gdiContext)
 		float x1 = x0 + 1.0f;
 		for( unsigned int i = 0; i < 4; ++i )
 		{
-			float y0 = i;
+			float y0 = (float)i;
 			float y1 = y0 + 1.0f;
 			unsigned int colIndex = ( x *4 + i ) % 64;
 			float col = __lightness[colIndex];
@@ -108,7 +109,7 @@ void MusicRoom::Walls::updateGfx(Graphics::GdiContext* gdiContext)
 		float x1 = x0 + 1.0f;
 		for (unsigned int i = 0; i < 4; ++i)
 		{
-			float y0 = i;
+			float y0 = (float)i;
 			float y1 = y0 + 1.0f;
 			unsigned int colIndex = (x * 4 + i) % 64;
 			float col = __lightness[colIndex];
@@ -153,6 +154,7 @@ void MusicRoom::Walls::unloadData(Graphics::GdiContext* gdiContext)
 	gdiContext->releaseTexture(textureFloor_);
 	gdiContext->releaseShader(shFloor_);
 	gdiContext->releaseBuffer(vBuffFloor_);
+	Sound::unloadBank("music.bnk");
 }
 
 void MusicRoom::Walls::render(Graphics::GdiContext* gdiContext, Graphics::RenderContext* renderContext)
@@ -199,11 +201,66 @@ void MusicRoom::WallsUpdater::start()
 void MusicRoom::WallsUpdater::update(const Game::UpdateContext* uctx)
 {
 	float dt = uctx->deltaTime;
+	float prevWaveProgress = waveProgress_;
 	waveProgress_ += bpm_ * dt * 4 / 60.0f;
 	if( waveProgress_ >= 16.0f )
 	{
 		waveProgress_ -= 16.0f;
 	}
+
+
+
+
+
+
+	unsigned int iWaveProgress = (unsigned int)waveProgress_;
+	unsigned int iPrevWaveProgress = (unsigned int)prevWaveProgress;
+
+	if (iWaveProgress != iPrevWaveProgress)
+	{
+		if (onOff_[iWaveProgress * 4])
+		{
+			Sound::playSound("music.bnk", "3b");
+		}
+		if (onOff_[iWaveProgress * 4 + 1])
+		{
+			Sound::playSound("music.bnk", "1b");
+		}
+		if (onOff_[iWaveProgress * 4 + 2])
+		{
+			Sound::playSound("music.bnk", "2b");
+		}
+		if (onOff_[iWaveProgress * 4 + 3])
+		{
+			Sound::playSound("music.bnk", "3c");
+		}
+/*
+		if (onOff_[iWaveProgress * 8 + 4])
+		{
+			Sound::playSound("music.bnk", "3a");
+		}
+		if (onOff_[iWaveProgress * 8 + 5])
+		{
+			Sound::playSound("music.bnk", "3b");
+		}
+		if (onOff_[iWaveProgress * 8 + 6])
+		{
+			Sound::playSound("music.bnk", "3c");
+		}
+		if (onOff_[iWaveProgress * 8 + 7])
+		{
+			Sound::playSound("music.bnk", "3d");
+		}*/
+	}
+
+
+
+
+
+
+
+
+
 
 	vmath::Vector3 front = character_->getFront();
 	vmath::Vector3 pos = character_->getPosition();
