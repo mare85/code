@@ -1,0 +1,54 @@
+#pragma once
+
+#include <Game/Object.h>
+#include <Game/Updater.h>
+#include <Graphics/GdiContext.h>
+#include <Graphics/Texture.h>
+#include <Graphics/Shader.h>
+
+
+namespace MusicRoom
+{
+	class Character;
+
+	class WallsUpdater
+		: public Game::Updater
+	{
+		Character* character_ = nullptr;;
+		bool onOff_[64];
+		float onOffLerp_[64];
+		float waveProgress_ = .0f;
+		float waveLerp_[64];
+		float bpm_ = 140.0f;
+	public:
+		WallsUpdater(Character* character ) : character_( character ) {}
+		~WallsUpdater(){}
+		void start();
+		void update( const Game::UpdateContext* uctx );
+		void stop();
+	};
+
+	class Walls
+		: public Game::Object
+	{
+	public:
+		void loadData(Graphics::GdiContext* gdiContext);
+		void unloadData(Graphics::GdiContext* gdiContext);
+		void updateGfx(Graphics::GdiContext* gdiContext);
+		void render(Graphics::GdiContext* gdiContext, Graphics::RenderContext* renderContext);
+		Walls(const char* name );
+		~Walls() {};
+	protected:
+		Graphics::Shader* sh_ = nullptr;
+		Graphics::Buffer* vBuff_ = nullptr;
+		Graphics::Buffer* cBuff_ = nullptr;
+		Graphics::Texture* texture_ = nullptr;
+
+		Graphics::Shader* shFloor_ = nullptr;
+		Graphics::Buffer* vBuffFloor_ = nullptr;
+		Graphics::Texture* textureFloor_ = nullptr;
+	};
+
+
+}
+

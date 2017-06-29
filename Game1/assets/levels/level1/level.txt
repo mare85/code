@@ -1,0 +1,148 @@
+level.grass 5 52
+level.setfloat 1037033746 height 0.10
+level.grass 5 53
+level.setfloat -1030510800 height 0.10
+level.grass 5 56
+level.setfloat 1356790154 height 0.10
+level.grass 5 57
+level.setfloat -710754392 height 0.10
+level.grass 5 58
+level.setfloat 1516668358 height 0.10
+level.grass 5 55
+level.setfloat -870632596 height 0.10
+level.tree tree005 15.12 5
+level.setfloat -493232826 elevation -0.30
+level.grass 5 47
+level.setfloat 358241750 height 0.10
+level.grass 5 46
+level.setfloat -1869181000 height 0.10
+level.grass 5 45
+level.setfloat 198363546 height 0.10
+level.grass 5 44
+level.setfloat -2029059204 height 0.05
+level.grass 5 43
+level.setfloat 38485342 height 0.10
+level.grass 5 42
+level.setfloat 2106029888 height 0.10
+level.grass 5 48
+level.setfloat -1709302796 height 0.10
+level.grass 5 49
+level.setfloat 518119954 height 0.10
+level.grass 5 50
+level.setfloat 877155542 height 0.10
+level.grass 5 51
+level.setfloat -1190389004 height 0.10
+level.tree tree001 -3.29 5
+level.setfloat -1115241082 elevation -0.84
+level.sprite blackSprite003 5 -5.222290 assets/gfx/blackSprites/pine.jpg
+level.setfloat 1202576456 height 4.20
+level.setfloat 1202576456 elevation 1.65
+level.grass 5 54
+level.setfloat 1196911950 height 0.10
+level.grass 5 41
+level.setfloat -121392862 height 0.10
+level.grass 5 40
+level.setfloat 1946151684 height 0.10
+level.grass 5 39
+level.setfloat 1587116096 height 0.10
+level.sprite blackSprite001 5 -4.039656 assets/gfx/blackSprites/pine.jpg
+level.setfloat -1937492504 height 3.05
+level.setfloat -1937492504 elevation 1.10
+level.sprite blackSprite004 5 -6.291979 assets/gfx/blackSprites/pine.jpg
+level.setfloat 625127288 height 2.40
+level.setfloat 625127288 elevation 1.00
+level.event evt0001 3.59 5
+level.setfloat -1835034041 width 0.50
+level.setstring -1835034041 script_path cichy.txt:0
+level.setint -1835034041 disable_on_enter 1
+level.setint -1835034041 is_text 1
+level.event evt0002 11.01 5
+level.setfloat 467951671 width 0.50
+level.setstring 467951671 script_path cichy.txt:1
+level.setint 467951671 disable_on_enter 1
+level.setint 467951671 is_text 1
+level.event evt0003 16.57 5
+level.setfloat -1524029913 width 0.50
+level.setstring -1524029913 script_path cichy.txt:2
+level.setint -1524029913 disable_on_enter 1
+level.setint -1524029913 is_text 1
+level.event evt0004 -12.09 5
+level.setfloat 778955799 width 0.50
+level.setstring 778955799 script_path teleport.txt
+level.setint 778955799 disable_on_enter 0
+level.setint 778955799 is_text 0
+level.grass 5 59
+level.setfloat -550876188 height 0.10
+level.grass 5 60
+level.setfloat -191840600 height 0.10
+level.grass 5 61
+level.setfloat 2035582150 height 0.10
+level.grass 5 62
+level.setfloat -31962396 height 0.10
+level.grass 5 63
+level.setfloat -2099506942 height 0.10
+level.grass 5 64
+level.setfloat 127915808 height 0.10
+level.tree tree002 20.58 5
+level.setfloat 1187744630 elevation -0.30
+level.tree tree003 24.70 5
+level.setfloat -804236954 elevation -0.30
+level.tree tree004 8.30 5
+level.setfloat 1498748758 elevation -0.30
+level.tree tree006 11.15 5
+level.setfloat 1809752886 elevation -0.30
+level.event evt0005 11.33 5
+level.setfloat -1213025785 width 0.50
+level.setstring -1213025785 script_path music/2a.txt
+level.setint -1213025785 disable_on_enter 1
+level.setint -1213025785 is_text 0
+level.event evt0006 8.20 5
+level.setfloat 1089959927 width 0.50
+level.setstring 1089959927 script_path music/1b.txt
+level.setint 1089959927 disable_on_enter 1
+level.setint 1089959927 is_text 0
+level.tree tree007 6.61 5
+level.setfloat -182228698 elevation -0.55
+level.event evt0007 6.78 5
+level.setfloat -902021657 width 0.50
+level.setstring -902021657 script_path music/1a.txt
+level.setint -902021657 disable_on_enter 1
+level.setint -902021657 is_text 0
+level.event evt0008 3.70 5
+level.setfloat 1400964055 width 0.50
+level.setstring 1400964055 script_path music/load.txt
+level.setint 1400964055 disable_on_enter 1
+level.setint 1400964055 is_text 0
+level.tree tree008 13.06 5
+level.setfloat 2120757014 elevation -1.60
+level.event evt0009 13.06 5
+level.setfloat -591017529 width 0.50
+level.setstring -591017529 script_path music/2b.txt
+level.setint -591017529 disable_on_enter 1
+level.setint -591017529 is_text 0
+level.event evt0010 15.17 5
+level.setfloat 1358252295 width 0.50
+level.setstring 1358252295 script_path music/3a.txt
+level.setint 1358252295 disable_on_enter 1
+level.setint 1358252295 is_text 0
+level.event evt0011 -7.15 5
+level.setfloat -633729289 width 0.50
+level.setstring -633729289 script_path birds.txt
+level.setint -633729289 disable_on_enter 0
+level.setint -633729289 is_text 0
+level.grass 6 52
+level.setfloat -954947838 height 0.10
+level.grass 6 53
+level.setfloat 1272474912 height 0.10
+level.grass 6 54
+level.setfloat -795069634 height 0.10
+level.grass 6 55
+level.setfloat 1432353116 height 0.10
+level.grass 6 56
+level.setfloat -635191430 height 0.10
+level.grass 6 57
+level.setfloat 1592231320 height 0.10
+level.grass 6 58
+level.setfloat -475313226 height 0.10
+level.grass 6 59
+level.setfloat 1752109524 height 0.10

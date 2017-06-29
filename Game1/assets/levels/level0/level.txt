@@ -1,0 +1,53 @@
+52
+grass 5 52
+grass 5 53
+grass 5 56
+grass 5 57
+grass 5 58
+sprite blackSprite002 5 7.018777 assets/gfx/blackSprites/directionSign.jpg
+grass 5 55
+tree tree005 15.12 5
+grass 5 47
+grass 5 46
+grass 5 45
+grass 5 44
+grass 5 43
+grass 5 42
+grass 5 48
+grass 5 49
+grass 5 50
+grass 5 51
+tree tree001 -3.29 5
+sprite blackSprite003 5 -5.222290 assets/gfx/blackSprites/pine.jpg
+grass 5 54
+grass 5 41
+grass 5 40
+grass 5 39
+grass 6 52
+grass 6 53
+grass 6 54
+grass 6 55
+grass 6 56
+grass 6 57
+grass 6 58
+grass 6 59
+grass 6 60
+grass 6 61
+grass 6 62
+grass 6 63
+grass 6 64
+grass 6 65
+tree tree002 14.06 6
+tree tree003 8.77 6
+tree tree004 6.66 6
+sprite blackSprite001 6 11.056312 assets/gfx/blackSprites/pine.jpg
+grass 6 43
+grass 6 44
+grass 6 45
+grass 6 46
+grass 6 47
+grass 6 48
+grass 6 49
+grass 6 50
+grass 6 51
+grass 6 42

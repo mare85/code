@@ -1,0 +1,18 @@
+1a music1/1a.wav
+1b music1/1b.wav
+2a music1/2a.wav
+2b music1/2b.wav
+3a music1/3a.wav
+3b music1/3b.wav
+3c music1/3c.wav
+3d music1/3d.wav
+3e music1/3e.wav
+script 1a @0.0 play 1a volpan 1.0 -.2
+script 1b @0.0 play 1b volpan 1.0 .2
+script 2a @0.0 play 2a volpan 1.0 -.2
+script 2b @0.0 play 2b volpan 1.0 .2
+script 3a @0.0 play 3a volpan 1.0 -.2
+script 3b @0.0 play 3b volpan 1.0 .2
+script 3c @0.0 play 3c volpan 1.0 .2
+script 3d @0.0 play 3d volpan 1.0 -.2
+script 3e @0.0 play 3e volpan 1.0 -.5

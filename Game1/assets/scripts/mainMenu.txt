@@ -1,0 +1,7 @@
+5
+music_room startMusicRoom
+new_game start
+edit_scene editor
+anim_editor animEditor
+exit exit
+

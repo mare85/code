@@ -1,0 +1,15 @@
+@0.0
+character.switchplane 0
+character.rundown 1
+character.speed 1.5
+@1.5
+env.fadeout .5
+@2.0
+env.color0 .2 .2 .3
+env.color1 .7 .3 .0
+character.teleport 5.0 6
+character.speed 3.0
+@3.3
+env.fadein .5
+@3.8
+character.rundown 0

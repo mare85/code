@@ -1,0 +1,15 @@
+
+.vs/Game1/v14/.suo
+.vs/Game1/v15/.suo
+*.db
+*.ipch
+*.obj
+*.tlog
+Game1/Todo.txt
+*.exe
+*.ilk
+*.pdb
+*.log
+*.user
+*.idb
+*.opendb

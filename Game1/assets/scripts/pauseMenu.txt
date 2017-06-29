@@ -1,0 +1,5 @@
+3
+continue startMenu_continue
+exit_to_main_menu startMenu_backToMain
+quit_game exit
+

@@ -1,0 +1,22 @@
+step1 footstep_001.wav
+step2 footstep_002.wav
+step3 footstep_003.wav
+step4 footstep_004.wav
+step5 footstep_005.wav
+jump jump_01.wav
+land1 land_01.wav
+land2 land_02.wav
+land3 land_03.wav
+noiseLow pad_low.wav
+script step 
+	@0.0 random 5 step1 step2 step3 step4 step5 
+script land 
+	@0.0 random 3 land1 land2 land3
+script jump 
+	@0.0 play jump volpan 1.0 .0
+	@0.1 play jump volpan 0.5 .4
+	@0.2 play jump volpan 0.25 -.4
+	@0.3 play jump volpan 0.125 .8
+	@1.4 play jump volpan 0.062 -.8
+script noiseLow
+	@0.0 loop noiseLow volpan 1.0 0.0
