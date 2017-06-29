@@ -13,3 +13,4 @@ Game1/Todo.txt
 *.user
 *.idb
 *.opendb
+*codeanalysis.xml

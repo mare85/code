@@ -105,8 +105,8 @@ void Game::App::nextFrame()
 	{
 		menuScene_->update(&uctx);
 	}
-
-	_Render();
+	if (renderFunction_ == RenderFunction::kBlack) _RenderBlack();
+	if (renderFunction_ == RenderFunction::kStandard) _Render();
 	if( reloadGraphicsRequest_ )
 	{
 		if (menuScene_)
@@ -252,16 +252,27 @@ void Game::App::_UpdateDt()
 
 void Game::App::_Render()
 {
-	Graphics::RenderContext renderContext, menuRctx;
+	Graphics::RenderContext rctx, menuRctx;
+	gdiContext_->setClearColor(0.0f, 0.0f, 0.0f); gdiContext_->clearRender();
 	if (scene_)
 	{
 		if (!scene_->isLoaded())
 		{
 			scene_->loadData(gdiContext_);
 		}
-		postprocess_.draw(scene_, gdiContext_, fadeValue_, appTime_, waveCenter_);
-		postprocess_.drawEditor(scene_, gdiContext_);
 
+		const Game::Camera* cam = scene_->getActiveCamera();
+		if (cam)
+		{
+			float aspect = 16.0f / 9.0f;
+			rctx.view_ = cam->getView();
+			rctx.xWrapEnabled_ = false;
+			rctx.xWrap_ = .0f;
+			rctx.projection_ = cam->getProjection(aspect);
+			rctx.user0_ = vmath::Vector4(appTime_, .0f, .0f, .0f);
+		}
+
+		scene_->render(gdiContext_, &rctx);
 	}
 
 	if( menuScene_ )
@@ -278,9 +289,43 @@ void Game::App::_Render()
 			menuScene_->render(gdiContext_, &menuRctx);
 		}
 	}
+	Util::DebugDraw::render(gdiContext_, &rctx);
+	gdiContext_->swapRender();
+}
+
+
+void Game::App::_RenderBlack()
+{
+	Graphics::RenderContext renderContext, menuRctx;
+	if (scene_)
+	{
+		if (!scene_->isLoaded())
+		{
+			scene_->loadData(gdiContext_);
+		}
+		postprocess_.draw(scene_, gdiContext_, fadeValue_, appTime_, waveCenter_);
+		postprocess_.drawEditor(scene_, gdiContext_);
+
+	}
+
+	if (menuScene_)
+	{
+		if (!menuScene_->isLoaded())
+		{
+			menuScene_->loadData(gdiContext_);
+		}
+		const Game::Camera* menucam = menuScene_->getActiveCamera();
+		if (menucam)
+		{
+			menuRctx.view_ = menucam->getView();
+			menuRctx.projection_ = menucam->getProjection(aspect_);
+			menuScene_->render(gdiContext_, &menuRctx);
+		}
+	}
 	Util::DebugDraw::render(gdiContext_, &renderContext);
 	gdiContext_->swapRender();
 }
+
 
 void Game::App::_UpdateFade(float dt)
 {

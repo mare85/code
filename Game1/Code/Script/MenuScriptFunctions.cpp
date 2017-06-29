@@ -36,6 +36,7 @@ static void __fadeOut() { Game::App::Instance()->fade(1.0f, 0.7f); }
 
 static void _createAndAddTestScene()
 {
+	Game::App::Instance()->setRenderFunction(Game::RenderFunction::kBlack);
 	Game::App::Instance()->setEditorEnabled(__inEditor);
 	Game::Transform* mainCam = new Game::Transform("mainCam");
 	mainCam->setTranslation(vmath::Vector3(0.0f, 0.0f, .0f));
@@ -60,7 +61,7 @@ static void _createAndAddTestScene()
 
 static void _createAndAddMusicRoomScene()
 {
-
+	Game::App::Instance()->setRenderFunction(Game::RenderFunction::kStandard);
 	Game::App::Instance()->setEditorEnabled(false);
 	Game::Transform* mainCam = new Game::Transform("mainCam");
 	mainCam->setTranslation(vmath::Vector3(0.0f, 0.0f, .0f));
@@ -84,6 +85,7 @@ static void _createAndAddMusicRoomScene()
 
 static void _createAndAddAnimEditorScene()
 {
+	Game::App::Instance()->setRenderFunction(Game::RenderFunction::kBlack);
 	Game::App::Instance()->setEditorEnabled(__inEditor);
 	Game::Transform* mainCam = new Game::Transform("mainCam");
 	mainCam->setTranslation(vmath::Vector3(0.0f, 0.0f, .0f));

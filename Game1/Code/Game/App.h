@@ -15,6 +15,14 @@ namespace Game
 {
 	class Scene;
 	class Menu;
+	namespace RenderFunction
+	{
+		enum _Enum
+		{
+			kStandard = 0,
+			kBlack = 1
+		};
+	}
 
 	class App
 	{
@@ -42,7 +50,7 @@ namespace Game
 		bool reloadGraphicsRequest_ = false;
 		bool editorEnabled_ = false;
 		int reloadLayerRequest_ = -1;
-
+		RenderFunction::_Enum renderFunction_= RenderFunction::kStandard;
 
 		float fadeValue_ = .0f;
 		float fadeTarget_ = .0f;
@@ -50,6 +58,7 @@ namespace Game
 
 		void _UpdateDt();
 		void _Render();
+		void _RenderBlack();
 		void _UpdateFade(float dt);
 		
 	public:
@@ -63,7 +72,7 @@ namespace Game
 		bool editorEnabled() const { return editorEnabled_; }
 		static bool EditorEnabled() { return Instance()->editorEnabled(); }
 		void setEditorEnabled(bool val) { editorEnabled_ = val; }
-
+		void setRenderFunction(RenderFunction::_Enum rf) { renderFunction_ = rf; }
 		
 		void setAspect(float val) { 
 			aspect_ = val; 
