@@ -24,7 +24,8 @@ void Black::EventSystem::StartUp(Game::Scene* scene)
 
 void Black::EventSystem::ShutDown()
 {
-	assert(__instance != nullptr);
+	if (!__instance)
+		return;
 	if (__instance && __instance->scene_)
 	{
 		__instance->scene_->removeUpdater(__instance);

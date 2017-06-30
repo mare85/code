@@ -79,7 +79,7 @@ unsigned int Game::ParamSet::getIdByname(const char * name)
 		if (strcmp(name, names_[i]) == 0)
 			return i;
 	}
-	assert(false, "givven name not found");
+	assert(false);// , "givven name not found");
 	return 0xffffffff;
 }
 

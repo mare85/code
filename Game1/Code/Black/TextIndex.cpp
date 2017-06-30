@@ -117,7 +117,7 @@ Black::TextlevelIndex::TextlevelIndex(unsigned int levelId, const char * lang)
 				files_[fname] = new TextFileIndex(levelId, fullFileName);
 			}
 		}
-		searchOn = ( true == FindNextFile(fileHandle, &fileData) );
+		searchOn = ( TRUE == FindNextFile(fileHandle, &fileData) );
 	}
 }
 

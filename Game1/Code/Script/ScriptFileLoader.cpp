@@ -204,7 +204,7 @@ void Script::initFileLoader()
 void Script::runCommand(Game::Scene * scene, const char * commandLine)
 {
 	const char* strippedCommandLine = strstr(commandLine, ".") + 1;
-	unsigned int namespcLen = strippedCommandLine - commandLine - 1;
+	unsigned int namespcLen = (unsigned int)( strippedCommandLine - commandLine - 1 );
 	char namespc[20];
 	memcpy(namespc, commandLine, namespcLen);
 	namespc[namespcLen] = 0;

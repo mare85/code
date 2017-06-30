@@ -291,7 +291,6 @@
     <Text Include="Shaders\Solid.fx">
       <FileType>Document</FileType>
     </Text>
-    <Text Include="Todo.txt" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="Shaders\Texture.fx">

@@ -170,7 +170,7 @@ void Black::Editor::CharacterAnimEditor::_GetAllAnimFilenames()
 void Black::Editor::CharacterAnimEditor::_UpdateLoadMode(const Game::UpdateContext * uctx)
 {
 	unsigned int managedMenuentry = 0;
-	char textBuffer[250];
+	//char textBuffer[250];
 	vmath::Vector4 defaultColor(.0f, .0f, .0f, .4f);
 	vmath::Vector4 chosenColor(0.5f, .0f, .0f, 1.0f);
 	for( unsigned int i = 0 ; i < nPaths_;++i )
