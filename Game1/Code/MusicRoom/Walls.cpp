@@ -28,7 +28,6 @@ void MusicRoom::Walls::loadData(Graphics::GdiContext* gdiContext)
 	textureFloor_ = gdiContext->createTexture("assets/gfx/floor.png", &textureDesc, "assets/gfx/floor.png");
 	shFloor_->setTexture(0, textureFloor_);
 
-
 	Util::RandomGenerator gen;
 	for (unsigned int i = 0; i < 64; ++i)
 	{
@@ -39,48 +38,9 @@ void MusicRoom::Walls::loadData(Graphics::GdiContext* gdiContext)
 	float corridorWidthHalf = 2.0f;
 	const unsigned int vcount = 256 * 4 * 2 * 6;
 	unsigned int bufferSize = 256 * 4 * 2 * 6 * sizeof(Graphics::VertexP4UV4);
-	vmath::Vector4 points[ vcount * 2];
-	vmath::Vector4 * out = points;
-	for( unsigned int x = 0; x < 256; ++x )
-	{
-		float x0 = x - 128.0f;
-		float x1 = x0 + 1.0f;
-		for( unsigned int i = 0; i < 4; ++i )
-		{
-			float y0 = (float)i;
-			float y1 = y0 + 1.0f;
-			unsigned int colIndex = ( x *4 + i ) % 64;
-			float col = __lightness[colIndex];
-			*out = vmath::Vector4(x0, y1, corridorWidthHalf, col); ++out;
-			*out = vmath::Vector4(col, col, .0f, 1.0f); ++out;
-			*out = vmath::Vector4(x0, y0, corridorWidthHalf, col); ++out;
-			*out = vmath::Vector4(col, col, .0f, 0.0f); ++out;
-			*out = vmath::Vector4(x1, y0, corridorWidthHalf, col); ++out;
-			*out = vmath::Vector4(col, col, 1.0f, 0.0f); ++out;
-			*out = vmath::Vector4(x0, y1, corridorWidthHalf, col); ++out;
-			*out = vmath::Vector4(col, col, 0.0f, 1.0f); ++out;
-			*out = vmath::Vector4(x1, y0, corridorWidthHalf, col); ++out;
-			*out = vmath::Vector4(col, col, 1.0f, 0.0f); ++out;
-			*out = vmath::Vector4(x1, y1, corridorWidthHalf, col); ++out;
-			*out = vmath::Vector4(col, col, 1.0f, 1.0f); ++out;
-
-			*out = vmath::Vector4(x1, y1, -corridorWidthHalf, col); ++out;
-			*out = vmath::Vector4(col, col, .0f, 1.0f); ++out;
-			*out = vmath::Vector4(x1, y0, -corridorWidthHalf, col); ++out;
-			*out = vmath::Vector4(col, col, .0f, 0.0f); ++out;
-			*out = vmath::Vector4(x0, y0, -corridorWidthHalf, col); ++out;
-			*out = vmath::Vector4(col, col, 1.0f, 0.0f); ++out;
-			*out = vmath::Vector4(x1, y1, -corridorWidthHalf, col); ++out;
-			*out = vmath::Vector4(col, col, 0.0f, 1.0f); ++out;
-			*out = vmath::Vector4(x0, y0, -corridorWidthHalf, col); ++out;
-			*out = vmath::Vector4(col, col, 1.0f, 0.0f); ++out;
-			*out = vmath::Vector4(x0, y1, -corridorWidthHalf, col); ++out;
-			*out = vmath::Vector4(col, col, 1.0f, 1.0f); ++out;
-
-		}
-	}
+	//vmath::Vector4 points[ vcount * 2];
 	
-	vBuff_ = gdiContext->createBuffer(points, bufferSize, Graphics::eDynamicWriteVertexBuffer);
+	vBuff_ = gdiContext->createBuffer(nullptr, bufferSize, Graphics::eDynamicWriteVertexBuffer);
 	unsigned int bufferSizeFloor = sizeof(Graphics::VertexP4UV4) * 6;
 	Graphics::VertexP4UV4 pointsFloor[] = {
 		{ vmath::Vector4(-roomSizeHalf, .0f,  corridorWidthHalf, 1.0f), vmath::Vector4(128.0f, 0.0f, .0f, .0f) },
@@ -101,16 +61,15 @@ void MusicRoom::Walls::updateGfx(Graphics::GdiContext* gdiContext)
 {
 	float corridorWidthHalf = 2.0f;
 	const unsigned int vcount = 256 * 4 * 2 * 6;
-	//vmath::Vector4 points[ vcount * 2];
 	vmath::Vector4 * out = reinterpret_cast<vmath::Vector4*>( gdiContext->mapWrite( vBuff_) );
 	for (unsigned int x = 0; x < 256; ++x)
 	{
-		float x0 = x - 128.0f;
-		float x1 = x0 + 1.0f;
+		float x0 = x * .5f - 64.0f;
+		float x1 = x0 + .5f;
 		for (unsigned int i = 0; i < 4; ++i)
 		{
-			float y0 = (float)i;
-			float y1 = y0 + 1.0f;
+			float y0 = 1.0f + .5f * (float)i;
+			float y1 = y0 + .5f;
 			unsigned int colIndex = (x * 4 + i) % 64;
 			float col = __lightness[colIndex];
 			*out = vmath::Vector4(x0, y1, corridorWidthHalf, col); ++out;
@@ -125,7 +84,6 @@ void MusicRoom::Walls::updateGfx(Graphics::GdiContext* gdiContext)
 			*out = vmath::Vector4(col, col, 1.0f, 0.0f); ++out;
 			*out = vmath::Vector4(x1, y1, corridorWidthHalf, col); ++out;
 			*out = vmath::Vector4(col, col, 1.0f, 1.0f); ++out;
-
 			*out = vmath::Vector4(x1, y1, -corridorWidthHalf, col); ++out;
 			*out = vmath::Vector4(col, col, .0f, 1.0f); ++out;
 			*out = vmath::Vector4(x1, y0, -corridorWidthHalf, col); ++out;
@@ -138,7 +96,6 @@ void MusicRoom::Walls::updateGfx(Graphics::GdiContext* gdiContext)
 			*out = vmath::Vector4(col, col, 1.0f, 0.0f); ++out;
 			*out = vmath::Vector4(x0, y1, -corridorWidthHalf, col); ++out;
 			*out = vmath::Vector4(col, col, 1.0f, 1.0f); ++out;
-
 		}
 	}
 	gdiContext->unmap( vBuff_);
@@ -208,11 +165,6 @@ void MusicRoom::WallsUpdater::update(const Game::UpdateContext* uctx)
 		waveProgress_ -= 16.0f;
 	}
 
-
-
-
-
-
 	unsigned int iWaveProgress = (unsigned int)waveProgress_;
 	unsigned int iPrevWaveProgress = (unsigned int)prevWaveProgress;
 
@@ -254,14 +206,6 @@ void MusicRoom::WallsUpdater::update(const Game::UpdateContext* uctx)
 	}
 
 
-
-
-
-
-
-
-
-
 	vmath::Vector3 front = character_->getFront();
 	vmath::Vector3 pos = character_->getPosition();
 	vmath::Vector3 fflat = front;
@@ -283,12 +227,12 @@ void MusicRoom::WallsUpdater::update(const Game::UpdateContext* uctx)
 	float dist = length( target - pos );
 	if( dist > .01f && dist < 3.0f )
 	{
-		if( target.getY() > .0f && target.getY() < 4.0f )
+		if( target.getY() > 1.0f && target.getY() < 3.0f )
 		{
-			float y = floor( target.getY() );
-			float x = floor( target.getX() );
-			target.setX( x + .5f );
-			target.setY( y + .5f );
+			float y = floor( 2.0f * ( target.getY() -  1.0f ) );
+			float x = floor( 2.0f * target.getX() - .5f);
+			target.setX( x * .5f + .25f );
+			target.setY( y * .5f + 1.25f );
 			Util::DebugDraw::addPoint( target, .05f, vmath::Vector4( 1.0f, 0.0f, 1.0f, 1.0f ) );
 			unsigned int ix = ( (unsigned int)( x + 256 ) )% 16;
 			unsigned int iy = (unsigned int)y;
@@ -302,7 +246,6 @@ void MusicRoom::WallsUpdater::update(const Game::UpdateContext* uctx)
 
 	for( unsigned int x = 0; x < 16; ++x )
 	{
-		
 		float waveVal = ( x - waveProgress_ ) / 16.0f;
 		waveVal -= floor( waveVal );
 		waveVal = max( waveVal * 4.0f - 3.0f, .0f );
