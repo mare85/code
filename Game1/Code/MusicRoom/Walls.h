@@ -15,11 +15,11 @@ namespace MusicRoom
 		: public Game::Updater
 	{
 		Character* character_ = nullptr;;
-		bool onOff_[64];
-		float onOffLerp_[64];
+		bool onOff_[128];
+		float onOffLerp_[128];
 		float waveProgress_ = .0f;
-		float waveLerp_[64];
-		float bpm_ = 140.0f;
+		float waveLerp_[128];
+		float bpm_ = 90.0f;
 	public:
 		WallsUpdater(Character* character ) : character_( character ) {}
 		~WallsUpdater(){}

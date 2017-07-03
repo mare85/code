@@ -8,7 +8,7 @@
 #include <Sound/System.h>
 
 
-float __lightness[16 * 4];
+float __lightness[16 * 8];
 
 
 
@@ -70,32 +70,35 @@ void MusicRoom::Walls::updateGfx(Graphics::GdiContext* gdiContext)
 		{
 			float y0 = 1.0f + .5f * (float)i;
 			float y1 = y0 + .5f;
-			unsigned int colIndex = (x * 4 + i) % 64;
-			float col = __lightness[colIndex];
-			*out = vmath::Vector4(x0, y1, corridorWidthHalf, col); ++out;
-			*out = vmath::Vector4(col, col, .0f, 1.0f); ++out;
-			*out = vmath::Vector4(x0, y0, corridorWidthHalf, col); ++out;
-			*out = vmath::Vector4(col, col, .0f, 0.0f); ++out;
-			*out = vmath::Vector4(x1, y0, corridorWidthHalf, col); ++out;
-			*out = vmath::Vector4(col, col, 1.0f, 0.0f); ++out;
-			*out = vmath::Vector4(x0, y1, corridorWidthHalf, col); ++out;
-			*out = vmath::Vector4(col, col, 0.0f, 1.0f); ++out;
-			*out = vmath::Vector4(x1, y0, corridorWidthHalf, col); ++out;
-			*out = vmath::Vector4(col, col, 1.0f, 0.0f); ++out;
-			*out = vmath::Vector4(x1, y1, corridorWidthHalf, col); ++out;
-			*out = vmath::Vector4(col, col, 1.0f, 1.0f); ++out;
-			*out = vmath::Vector4(x1, y1, -corridorWidthHalf, col); ++out;
-			*out = vmath::Vector4(col, col, .0f, 1.0f); ++out;
-			*out = vmath::Vector4(x1, y0, -corridorWidthHalf, col); ++out;
-			*out = vmath::Vector4(col, col, .0f, 0.0f); ++out;
-			*out = vmath::Vector4(x0, y0, -corridorWidthHalf, col); ++out;
-			*out = vmath::Vector4(col, col, 1.0f, 0.0f); ++out;
-			*out = vmath::Vector4(x1, y1, -corridorWidthHalf, col); ++out;
-			*out = vmath::Vector4(col, col, 0.0f, 1.0f); ++out;
-			*out = vmath::Vector4(x0, y0, -corridorWidthHalf, col); ++out;
-			*out = vmath::Vector4(col, col, 1.0f, 0.0f); ++out;
-			*out = vmath::Vector4(x0, y1, -corridorWidthHalf, col); ++out;
-			*out = vmath::Vector4(col, col, 1.0f, 1.0f); ++out;
+			unsigned int colIndex1 = (x * 8 + i) % 128;
+			unsigned int colIndex2 = (x * 8 + i + 4) % 128;
+			float col1 = __lightness[colIndex1];
+			float col2 = __lightness[colIndex2];
+			*out = vmath::Vector4(x0, y1, corridorWidthHalf, col1); ++out;
+			*out = vmath::Vector4(col1, col1, .0f, 1.0f); ++out;
+			*out = vmath::Vector4(x0, y0, corridorWidthHalf, col1); ++out;
+			*out = vmath::Vector4(col1, col1, .0f, 0.0f); ++out;
+			*out = vmath::Vector4(x1, y0, corridorWidthHalf, col1); ++out;
+			*out = vmath::Vector4(col1, col1, 1.0f, 0.0f); ++out;
+			*out = vmath::Vector4(x0, y1, corridorWidthHalf, col1); ++out;
+			*out = vmath::Vector4(col1, col1, 0.0f, 1.0f); ++out;
+			*out = vmath::Vector4(x1, y0, corridorWidthHalf, col1); ++out;
+			*out = vmath::Vector4(col1, col1, 1.0f, 0.0f); ++out;
+			*out = vmath::Vector4(x1, y1, corridorWidthHalf, col1); ++out;
+			*out = vmath::Vector4(col1, col1, 1.0f, 1.0f); ++out;
+
+			*out = vmath::Vector4(x1, y1, -corridorWidthHalf, col2); ++out;
+			*out = vmath::Vector4(col2, col2, .0f, 1.0f); ++out;
+			*out = vmath::Vector4(x1, y0, -corridorWidthHalf, col2); ++out;
+			*out = vmath::Vector4(col2, col2, .0f, 0.0f); ++out;
+			*out = vmath::Vector4(x0, y0, -corridorWidthHalf, col2); ++out;
+			*out = vmath::Vector4(col2, col2, 1.0f, 0.0f); ++out;
+			*out = vmath::Vector4(x1, y1, -corridorWidthHalf, col2); ++out;
+			*out = vmath::Vector4(col2, col2, 0.0f, 1.0f); ++out;
+			*out = vmath::Vector4(x0, y0, -corridorWidthHalf, col2); ++out;
+			*out = vmath::Vector4(col2, col2, 1.0f, 0.0f); ++out;
+			*out = vmath::Vector4(x0, y1, -corridorWidthHalf, col2); ++out;
+			*out = vmath::Vector4(col2, col2, 1.0f, 1.0f); ++out;
 		}
 	}
 	gdiContext->unmap( vBuff_);
@@ -143,7 +146,7 @@ unsigned int __objectId = 0;
 void MusicRoom::WallsUpdater::start()
 {
 	Util::RandomGenerator gen;
-	for( unsigned int i = 0; i < 64; ++i )
+	for( unsigned int i = 0; i < 128; ++i )
 	{
 		onOff_[ i ] = false;
 		onOffLerp_[ i ] = .0f;
@@ -170,23 +173,23 @@ void MusicRoom::WallsUpdater::update(const Game::UpdateContext* uctx)
 
 	if (iWaveProgress != iPrevWaveProgress)
 	{
-		if (onOff_[iWaveProgress * 4])
+		if (onOff_[iWaveProgress * 8])
 		{
 			Sound::playSound("music.bnk", "3b");
 		}
-		if (onOff_[iWaveProgress * 4 + 1])
+		if (onOff_[iWaveProgress * 8 + 1])
 		{
 			Sound::playSound("music.bnk", "1b");
 		}
-		if (onOff_[iWaveProgress * 4 + 2])
+		if (onOff_[iWaveProgress * 8 + 2])
 		{
 			Sound::playSound("music.bnk", "2b");
 		}
-		if (onOff_[iWaveProgress * 4 + 3])
+		if (onOff_[iWaveProgress * 8 + 3])
 		{
 			Sound::playSound("music.bnk", "3c");
 		}
-/*
+
 		if (onOff_[iWaveProgress * 8 + 4])
 		{
 			Sound::playSound("music.bnk", "3a");
@@ -202,7 +205,7 @@ void MusicRoom::WallsUpdater::update(const Game::UpdateContext* uctx)
 		if (onOff_[iWaveProgress * 8 + 7])
 		{
 			Sound::playSound("music.bnk", "3d");
-		}*/
+		}
 	}
 
 
@@ -236,7 +239,11 @@ void MusicRoom::WallsUpdater::update(const Game::UpdateContext* uctx)
 			Util::DebugDraw::addPoint( target, .05f, vmath::Vector4( 1.0f, 0.0f, 1.0f, 1.0f ) );
 			unsigned int ix = ( (unsigned int)( x + 256 ) )% 16;
 			unsigned int iy = (unsigned int)y;
-			unsigned int index = ix * 4 + iy;
+			unsigned int index = ix * 8 + iy;
+			if (target.getZ() < .0f)
+			{
+				index += 4;
+			}
 			if( uctx->input->getKeyDown( Input::Key::Space ) )
 			{
 				onOff_[ index ] = !onOff_[ index ];
@@ -249,9 +256,9 @@ void MusicRoom::WallsUpdater::update(const Game::UpdateContext* uctx)
 		float waveVal = ( x - waveProgress_ ) / 16.0f;
 		waveVal -= floor( waveVal );
 		waveVal = max( waveVal * 4.0f - 3.0f, .0f );
-		for( unsigned int i = 0; i < 4; ++i )
+		for( unsigned int i = 0; i < 8; ++i )
 		{
-			unsigned int index = i + x * 4;
+			unsigned int index = i + x * 8;
 			waveLerp_[ index ] = waveVal;
 			if(onOff_[ index])
 			{
