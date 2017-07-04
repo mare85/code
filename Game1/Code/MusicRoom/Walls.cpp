@@ -15,7 +15,7 @@ float __lightness[16 * 8];
 
 void MusicRoom::Walls::loadData(Graphics::GdiContext* gdiContext)
 {
-	Sound::loadBank("music.bnk");
+	Sound::loadBank("aminharmonic.bnk");
 	Graphics::VertexDesc vDescPos = Graphics::VertexDesc::get(Graphics::POS3COL3UV2);
 	sh_ = gdiContext->createShader("assets/Shaders/Walls.fx", &vDescPos, "Walls");
 
@@ -114,7 +114,7 @@ void MusicRoom::Walls::unloadData(Graphics::GdiContext* gdiContext)
 	gdiContext->releaseTexture(textureFloor_);
 	gdiContext->releaseShader(shFloor_);
 	gdiContext->releaseBuffer(vBuffFloor_);
-	Sound::unloadBank("music.bnk");
+	Sound::unloadBank("aminharmonic.bnk");
 }
 
 void MusicRoom::Walls::render(Graphics::GdiContext* gdiContext, Graphics::RenderContext* renderContext)
@@ -175,36 +175,36 @@ void MusicRoom::WallsUpdater::update(const Game::UpdateContext* uctx)
 	{
 		if (onOff_[iWaveProgress * 8])
 		{
-			Sound::playSound("music.bnk", "3b");
+			Sound::playSound("aminharmonic.bnk", "1");
 		}
 		if (onOff_[iWaveProgress * 8 + 1])
 		{
-			Sound::playSound("music.bnk", "1b");
+			Sound::playSound("aminharmonic.bnk", "2");
 		}
 		if (onOff_[iWaveProgress * 8 + 2])
 		{
-			Sound::playSound("music.bnk", "2b");
+			Sound::playSound("aminharmonic.bnk", "3");
 		}
 		if (onOff_[iWaveProgress * 8 + 3])
 		{
-			Sound::playSound("music.bnk", "3c");
+			Sound::playSound("aminharmonic.bnk", "4");
 		}
 
 		if (onOff_[iWaveProgress * 8 + 4])
 		{
-			Sound::playSound("music.bnk", "3a");
+			Sound::playSound("aminharmonic.bnk", "5");
 		}
 		if (onOff_[iWaveProgress * 8 + 5])
 		{
-			Sound::playSound("music.bnk", "3b");
+			Sound::playSound("aminharmonic.bnk", "6");
 		}
 		if (onOff_[iWaveProgress * 8 + 6])
 		{
-			Sound::playSound("music.bnk", "3c");
+			Sound::playSound("aminharmonic.bnk", "7");
 		}
 		if (onOff_[iWaveProgress * 8 + 7])
 		{
-			Sound::playSound("music.bnk", "3d");
+			Sound::playSound("aminharmonic.bnk", "8");
 		}
 	}
 

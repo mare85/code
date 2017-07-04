@@ -14,3 +14,4 @@ Game1/Todo.txt
 *.idb
 *.opendb
 *codeanalysis.xml
+*.nativecodeanalysis.all.xml
