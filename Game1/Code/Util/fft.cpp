@@ -23,9 +23,35 @@ void Util::dft(float * in1, float * in2, float * out1, float * out2, unsigned in
 
 }
 
-void Util::FFT1024::_Forward(float* in1, float*in2, float*out1, float*out2, unsigned int step)
+void Util::FFT1024::_Forward(float* in1, float*in2, float*out1, float*out2, unsigned int step, unsigned int n)
 {
-
+// 	if (n == 1)
+// 	{
+// 		*out1 = *in1;
+// 		*out2 = *in2;
+// 	}
+// 	else
+// 	{
+// 		unsigned int step2 = step << 1;
+// 		unsigned int n2 = n>>1;
+// 		_Forward(in1, in2, out1, out2, step2, n2);
+// 		_Forward(in1 + step, in2 + step, out1 + n2, out2 + n2, step2, n2);
+// 		for (unsigned int k1 = 0; k1 < n2; ++k1)
+// 		{
+// 			unsigned int k2 = k1+ n2;
+// 			float even1 = out1[k1];
+// 			float even2 = out2[k1];
+// 			float odd1 = out1[k2];
+// 			float odd2 = out2[k2];
+// 			out1[k1] = even1 + odd1 * coss[k2] + odd2 * sins[k2];
+// 			out2[k1] = even2 + odd2 * coss[k2] - odd1 * sins[k2];
+// 			out1[k2] = even1 - odd1 * coss[k2] + odd2 * sins[k2];
+// 			out2[k2] = even1 - odd2 * coss[k2] - odd1 * sins[k2];
+//			still wrong
+// 		}
+//
+// 	}
+// 	
 }
 
 void Util::FFT1024::init()
@@ -42,39 +68,50 @@ void Util::FFT1024::init()
 
 void Util::FFT1024::forward(float * in1, float * in2, float * out1, float * out2)
 {
-	for (unsigned int k = 0; k < 512; ++k)
+	float tempIn1[1024];
+	float tempIn2[1024];
+	for (unsigned int i = 0; i < 1024; ++i)
+	{
+		tempIn1[i] = in1[i];
+		tempIn2[i] = in2[i];
+	}
+	for (unsigned int i = 2; i < 1024; i <<= 1)
 	{
 
 	}
-	for (unsigned int k = 512; k < 1024; ++k)
-	{
-
-	}
-
-
-	for (unsigned int k = 0; k < 1024; ++k)
-	{
-		float o1 = .0f;
-		float o2 = .0f;
-		float e1 = .0f;
-		float e2 = .0f;
-
-		for (unsigned int n = 0; n < 512; ++n)
-		{
-			unsigned int indexE = ((k*n) & 1023) << 1;
-			unsigned int indexO = indexE + 1;
-			e1 += in1[indexE] * coss[indexE];
-			e2 -= in1[indexE] * sins[indexE];
-			e1 += in2[indexE] * sins[indexE];
-			e2 += in2[indexE] * coss[indexE];
-			o1 += in1[indexO] * coss[indexE];
-			o2 -= in1[indexO] * sins[indexE];
-			o1 += in2[indexO] * sins[indexE];
-			o2 += in2[indexO] * coss[indexE];
-		}
-		out1[k] = o1 * coss[1] + o2 * sins[1] + e1;
-		out2[k] = o2 * coss[1] - o1 * sins[1] + e2;
-	}
+// 	for (unsigned int k = 0; k < 512; ++k)
+// 	{
+// 
+// 	}
+// 	for (unsigned int k = 512; k < 1024; ++k)
+// 	{
+// 
+// 	}
+// 
+// 
+// 	for (unsigned int k = 0; k < 1024; ++k)
+// 	{
+// 		float o1 = .0f;
+// 		float o2 = .0f;
+// 		float e1 = .0f;
+// 		float e2 = .0f;
+// 
+// 		for (unsigned int n = 0; n < 512; ++n)
+// 		{
+// 			unsigned int indexE = ((k*n) & 1023) << 1;
+// 			unsigned int indexO = indexE + 1;
+// 			e1 += in1[indexE] * coss[indexE];
+// 			e2 -= in1[indexE] * sins[indexE];
+// 			e1 += in2[indexE] * sins[indexE];
+// 			e2 += in2[indexE] * coss[indexE];
+// 			o1 += in1[indexO] * coss[indexE];
+// 			o2 -= in1[indexO] * sins[indexE];
+// 			o1 += in2[indexO] * sins[indexE];
+// 			o2 += in2[indexO] * coss[indexE];
+// 		}
+// 		out1[k] = o1 * coss[1] + o2 * sins[1] + e1;
+// 		out2[k] = o2 * coss[1] - o1 * sins[1] + e2;
+// 	}
 }
 
 void Util::FFT1024::dft(float * in1, float * in2, float * out1, float * out2)

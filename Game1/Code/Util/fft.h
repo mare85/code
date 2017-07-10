@@ -10,7 +10,7 @@ namespace Util
 	{
 		float sins[1024];
 		float coss[1024];
-		void _Forward(float* in1, float*in2, float*out1, float*out2, unsigned int step);
+		void _Forward(float* in1, float*in2, float*out1, float*out2, unsigned int step, unsigned int n);
 	public:
 		void init();
 		void forward(float* in1, float*in2, float*out1, float*out2);
