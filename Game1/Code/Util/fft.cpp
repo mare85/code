@@ -68,17 +68,50 @@ void Util::FFT1024::init()
 
 void Util::FFT1024::forward(float * in1, float * in2, float * out1, float * out2)
 {
-	float tempIn1[1024];
-	float tempIn2[1024];
-	for (unsigned int i = 0; i < 1024; ++i)
-	{
-		tempIn1[i] = in1[i];
-		tempIn2[i] = in2[i];
-	}
-	for (unsigned int i = 2; i < 1024; i <<= 1)
-	{
+	//float temp1[1024];
+	//float temp2[1024];
+	//float* tempIn1 = temp1;
+	//float* tempIn2 = temp2;
+	//for (unsigned int i = 0; i < 1024; ++i)
+	//{
+	//	tempIn1[i] = in1[i];
+	//	tempIn2[i] = in2[i];
+	//}
 
-	}
+	//float* tempOut1 = out1;
+	//float* tempOut2 = out2;
+	//unsigned int iterationCount = 512;
+	//for (unsigned int it = 2; it < 1024; it <<= 1)
+	//{
+	//	for (unsigned int i = 0; i < iterationCount; ++i)
+	//	{
+	//		float* o1 = tempOut1 + i;
+	//		float* o2 = tempOut2 + i;
+	//		for (unsigned int k = 0; k < 1024; k += iterationCount)
+	//		{
+	//			// 		out1[k] = o1 * coss[1] + o2 * sins[1] + e1;
+	//			// 		out2[k] = o2 * coss[1] - o1 * sins[1] + e2;
+	//			o1 += in1[n] * coss[index];
+	//			o2 -= in1[n] * sins[index];
+	//			o1 += in2[n] * sins[index];
+	//			o2 += in2[n] * coss[index];
+	//			float tRe = coss[1]
+	//			tempOut[i + ] = 
+
+
+
+	//		}
+	//	}
+
+
+	//	float* tmpPtr = tempIn1;
+	//	tempIn1 = tempOut1;
+	//	tempOut1 = tmpPtr;
+	//	tmpPtr = tempIn2;
+	//	tempIn2 = tempOut2;
+	//	tempOut2 = tmpPtr;
+	//	iterationCount >>= 1;
+	//}
 // 	for (unsigned int k = 0; k < 512; ++k)
 // 	{
 // 
