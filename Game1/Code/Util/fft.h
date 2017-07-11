@@ -16,7 +16,17 @@ namespace Util
 		void forward(float* in1, float*in2, float*out1, float*out2);
 		void dft(float* in1, float* in2, float *out1, float *out2);
 
-		
+	};
+
+	class FFT8
+	{
+		const float sin45 = .707106f;
+		float sins[8];
+		float coss[8];
+	public:
+		void init();
+		void dft(float* in1, float* in2, float *out1, float *out2);
+		void forward(float* in1, float*in2, float*out1, float*out2);
 
 	};
 

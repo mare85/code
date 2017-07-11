@@ -166,3 +166,106 @@ void Util::FFT1024::dft(float * in1, float * in2, float * out1, float * out2)
 		out2[k] = o2;
 	}
 }
+
+void Util::FFT8::init()
+{
+	float angle = .0f;
+	float step = TWO_PI / 8;
+	for (unsigned int i = 0; i < 8; ++i)
+	{
+		sins[i] = sinf(angle);
+		coss[i] = sinf(angle);
+		angle += step;
+	}
+}
+
+void Util::FFT8::dft(float* in1, float* in2, float *out1, float *out2)
+{
+	for (unsigned int k = 0; k < 8; ++k)
+	{
+		float o1 = .0f;
+		float o2 = .0f;
+		for (unsigned int n = 0; n < 8; ++n)
+		{
+			unsigned int index = (k*n) & 7;
+			o1 += in1[n] * coss[index];
+			o2 -= in1[n] * sins[index];
+			o1 += in2[n] * sins[index];
+			o2 += in2[n] * coss[index];
+		}
+		out1[k] = o1;
+		out2[k] = o2;
+	}
+}
+
+void Util::FFT8::forward(float* r, float*i, float*out1, float*out2)
+{
+	float r0plus4 = r[0] + r[4];
+	float i0plus4 = i[0] + i[4];
+	float r2plus6 = r[2] + r[6];
+	float i2plus6 = i[2] + i[6];
+	float r0minus4 = r[0] - r[4];
+	float i0minus4 = r[0] - r[4];
+	float r2minus6 = r[2] - r[6];
+	float i2minus6 = i[2] - i[6];
+
+	float r1plus5 = r[0] + r[4];
+	float i1plus5 = i[0] + i[4];
+	float r3plus7 = r[2] + r[6];
+	float i3plus7 = i[2] + i[6];
+	float r1minus5 = r[0] - r[4];
+	float i1minus5 = r[0] - r[4];
+	float r3minus7 = r[2] - r[6];
+	float i3minus7 = i[2] - i[6];
+
+	out1[0] = r0plus4 + r2plus6 + r1plus5 + r3plus7;
+	out1[1] = r0minus4 + i2minus6 +
+		sin45 * (r1minus5 + i1minus5 - r3minus7 + i3minus7);
+	out1[2] = r0plus4 - r2plus6 + i1plus5 - i3plus7;
+	out1[3] = r0minus4 - i2minus6 +
+		sin45 * (i1minus5 - r1minus5 + r3minus7 + i3minus7);
+	out1[4] = r0plus4 + r2plus6 - r1plus5 - r3plus7;
+	out1[5] = r0minus4 + i2minus6 +
+		sin45 *(-r1minus5 + r3minus7 - i1minus5 - i3minus7);
+	out1[6] = r0plus4 - r2plus6 - i1plus5 + i3plus7;
+	out1[7] = r0minus4 - i2minus6 +
+		sin45 * (r1minus5 - r3minus7 - i1minus5 - i3minus7);
+
+	out2[0] = i0plus4 + i2plus6 + i1plus5 + i3plus7;
+	out2[1] = i0minus4 - r2minus6 +
+		sin45 * (i1minus5 - r1minus5 - r3minus7 - i3minus7);
+	out2[2] = i0plus4 - i2plus6 - r1plus5 + r3plus7;
+	out2[3] = i0minus4 + r2minus6 +
+		sin45 * (-i1minus5 - r1plus5 + i[3] - r[3] + i[5] - r[7] );
+	out2[4] = i0plus4 + i2plus6 - i1plus5 - i3plus7;
+	out2[5] = i0minus4 - r2minus6 +
+		sin45 * (r1minus5 - i1minus5 + r[3] + i[3] );// error - missing 7 factor
+	out2[6] = i0plus4 - i2plus6 + r1plus5 - r3plus7;
+	out2[7] = i0minus4 + r2minus6 +
+		sin45 * (r1minus5 - i3minus7 - r3minus7 - i1minus5);
+	//out1[0] = r[0] + r[1] + r[2] + r[3] + r[4] + r[5] + r[6] + r[7];
+	//out1[1] = r[0] - r[4] + i[2] - i[6] +
+	//	sin45 * ( r[1] - r[5] + i[1] - i[5] - r[3] + r[7] + i[3] - i[7] );
+	//out1[2] = r[0] - r[2] + r[4] - r[6] + i[1] - i[3] + i[5] - i[7];
+	//out1[3] = r[0] - i[2] - r[4] + i[6] + 
+	//	sin45 * (i[1] - r[1] + r[3] + i[3] + r[5] - i[5] - r[7] - i[7]);
+	//out1[4] = r[0] - r[1] + r[2] - r[3] + r[4] - r[5] + r[6] - r[7];
+	//out1[5] = r[0] + i[2] - r[4] - i[6] +
+	//	sin45 *(-r[1] - i[1] + r[3] - i[3] + r[5] + i[5] - r[7] + i[7]);
+	//out1[6] = r[0] - r[2] + r[4] - r[6] - i[1] + i[3] - i[5] + i[7];
+	//out1[7] = r[0] - r[4] + i[6] - i[2] +
+	//	sin45 * (r[7] - r[3] + i[7] - i[3] - r[5] + r[1] + i[5] - i[1]);
+
+	//out2[0] = i[0] + i[1] + i[2] + i[3] + i[4] + i[5] + i[6] + i[7];
+	//out2[1] = i[0] - i[4] - r[2] + r[6] +
+	//	sin45 * ( i[1] - i[5]- r[1] + r[5] - r[3] + r[7] - i[3] + i[7] );
+	//out2[2] = i[0] - i[2] + i[4] - i[6] - r[1] + r[3] - r[5] + r[7];
+	//out2[3] = i[0] + r[2] - i[4] - r[6] + 
+	//	sin45 * (-i[1] - r[1] + i[3] - r[3] + i[5] - r[5] - r[7] + i[5]);
+	//out2[4] = i[0] - i[1] + i[2] - i[3] + i[4] - i[5] + i[6] - i[7];
+	//out2[5] = i[0] - r[2] - i[4] + r[6] +
+	//	sin45 * (-i[1] + r[1] + r[3] + i[3] + i[5] - r[5]);
+	//out2[6] = i[0] - i[2] + i[4] - i[6] + r[1] - r[3] + r[5] - r[7];
+	//out2[7] = i[0] - i[4] - r[6] + r[2] +
+	//	sin45 * (i[7] - i[3] - r[7] + r[3] - r[5] + r[1] - i[5] + i[1]);
+}
