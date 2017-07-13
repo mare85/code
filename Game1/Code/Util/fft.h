@@ -30,5 +30,6 @@ namespace Util
 
 	};
 
+	bool testFFT8();
 
 }
