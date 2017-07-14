@@ -1,6 +1,6 @@
 #include <windows.h>
 #include <Game/App.h>
-//#include "Util/fft.h"
+#include "Util/fft.h"
 
 LRESULT CALLBACK wndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
@@ -26,7 +26,7 @@ int WINAPI wWinMain(HINSTANCE appInstance, HINSTANCE prevInstane, LPWSTR cmdLine
 {
 	(void)cmdLine;
 	(void)prevInstane;
-	//bool fftCorrect = Util::testFFT8();
+	bool fftCorrect = Util::testFFT8();
 	WNDCLASSEX windowDesc = { 0 };
 	windowDesc.cbSize = sizeof(WNDCLASSEX);
 	windowDesc.style = CS_HREDRAW | CS_VREDRAW;
