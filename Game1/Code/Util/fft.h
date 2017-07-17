@@ -20,7 +20,7 @@ namespace Util
 
 	class FFT8
 	{
-		const float sin45 = .707106f;
+		const float sin45 = .7071067811f;
 		float sins[8];
 		float coss[8];
 	public:
