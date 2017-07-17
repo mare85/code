@@ -220,15 +220,18 @@ void Util::FFT8::forward(float* r, float*i, float*out1, float*out2)
 	float r3minus7 = r[3] - r[7];
 	float i3minus7 = i[3] - i[7];
 
+	float r0plus4_plus_r2plus6 = r0plus4 + r2plus6;
+	float r1plus5_plus_r3plus7 = r1plus5 + r3plus7;
+	float r0minus4_plus_i2minus6 = r0minus4 + i2minus6;
  
- 	out1[0] = r0plus4 + r2plus6 + r1plus5 + r3plus7;
- 	out1[1] = r0minus4 + i2minus6 +
+ 	out1[0] = r0plus4_plus_r2plus6 + r1plus5_plus_r3plus7;
+ 	out1[1] = r0minus4_plus_i2minus6 +
  		sin45 * (r1minus5 + i1minus5 - r3minus7 + i3minus7);
  	out1[2] = r0plus4 - r2plus6 + i1plus5 - i3plus7;
  	out1[3] = r0minus4 - i2minus6 +
  		sin45 * (i1minus5 - r1minus5 + r3minus7 + i3minus7);
- 	out1[4] = r0plus4 + r2plus6 - r1plus5 - r3plus7;
- 	out1[5] = r0minus4 + i2minus6 +
+ 	out1[4] = r0plus4_plus_r2plus6 - r1plus5_plus_r3plus7;
+ 	out1[5] = r0minus4_plus_i2minus6 +
  		sin45 *(-r1minus5 + r3minus7 - i1minus5 - i3minus7);
  	out1[6] = r0plus4 - r2plus6 - i1plus5 + i3plus7;
  	out1[7] = r0minus4 - i2minus6 +
