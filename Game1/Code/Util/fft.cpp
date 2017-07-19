@@ -223,31 +223,37 @@ void Util::FFT8::forward(float* r, float*i, float*out1, float*out2)
 	float r0plus4_plus_r2plus6 = r0plus4 + r2plus6;
 	float r1plus5_plus_r3plus7 = r1plus5 + r3plus7;
 	float r0minus4_plus_i2minus6 = r0minus4 + i2minus6;
+	float r1minus5_plus_i1minus5 = r1minus5 + i1minus5;
+	float r3minus7_minus_i3minus7 = r3minus7 - i3minus7;
+	float r0plus4_minus_r2plus6 = r0plus4 - r2plus6;
+	float i1plus5_minus_i3plus7 = i1plus5 - i3plus7;
+	float r0minus4_minus_i2minus6 = r0minus4 - i2minus6;
+	float i1minus5_minus_r1minus5 = i1minus5 - r1minus5;
+	float r3minus7_plus_i3minus7 = r3minus7 + i3minus7;
+	float i1minus5_plus_r1minus5 = i1minus5 + r1minus5;
+	float i0plus4_plus_i2plus6 = i0plus4 + i2plus6;
+	float i1plus5_plus_i3plus7 = i1plus5 + i3plus7;
+	float i0minus4_minus_r2minus6 = i0minus4 - r2minus6;
+	float i0plus4_minus_i2plus6 = i0plus4 - i2plus6;
+	float r1plus5_minus_r3plus7 = r1plus5 - r3plus7;
+	float i0minus4_plus_r2minus6 = i0minus4 + r2minus6;
  
  	out1[0] = r0plus4_plus_r2plus6 + r1plus5_plus_r3plus7;
- 	out1[1] = r0minus4_plus_i2minus6 +
- 		sin45 * (r1minus5 + i1minus5 - r3minus7 + i3minus7);
- 	out1[2] = r0plus4 - r2plus6 + i1plus5 - i3plus7;
- 	out1[3] = r0minus4 - i2minus6 +
- 		sin45 * (i1minus5 - r1minus5 + r3minus7 + i3minus7);
+ 	out1[1] = r0minus4_plus_i2minus6 + sin45 * (r1minus5_plus_i1minus5 - r3minus7_minus_i3minus7);
+ 	out1[2] = r0plus4_minus_r2plus6 + i1plus5_minus_i3plus7;
+ 	out1[3] = r0minus4_minus_i2minus6 + sin45 * (i1minus5_minus_r1minus5 + r3minus7_plus_i3minus7);
  	out1[4] = r0plus4_plus_r2plus6 - r1plus5_plus_r3plus7;
- 	out1[5] = r0minus4_plus_i2minus6 +
- 		sin45 *(-r1minus5 + r3minus7 - i1minus5 - i3minus7);
- 	out1[6] = r0plus4 - r2plus6 - i1plus5 + i3plus7;
- 	out1[7] = r0minus4 - i2minus6 +
- 		sin45 * (r1minus5 - r3minus7 - i1minus5 - i3minus7);
- 	out2[0] = i0plus4 + i2plus6 + i1plus5 + i3plus7;
- 	out2[1] = i0minus4 - r2minus6 +
- 		sin45 * (i1minus5 - r1minus5 - r3minus7 - i3minus7);
- 	out2[2] = i0plus4 - i2plus6 - r1plus5 + r3plus7;
-	out2[3] = i0minus4 + r2minus6 + 
-		sin45 * (-i1minus5 - r1minus5 + i3minus7 - r3minus7);
- 	out2[4] = i0plus4 + i2plus6 - i1plus5 - i3plus7;
- 	out2[5] = i0minus4 - r2minus6 +
- 		sin45 * (r1minus5 - i1minus5 + r3minus7 + i3minus7);
- 	out2[6] = i0plus4 - i2plus6 + r1plus5 - r3plus7;
-	out2[7] = i0minus4 + r2minus6 +
- 		sin45 * (r1minus5 + i1minus5 - i3minus7 + r3minus7 );
+ 	out1[5] = r0minus4_plus_i2minus6 + sin45 *( r3minus7_minus_i3minus7 - i1minus5_plus_r1minus5);
+ 	out1[6] = r0plus4_minus_r2plus6 - i1plus5_minus_i3plus7;
+ 	out1[7] = r0minus4_minus_i2minus6 + sin45 * (-i1minus5_minus_r1minus5 - r3minus7_plus_i3minus7);
+ 	out2[0] = i0plus4_plus_i2plus6 + i1plus5_plus_i3plus7;
+ 	out2[1] = i0minus4_minus_r2minus6 + sin45 * (i1minus5_minus_r1minus5 - r3minus7_plus_i3minus7);
+ 	out2[2] = i0plus4_minus_i2plus6 - r1plus5_minus_r3plus7;
+	out2[3] = i0minus4_plus_r2minus6 + sin45 * (-i1minus5_plus_r1minus5 - r3minus7_minus_i3minus7);
+ 	out2[4] = i0plus4_plus_i2plus6 - i1plus5_plus_i3plus7;
+ 	out2[5] = i0minus4_minus_r2minus6 + sin45 * (-i1minus5_minus_r1minus5 + r3minus7_plus_i3minus7);
+ 	out2[6] = i0plus4_minus_i2plus6 + r1plus5_minus_r3plus7;
+	out2[7] = i0minus4_plus_r2minus6 + sin45 * (r1minus5_plus_i1minus5 + r3minus7_minus_i3minus7);
 }
 
 
