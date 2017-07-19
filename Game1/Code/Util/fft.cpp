@@ -242,28 +242,15 @@ void Util::FFT8::forward(float* r, float*i, float*out1, float*out2)
 	out2[3] = stack7;
 	out2[5] = stack6;
 	out2[7] = stack7;
-
-
 	stack0 = r[1] - r[5];
 	stack1 = i[1] - i[5];
 	stack2 = r[3] - r[7];
 	stack3 = i[3] - i[7];
-
-	
-
 	stack4 = stack0 + stack1;
 	stack5 = stack2 - stack3;
-	
-	
 	stack6 = stack1 - stack0;
 	stack7 = stack2 + stack3;
 	stack8 = stack1 + stack0;
-	
-
- 
-
-
-
 	out1[1] += sin45 * (stack4 - stack5);
 	out1[3] += sin45 * (stack6 + stack7);
 	out1[5] += sin45 * (stack5 - stack8);
