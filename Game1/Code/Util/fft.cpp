@@ -202,58 +202,76 @@ void Util::FFT8::dft(float* in1, float* in2, float *out1, float *out2)
 
 void Util::FFT8::forward(float* r, float*i, float*out1, float*out2)
 {
-	float r0plus4 = r[0] + r[4];
-	float i0plus4 = i[0] + i[4];
-	float r2plus6 = r[2] + r[6];
-	float i2plus6 = i[2] + i[6];
-	float r0minus4 = r[0] - r[4];
-	float i0minus4 = i[0] - i[4];
-	float r2minus6 = r[2] - r[6];
-	float i2minus6 = i[2] - i[6];
+	float stack0 = r[0] + r[4];
+	float stack1 = i[0] + i[4];
+	float stack2 = r[2] + r[6];
+	float stack3 = i[2] + i[6];
+	float stack4 = stack0 + stack2;
+	float stack5 = stack1 + stack3;
+	float stack6 = stack0 - stack2;
+	float stack7 = stack1 - stack3;
+	stack0 = r[1] + r[5];
+	stack1 = i[1] + i[5];
+	stack2 = r[3] + r[7];
+	stack3 = i[3] + i[7];
+	float stack8 = stack0 + stack2;
+	float stack9 = stack1 + stack3;
+	out1[0] = stack4 + stack8;
+	out1[4] = stack4 - stack8;
+	out2[0] = stack5 + stack9;
+	out2[4] = stack5 - stack9;
+	stack4 = stack1 - stack3;
+	stack5 = stack0 - stack2;
+	out1[2] = stack6 + stack4;
+	out1[6] = stack6 - stack4;
+	out2[2] = stack7 - stack5;
+	out2[6] = stack7 + stack5;
+	stack0 = r[0] - r[4];
+	stack1 = i[0] - i[4];
+	stack2 = r[2] - r[6];
+	stack3 = i[2] - i[6];
+	stack4 = stack0 + stack3;
+	stack5 = stack0 - stack3;
+	stack6 = stack1 - stack2;
+	stack7 = stack1 + stack2;
+	out1[1] = stack4;
+	out1[3] = stack5;
+	out1[5] = stack4;
+	out1[7] = stack5;
+	out2[1] = stack6;
+	out2[3] = stack7;
+	out2[5] = stack6;
+	out2[7] = stack7;
 
-	float r1plus5 = r[1] + r[5];
-	float i1plus5 = i[1] + i[5];
-	float r3plus7 = r[3] + r[7];
-	float i3plus7 = i[3] + i[7];
-	float r1minus5 = r[1] - r[5];
-	float i1minus5 = i[1] - i[5];
-	float r3minus7 = r[3] - r[7];
-	float i3minus7 = i[3] - i[7];
 
-	float r0plus4_plus_r2plus6 = r0plus4 + r2plus6;
-	float r1plus5_plus_r3plus7 = r1plus5 + r3plus7;
-	float r0minus4_plus_i2minus6 = r0minus4 + i2minus6;
-	float r1minus5_plus_i1minus5 = r1minus5 + i1minus5;
-	float r3minus7_minus_i3minus7 = r3minus7 - i3minus7;
-	float r0plus4_minus_r2plus6 = r0plus4 - r2plus6;
-	float i1plus5_minus_i3plus7 = i1plus5 - i3plus7;
-	float r0minus4_minus_i2minus6 = r0minus4 - i2minus6;
-	float i1minus5_minus_r1minus5 = i1minus5 - r1minus5;
-	float r3minus7_plus_i3minus7 = r3minus7 + i3minus7;
-	float i1minus5_plus_r1minus5 = i1minus5 + r1minus5;
-	float i0plus4_plus_i2plus6 = i0plus4 + i2plus6;
-	float i1plus5_plus_i3plus7 = i1plus5 + i3plus7;
-	float i0minus4_minus_r2minus6 = i0minus4 - r2minus6;
-	float i0plus4_minus_i2plus6 = i0plus4 - i2plus6;
-	float r1plus5_minus_r3plus7 = r1plus5 - r3plus7;
-	float i0minus4_plus_r2minus6 = i0minus4 + r2minus6;
+	stack0 = r[1] - r[5];
+	stack1 = i[1] - i[5];
+	stack2 = r[3] - r[7];
+	stack3 = i[3] - i[7];
+
+	
+
+	stack4 = stack0 + stack1;
+	stack5 = stack2 - stack3;
+	
+	
+	stack6 = stack1 - stack0;
+	stack7 = stack2 + stack3;
+	stack8 = stack1 + stack0;
+	
+
  
- 	out1[0] = r0plus4_plus_r2plus6 + r1plus5_plus_r3plus7;
- 	out1[1] = r0minus4_plus_i2minus6 + sin45 * (r1minus5_plus_i1minus5 - r3minus7_minus_i3minus7);
- 	out1[2] = r0plus4_minus_r2plus6 + i1plus5_minus_i3plus7;
- 	out1[3] = r0minus4_minus_i2minus6 + sin45 * (i1minus5_minus_r1minus5 + r3minus7_plus_i3minus7);
- 	out1[4] = r0plus4_plus_r2plus6 - r1plus5_plus_r3plus7;
- 	out1[5] = r0minus4_plus_i2minus6 + sin45 *( r3minus7_minus_i3minus7 - i1minus5_plus_r1minus5);
- 	out1[6] = r0plus4_minus_r2plus6 - i1plus5_minus_i3plus7;
- 	out1[7] = r0minus4_minus_i2minus6 + sin45 * (-i1minus5_minus_r1minus5 - r3minus7_plus_i3minus7);
- 	out2[0] = i0plus4_plus_i2plus6 + i1plus5_plus_i3plus7;
- 	out2[1] = i0minus4_minus_r2minus6 + sin45 * (i1minus5_minus_r1minus5 - r3minus7_plus_i3minus7);
- 	out2[2] = i0plus4_minus_i2plus6 - r1plus5_minus_r3plus7;
-	out2[3] = i0minus4_plus_r2minus6 + sin45 * (-i1minus5_plus_r1minus5 - r3minus7_minus_i3minus7);
- 	out2[4] = i0plus4_plus_i2plus6 - i1plus5_plus_i3plus7;
- 	out2[5] = i0minus4_minus_r2minus6 + sin45 * (-i1minus5_minus_r1minus5 + r3minus7_plus_i3minus7);
- 	out2[6] = i0plus4_minus_i2plus6 + r1plus5_minus_r3plus7;
-	out2[7] = i0minus4_plus_r2minus6 + sin45 * (r1minus5_plus_i1minus5 + r3minus7_minus_i3minus7);
+
+
+
+	out1[1] += sin45 * (stack4 - stack5);
+	out1[3] += sin45 * (stack6 + stack7);
+	out1[5] += sin45 * (stack5 - stack8);
+	out1[7] += sin45 * (-stack6 - stack7);
+	out2[1] += sin45 * (stack6 - stack7);
+	out2[3] += sin45 * (-stack8 - stack5);
+	out2[5] += sin45 * (-stack6 + stack7);
+	out2[7] += sin45 * (stack4 + stack5);
 }
 
 
