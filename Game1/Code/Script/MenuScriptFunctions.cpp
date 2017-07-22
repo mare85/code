@@ -43,16 +43,14 @@ static void _createAndAddTestScene()
 	
 	Game::Scene* scene = new Game::Scene("scene");
 	Black::EventSystem::StartUp(scene);
-	if (Game::App::EditorEnabled())
-		Black::Editor::Editor* editor = new Black::Editor::Editor(scene);
+	if (Game::App::EditorEnabled()) new Black::Editor::Editor(scene);
 
 	Black::GroundManager::startUp(scene, 1);
-	Black::GroundManager* groundManager = Black::GroundManager::getInstance();
 	scene->addTransform(mainCam);
 	scene->createOrtographicCamera(mainCam->getHashName(), 2.5f);
 	GameUtils::StartMenuTrigger* startMenuTrigger = new GameUtils::StartMenuTrigger();
 	scene->addUpdater(startMenuTrigger);
-	Black::Character* character = new Black::Character(scene, "character");
+	new Black::Character(scene, "character");
 	new Black::BirdsManager( 100, scene );
 	scene->addUpdater(new Black::TextSubsystem(scene, 1, "pl","assets/fonts/myfont" ));
 	scene->start();
@@ -201,12 +199,6 @@ static void __exitTimed()
 static void __exitGame()
 {
 	__fadeOut();
-	Sound::stopAll();
-	Script::addTimedFunction(1.0f, &__exitTimed);
-}
-
-static void __quitToMain()
-{
 	Sound::stopAll();
 	Script::addTimedFunction(1.0f, &__exitTimed);
 }

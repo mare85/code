@@ -7,20 +7,20 @@
 
 static void __FadeOut(const Script::Params& p, Game::Scene* scene)
 {
-	(void)p;
+	(void)p; (void)scene;
 	float time = p.floatParam[0];
 	Game::App::Instance()->fade(1.0f, time);
 }
 static void __FadeIn(const Script::Params& p, Game::Scene* scene)
 {
-	(void)p;
+	(void)p; (void)scene;
 	float time = p.floatParam[0];
 	Game::App::Instance()->fade(0.0f, time);
 }
 
 static void __Color0(const Script::Params& p, Game::Scene* scene)
 {
-	(void)p;
+	(void)p; (void)scene;
 	float r = p.floatParam[0];
 	float g = p.floatParam[1];
 	float b = p.floatParam[2];
@@ -28,7 +28,7 @@ static void __Color0(const Script::Params& p, Game::Scene* scene)
 }
 static void __Color1(const Script::Params& p, Game::Scene* scene)
 {
-	(void)p;
+	(void)p; (void)scene;
 	float r = p.floatParam[0];
 	float g = p.floatParam[1];
 	float b = p.floatParam[2];

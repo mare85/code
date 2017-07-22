@@ -299,7 +299,6 @@ Graphics::RenderTarget * Graphics::GdiContext::createRenderTarget(unsigned int w
 	};
 	unsigned int bufferSize = sizeof(Graphics::VertexP4UV4) * 6;
 	out->vbuff_ = createBuffer(points, bufferSize, Graphics::eDefaultVertexBuffer);
-	Graphics::VertexDesc vDesc = Graphics::VertexDesc::get(Graphics::POS4UV4);
 	out->cBuff_ = createBuffer(nullptr, cbsize, Graphics::eDefaultConstantBuffer);
 
 

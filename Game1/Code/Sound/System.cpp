@@ -84,8 +84,8 @@ namespace Sound
 		waveFormat.wFormatTag = WAVE_FORMAT_PCM;
 		waveFormat.nSamplesPerSec = sampleRate;
 		waveFormat.wBitsPerSample = 16;
-		waveFormat.nChannels = nChannels;
-		waveFormat.nBlockAlign = 2 * nChannels;
+		waveFormat.nChannels = static_cast<WORD>( nChannels );
+		waveFormat.nBlockAlign = static_cast<WORD>(2 * nChannels);
 		waveFormat.nAvgBytesPerSec = waveFormat.nSamplesPerSec * waveFormat.nBlockAlign;
 		waveFormat.cbSize = 0;
 

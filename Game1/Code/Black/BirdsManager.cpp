@@ -69,7 +69,7 @@ void Black::BirdsManager::_UpdateLayer(const Game::UpdateContext * uctx, unsigne
 	}
 
 	//adding
-	if( layerIndex == GroundManager::getInstance()->getLayerIndex() )
+	if( layerIndex == (unsigned int)GroundManager::getInstance()->getLayerIndex() )
 	{
 		float baseX = Character::GetInstance()->cameraPosition().getX();
 		toEmit_ += dt * rate_;

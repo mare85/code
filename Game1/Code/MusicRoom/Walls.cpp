@@ -36,7 +36,7 @@ void MusicRoom::Walls::loadData(Graphics::GdiContext* gdiContext)
 
 	float roomSizeHalf = 256.0f;
 	float corridorWidthHalf = 2.0f;
-	const unsigned int vcount = 256 * 4 * 2 * 6;
+	//const unsigned int vcount = 256 * 4 * 2 * 6;
 	unsigned int bufferSize = 256 * 4 * 2 * 6 * sizeof(Graphics::VertexP4UV4);
 	//vmath::Vector4 points[ vcount * 2];
 	
@@ -60,7 +60,7 @@ void MusicRoom::Walls::loadData(Graphics::GdiContext* gdiContext)
 void MusicRoom::Walls::updateGfx(Graphics::GdiContext* gdiContext)
 {
 	float corridorWidthHalf = 2.0f;
-	const unsigned int vcount = 256 * 4 * 2 * 6;
+	//const unsigned int vcount = 256 * 4 * 2 * 6;
 	vmath::Vector4 * out = reinterpret_cast<vmath::Vector4*>( gdiContext->mapWrite( vBuff_) );
 	for (unsigned int x = 0; x < 256; ++x)
 	{

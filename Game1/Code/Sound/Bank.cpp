@@ -22,7 +22,9 @@ Sound::Bank::Bank(const char * scriptFileName, bool isScript)
 		++nVoiceTokens;
 	}
 	assert(!(nVoiceTokens & 1)); //parity
-	nSounds_ = ( nVoiceTokens >> 1);
+	assert(nVoiceTokens <= 2 * eNMaxSounds);
+	nSounds_ = static_cast<unsigned char>( nVoiceTokens >> 1);
+	
 	nameBuffer_ = new char[nSounds_ * eNameLength];
 	names_ = new char*[nSounds_];
 	startOffsets_ = new unsigned int[nSounds_ * 2];
@@ -64,16 +66,16 @@ Sound::Bank::~Bank()
 		delete[] startOffsets_;
 }
 
-unsigned int Sound::Bank::getNameIndex(const char * name)
+unsigned char Sound::Bank::getNameIndex(const char * name)
 {
-	for (unsigned int i = 0; i < nSounds_; ++i)
+	for (unsigned char i= 0; i < nSounds_; ++i)
 	{
 		if (strcmp(name, names_[i]) == 0)
 		{
 			return i;
 		}
 	}
-	return 0xffffffff;
+	return 0xff;
 }
 
 bool Sound::Bank::has(const char * name)

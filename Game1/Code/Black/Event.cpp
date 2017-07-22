@@ -66,7 +66,7 @@ void Black::Event::serialize(unsigned char * buffer, unsigned int * outBytes, un
 	char data[620];
 	float x = getTransform()->getTranslation().getX();
 	unsigned int layerId = getLayer();
-	sprintf_s(data, "level.event %s %1.2f %d\n", getName(), x, getLayer() );
+	sprintf_s(data, "level.event %s %1.2f %d\n", getName(), x, layerId);
 	if (hasPaarmSet())
 	{
 		getPaarmSet()->serialize(data, 620, this);

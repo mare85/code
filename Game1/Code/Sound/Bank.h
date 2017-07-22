@@ -10,11 +10,12 @@ namespace Sound
 		BankScriptContainer scriptContainer_;
 		enum
 		{
-			eNameLength = 80
+			eNameLength = 80,
+			eNMaxSounds = 250
 		};
 		short* data_ = nullptr;
 		unsigned int nBlocks_ = 0;
-		unsigned int nSounds_ = 0;
+		unsigned char nSounds_ = 0;
 		unsigned int* startOffsets_ = nullptr;
 		unsigned int* lengths_ = nullptr;
 		unsigned int refCounter_ = 0;
@@ -23,7 +24,7 @@ namespace Sound
 	public:
 		Bank( const char * scriptFileName, bool isScript);
 		~Bank();
-		unsigned int getNameIndex(const char* name);
+		unsigned char getNameIndex(const char* name);
 		bool has(const char* name);
 		bool locked() { return refCounter_ != 0; }
 		void getSoundBufferLock(unsigned int index, short** buffer, unsigned int* length)

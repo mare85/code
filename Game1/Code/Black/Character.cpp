@@ -229,7 +229,7 @@ void Black::Character::_UpdateRunningDown(float dt, float left, bool jumpButton)
 	{
 		rundownProgress_ = max(rundownProgress_ - dt * .5f, .0f);
 	}
-	bool runningDown_ = false;
+	//bool runningDown_ = false;
 	if (walkDir_ > -.01f && walkDir_ < .01f)
 	{
 		_UpdateWalking(dt, left, jumpButton);

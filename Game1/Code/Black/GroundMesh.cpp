@@ -45,12 +45,7 @@ void Black::GroundMesh::render(Graphics::GdiContext * gdiContext, Graphics::Rend
 void Black::GroundMesh::updateGfx(Graphics::GdiContext * gdiContext)
 {
 	if (forceUpdate_)
-	{
-
-		const int minScope = -Black::Ground::eNColliders / 4;
-		const int maxScope = Black::Ground::eNColliders * 5 / 4;
-		const int nSteps = maxScope - minScope;
-		
+	{	
 		_FillBuffer(reinterpret_cast< vmath::Vector4 * >(gdiContext->mapWrite(vBuff_)));
 		gdiContext->unmap(vBuff_);
 		forceUpdate_ = false;
@@ -70,8 +65,6 @@ void Black::GroundMesh::_FillBuffer(vmath::Vector4 * buff)
 	float floorY = -100.0f;
 	float prevX = ground_->colliders_[Black::Ground::eNColliders + minScope].getXMin();
 	float prevX2 = prevX;
-
-	float prevY = ground_->colliders_[Black::Ground::eNColliders + minScope].getTopHeight(prevX);
 
 	for (int collI = minScope; collI < maxScope; ++collI)
 	{

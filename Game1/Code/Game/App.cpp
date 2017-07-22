@@ -73,9 +73,6 @@ void Game::App::start(HINSTANCE appInstance, HWND windowHandle)
 	loadMenu("mainMenu");
 	showMenu();
 	setFade(0.0f);
-	
-	DWORD lastTime = GetTickCount();
-	float lastDt = .0f;
 }
 
 unsigned int gframeIt = 0;

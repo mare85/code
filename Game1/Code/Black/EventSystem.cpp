@@ -96,6 +96,7 @@ void Black::EventSystem::feedPosition(const vmath::Vector3 & pos, unsigned int l
 
 void Black::EventSystem::update(const Game::UpdateContext * uctx)
 {
+	(void)uctx;
 	Event** sector = sectors_ + currentSector_ * nEventsPerSector;
 	unsigned int count = sectorCounts_[currentSector_];
 

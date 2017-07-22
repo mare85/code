@@ -48,7 +48,7 @@ void Black::Editor::Editor::_GetAllJpgs(const char * dirname)
 			extLower[4] = 0;
 			for (unsigned int i = 0; i < 4; ++i)
 			{
-				extLower[i] = tolower(ext[i]);
+				extLower[i] = static_cast<char>(tolower(ext[i]));
 			}
 			if (strcmp(extLower, ".jpg") == 0)
 			{
@@ -243,7 +243,7 @@ void Black::Editor::Editor::updateKeyInput(const Game::UpdateContext* uctx)
 
 	for (unsigned int i = 0; !c && i < 256; ++i)
 	{
-		if (uctx->input->getKeyDown(i))
+		if (uctx->input->getKeyDown(static_cast<unsigned char>(i)))
 		{
 			c = Input::Key::getChar((Input::Key::Keycode)i, isShift);
 		}

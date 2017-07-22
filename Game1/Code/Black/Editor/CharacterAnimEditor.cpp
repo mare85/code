@@ -64,11 +64,12 @@ void Black::Editor::CharacterAnimEditor::_CopyKey(_Key & dst, _Key & src)
 
 void Black::Editor::CharacterAnimEditor::_DeleteKey(unsigned int index)
 {
-	for (unsigned int i = curKeyIndex_; i < numKeys_ - 1; ++i)
+	for (unsigned int i = index; i < numKeys_ - 1; ++i)
 	{
 		_CopyKey(keys_[i], keys_[i+1]);
 	}
-	--curKeyIndex_;
+	if(index <= curKeyIndex_ )
+		--curKeyIndex_;
 	--numKeys_;
 }
 
@@ -107,7 +108,7 @@ void Black::Editor::CharacterAnimEditor::updateKeyInput(const Game::UpdateContex
 
 	for (unsigned int i = 0; !c && i < 256; ++i)
 	{
-		if (uctx->input->getKeyDown(i))
+		if (uctx->input->getKeyDown(static_cast<unsigned char>(i)))
 		{
 			c = Input::Key::getChar((Input::Key::Keycode)i, isShift);
 		}
@@ -145,7 +146,7 @@ void Black::Editor::CharacterAnimEditor::_GetAllAnimFilenames()
 	while (searchOn)
 	{
 		const char* fname = fileData.cFileName;
-		unsigned int fnamelen = (unsigned int)strlen(fname);
+		unsigned int fnamelen = static_cast<unsigned int>(strlen(fname));
 		if (fnamelen > 4)
 		{
 			const char* ext = fname + (fnamelen - 5);
@@ -153,7 +154,7 @@ void Black::Editor::CharacterAnimEditor::_GetAllAnimFilenames()
 			extLower[5] = 0;
 			for (unsigned int i = 0; i < 5; ++i)
 			{
-				extLower[i] = tolower(ext[i]);
+				extLower[i] = static_cast<char>( tolower(ext[i]) );
 			}
 			if (strcmp(extLower, ".anim") == 0)
 			{
@@ -169,6 +170,7 @@ void Black::Editor::CharacterAnimEditor::_GetAllAnimFilenames()
 }
 void Black::Editor::CharacterAnimEditor::_UpdateLoadMode(const Game::UpdateContext * uctx)
 {
+	(void)uctx;
 	unsigned int managedMenuentry = 0;
 	//char textBuffer[250];
 	vmath::Vector4 defaultColor(.0f, .0f, .0f, .4f);
@@ -535,7 +537,7 @@ void Black::Editor::CharacterAnimEditor::update(const Game::UpdateContext * uctx
 			{
 				const char* boneName = characterObject_->getBoneName(i);
 				char textBuffer[160];
-				sprintf_s(textBuffer, "<< %010.2f >> %s", keys_[curKeyIndex_].angles_[i], characterObject_->getBoneName(i));
+				sprintf_s(textBuffer, "<< %010.2f >> %s", keys_[curKeyIndex_].angles_[i], boneName);
 				menuText_[managedMenuentry]->setText(textBuffer);
 				menuText_[managedMenuentry]->setColor((curMenu_ == managedMenuentry) ? chosenColor : defaultColor);
 				if (curMenu_ == managedMenuentry)

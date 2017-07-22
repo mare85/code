@@ -31,7 +31,7 @@ namespace Game
 		virtual void loadData(Graphics::GdiContext* gdiContext) = 0;
 		virtual void unloadData(Graphics::GdiContext* gdiContext) = 0;
 		virtual void render(Graphics::GdiContext* gdiContext, Graphics::RenderContext* renderContext ) = 0;
-		virtual void updateGfx(Graphics::GdiContext* gdiContext) {}
+		virtual void updateGfx(Graphics::GdiContext* gdiContext) { (void)gdiContext; }
 		virtual void serialize( unsigned char* buffer, unsigned int* outBytes, unsigned int maxBytes ) { (void)buffer; (void)outBytes; (void)maxBytes;}
 		virtual bool hasSerialize() { return false;}
 		virtual bool isSelectable() { return false; }

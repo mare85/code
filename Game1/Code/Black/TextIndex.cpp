@@ -87,10 +87,7 @@ Black::TextlevelIndex::TextlevelIndex(unsigned int levelId, const char * lang)
 
 	sprintf_s(dirname, "assets/levels/level%d/%s/*", levelId, lang);
 
-	
-
 	fileHandle = FindFirstFile(dirname, &fileData);
-	unsigned int dirnamelen = (unsigned int)strlen(dirname);
 	if (!fileHandle)
 		searchOn = false;
 
@@ -106,7 +103,7 @@ Black::TextlevelIndex::TextlevelIndex(unsigned int levelId, const char * lang)
 			extLower[4] = 0;
 			for (unsigned int i = 0; i < 4; ++i)
 			{
-				extLower[i] = tolower(ext[i]);
+				extLower[i] = static_cast<char>(tolower(ext[i]));
 			}
 			if (strcmp(extLower, ".txt") == 0)
 			{

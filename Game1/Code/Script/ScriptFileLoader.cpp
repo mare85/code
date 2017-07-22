@@ -63,9 +63,13 @@ public:
 	{
 		char commandName[eCommandNameLength];
 		unsigned int scannedNo = sscanf_s(commandLine, "%s", commandName, eCommandNameLength);
+		(void)scannedNo;
 		char* paramsString = (char*)commandLine + strlen(commandName) + 1;
 
 		int id = findCommand(commandName);
+		//OutputDebugStringA("debug\n");
+		//OutputDebugStringA(commandName);
+		//OutputDebugStringA("\ndebug\n");
 		assert(id != -1);
 
 		const char *paramDesc = commandParamDescs[id];

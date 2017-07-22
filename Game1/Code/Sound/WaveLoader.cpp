@@ -34,6 +34,7 @@ void Sound::WaveData::load(const char * filename)
 	assert(isRiff);
 	assert(isWave);
 	assert(isFmt);
+	assert(isData);
 	assert(header.audioFormat == WAVE_FORMAT_PCM);
 	assert(header.bitsPerSample == 16);
 	nChannels = header.numChannels;

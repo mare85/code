@@ -30,7 +30,6 @@ Black::TreeMesh::TreeMesh(const char * name)
 	float widths[nBranches * nSegments];
 	float extraPBendPhase = rnd.getFloat(.0f, 6.283f);
 	
-	unsigned int nAddedSegments = 0;  
 	unsigned int index = 0;
 	for (unsigned int ib = 0; ib < nBranches; ++ib)
 	{
@@ -107,7 +106,7 @@ void Black::TreeMesh::serialize(unsigned char* buffer, unsigned int* outBytes, u
 	char data[220];
 	float x = getTransform()->getTranslation().getX();
 	unsigned int layerId = getLayer();
-	sprintf_s(data, "level.tree %s %1.2f %d\n", getName(), x, getLayer() );
+	sprintf_s(data, "level.tree %s %1.2f %d\n", getName(), x, layerId);
 	if (hasPaarmSet())
 	{
 		getPaarmSet()->serialize(data, 220, this);

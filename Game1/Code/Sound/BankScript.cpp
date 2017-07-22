@@ -4,13 +4,16 @@
 
 void Sound::BankScriptContainer::init(Bank * bnk, Util::StringArray & tokenizedString)
 {
-	assert(bank_ == nullptr );
+	assert(bank_ == nullptr);
 	bank_ = bnk;
 	//count scripts
 	nScripts_ = 0;
 	unsigned int index = 0xffffffff;
 	while ((index = tokenizedString.findNext("script", index)) != 0xffffffff)
+	{
+		//OutputDebugStringA(tokenizedString[index]);
 		++nScripts_;
+	}
 	// count commands
 	nCommands_ = 0;
 	while ((index = tokenizedString.findNext("play", index)) != 0xffffffff)

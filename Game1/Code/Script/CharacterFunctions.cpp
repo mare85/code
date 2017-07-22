@@ -5,6 +5,7 @@
 
 void __Teleport(const Script::Params& p, Game::Scene* scene)
 {
+	(void)scene;
 	Black::Character* c = Black::Character::GetInstance();
 	unsigned int layerId = p.intParam[0];
 	float x = p.floatParam[0];
@@ -13,16 +14,16 @@ void __Teleport(const Script::Params& p, Game::Scene* scene)
 
 void __Visible(const Script::Params& p, Game::Scene* scene)
 {
+	(void)scene;
 	Black::Character* c = Black::Character::GetInstance();
-	unsigned int layerId = p.intParam[0];
 	int val = p.intParam[0];
 	c->setVisible(val != 0);
 }
 
 void __Rundown(const Script::Params& p, Game::Scene* scene)
 {
+	(void)scene;
 	Black::Character* c = Black::Character::GetInstance();
-	unsigned int layerId = p.intParam[0];
 	int val = p.intParam[0];
 	c->setRundown(val != 0);
 }
@@ -30,16 +31,16 @@ void __Rundown(const Script::Params& p, Game::Scene* scene)
 
 void __Speed(const Script::Params& p, Game::Scene* scene)
 {
+	(void)scene;
 	Black::Character* c = Black::Character::GetInstance();
-	unsigned int layerId = p.intParam[0];
 	float val = p.floatParam[0];
 	c->setTargetMaxSpeed( val );
 }
 
 void __SwitchPlaneAllow(const Script::Params& p, Game::Scene* scene)
 {
+	(void)scene;
 	Black::Character* c = Black::Character::GetInstance();
-	unsigned int layerId = p.intParam[0];
 	int val = p.intParam[0];
 	c->setswitchPlaneAllowed(val != 0);
 }

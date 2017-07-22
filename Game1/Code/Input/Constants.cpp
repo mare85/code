@@ -27,8 +27,8 @@ char Input::Key::getChar(Keycode code, bool shift)
 	case Z: c = shift ? 'Z' : 'z'; break;
 	case X: c = shift ? 'X' : 'x'; break;
 	case C: c = shift ? 'C' : 'c'; break;
-	case V: c = shift ? 'V' :' v'; break;
-	case B: c = shift ? 'B' :' b'; break;
+	case V: c = shift ? 'V' : 'v'; break;
+	case B: c = shift ? 'B' : 'b'; break;
 	case N: c = shift ? 'N' : 'n'; break;
 	case M: c = shift ? 'M' : 'm'; break;
 	case NO0: c = shift ? ')' : '0'; break;

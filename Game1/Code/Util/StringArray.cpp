@@ -50,6 +50,9 @@ Util::StringArray::~StringArray()
 
 unsigned int Util::StringArray::findNext(const char * value, unsigned int start)
 {
+	//char otput[250];
+	//wsprintfA(otput, "start %d, nPointers %d\n", start, nPointers_);
+	//OutputDebugString(otput);
 	for (unsigned int i = start + 1; i < nPointers_; ++i)
 	{
 		if (strcmp(pointers_[i], value) == 0)
