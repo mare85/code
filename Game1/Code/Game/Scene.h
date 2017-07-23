@@ -34,18 +34,18 @@ namespace Game
 		
 	public:
 		//Object
-		void loadData(Graphics::GdiContext* gdiContext);
-		void unloadData(Graphics::GdiContext* gdiContext);
+		void loadData(Graphics::GdiContext* gdiContext) override;
+		void unloadData(Graphics::GdiContext* gdiContext) override;
 		void reloadGfx(Graphics::GdiContext* gdiContext, int layerId);
-		void render(Graphics::GdiContext* gdiContext, Graphics::RenderContext* renderContext);
+		void render(Graphics::GdiContext* gdiContext, Graphics::RenderContext* renderContext) override;
 		void renderLayer(Graphics::GdiContext* gdiContext, Graphics::RenderContext* renderContext, int layer);
 		void overwriteObject(unsigned int hash, Object* obj);
 		void removeObjectWithTransform( unsigned int hash );
 
 		//Updater
-		void start();
-		void update(const UpdateContext* uctx);
-		void stop();
+		void start() override;
+		void update(const UpdateContext* uctx) override;
+		void stop() override;
 		void setEnabled(bool val) { enabled_ = val; }
 		Object* findObject(unsigned int hash);
 

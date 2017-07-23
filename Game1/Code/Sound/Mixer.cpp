@@ -112,17 +112,17 @@ Sound::Mixer* __instance = nullptr;
 void Sound::Mixer::_StartUp()
 {
 	buffer_ = System::Instance()->createEmpty(4096U);
-	DWORD threadId = 0;
-	thread_ = CreateThread(NULL, 0, __processCall, this, 0, &threadId);
-	SetThreadPriority(thread_, THREAD_PRIORITY_HIGHEST);
+	thread_ = std::thread(__processCall, this);
+	SetThreadPriority(thread_.native_handle(), THREAD_PRIORITY_HIGHEST);
 }
 
 void Sound::Mixer::_ShutDown()
 {
-	WaitForSingleObject(mutex_, INFINITE);
-	terminate_ = true;
-	ReleaseMutex(mutex_);
-	WaitForSingleObject(thread_, INFINITE);
+	{
+		std::lock_guard<std::mutex> lock(mutex_);
+		terminate_ = true;
+	}
+	thread_.join();
 }
 
 unsigned int Sound::Mixer::_reserveVoice()
@@ -150,7 +150,7 @@ Sound::Mixer::Mixer()
 
 void Sound::Mixer::__process()
 {
-	WaitForSingleObject(mutex_, INFINITE);
+	std::lock_guard<std::mutex> lock(mutex_);
 	unsigned int playPos = (buffer_->position() )>>2; // by four (1- strereo 2 short)
 	
 	unsigned int updateQueueDiff = ( ( playPos - lastUpdatePlayPos_ ) & 4095 );
@@ -170,7 +170,6 @@ void Sound::Mixer::__process()
 	playSector = playSector % 4;
 		if (playSector - capturePosition_ < 2)
 	{
-		ReleaseMutex(mutex_);
 		return;
 	}
 
@@ -211,10 +210,9 @@ void Sound::Mixer::__process()
 	}
 	buffer_->fillPartBuffer(outData, 4096 * capturePosition_, 4096);
 	capturePosition_ = (capturePosition_ + 1 ) & 3;
-	ReleaseMutex(mutex_);
 }
 
-DWORD WINAPI Sound::Mixer::__processCall(void * ptr)
+void Sound::Mixer::__processCall(void * ptr)
 {
 	Mixer* voices = reinterpret_cast<Mixer*>(ptr);
 	voices->buffer_->playLooping();
@@ -222,7 +220,7 @@ DWORD WINAPI Sound::Mixer::__processCall(void * ptr)
 	{ 
 		voices->__process();
 	}
-	return (DWORD)0;
+	//return (DWORD)0;
 }
 
 void Sound::Mixer::StartUp()
@@ -241,14 +239,13 @@ void Sound::Mixer::ShutDown()
 }
 //unsigned int Sound::Mixer::playVoice(const char * bankName, const char * soundName)
 //{
-//	WaitForSingleObject(mutex_, INFINITE);
+//	std::lock_guard<std::mutex> lock(mutex_);
 //	unsigned int voiceIndex = _reserveVoice();
 //	VoiceInput& voice = voice_[ voiceIndex ];
 //	Bank* bnk = BankManager::Instance()->get(bankName);
 //	unsigned int nameIndex = bnk->getNameIndex(soundName);
 //	++soundCyclicCounter_;
 //	voice.load(bnk, nameIndex, soundCyclicCounter_);
-//	ReleaseMutex(mutex_);
 //	return soundCyclicCounter_;
 //}
 
@@ -275,7 +272,7 @@ unsigned int Sound::Mixer::play(const char* bankName, const char* soundName, uns
 void Sound::Mixer::addBankScript(BankScript* script, unsigned int soundId, unsigned short volume, short panning)
 {
 	
-	WaitForSingleObject(mutex_, INFINITE);
+	std::lock_guard<std::mutex> lock(mutex_);
 	Bank* bank = script->bank();
 	for (unsigned int i = 0; i < script->size(); ++i)
 	{
@@ -350,18 +347,17 @@ void Sound::Mixer::addBankScript(BankScript* script, unsigned int soundId, unsig
 		playQueueScriptPanning_[queueIndex] = pan;
 		++queueLength_;
 	}
-	ReleaseMutex(mutex_);
 }
 
 void Sound::Mixer::stopVoice(unsigned int voiceIndex)
 {
-	WaitForSingleObject(mutex_, INFINITE);
+	std::lock_guard<std::mutex> lock(mutex_);
 	if (voice_[voiceIndex].isLoaded() )
 	{
 		voice_[voiceIndex].release();
 		_freeVoice(voiceIndex);
 	}
-	ReleaseMutex(mutex_);
+
 }
 void Sound::Mixer::stop(unsigned int soundId)
 {
@@ -478,7 +474,7 @@ void Sound::Mixer::setPan(unsigned int soundId, short pan)
 
 void Sound::Mixer::stopBank(Bank * bnk)
 {
-	WaitForSingleObject(mutex_, INFINITE);
+	std::lock_guard<std::mutex>lock(mutex_);
 	for (unsigned int i = 0; i < nMaxVoices; ++i)
 	{
 		VoiceInput &voice = voice_[i];
@@ -488,16 +484,14 @@ void Sound::Mixer::stopBank(Bank * bnk)
 			_freeVoice(i);
 		}
 	}
-	ReleaseMutex(mutex_);
 }
 //unsigned int Sound::Mixer::playVoice(Bank * bnk, unsigned int index)
 //{
-//	WaitForSingleObject(mutex_, INFINITE);
+//	std::lock_guard<std::mutex>lock(mutex_);
 //	unsigned int voiceIndex = _reserveVoice();
 //	VoiceInput& voice = voice_[voiceIndex];
 //	++soundCyclicCounter_;
 //	voice.load(bnk, index, soundCyclicCounter_);
-//	ReleaseMutex(mutex_);
 //	return voiceIndex;
 //}
 Sound::Mixer* Sound::Mixer::Instance()

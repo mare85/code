@@ -1,6 +1,8 @@
 #pragma once
 #include <windows.h>
 #include <Util/RandomGenerator.h>
+#include <thread>
+#include <mutex>
 
 namespace Sound
 {
@@ -62,7 +64,7 @@ namespace Sound
 	class Mixer
 	{
 		Util::RandomGenerator gen;
-		HANDLE mutex_;
+		std::mutex mutex_;
 		enum {
 			nMaxVoices  = 64,
 			nQueueLength = 32,
@@ -97,8 +99,8 @@ namespace Sound
 		~Mixer() {}
 		void __process();
 		bool terminate_ = false;
-		HANDLE thread_;
-		static DWORD WINAPI __processCall(void * ptr);
+		std::thread thread_;
+		static void __processCall(void * ptr);
 		void updateQueue(float deltaTime);
 	public:
 		static void StartUp();
