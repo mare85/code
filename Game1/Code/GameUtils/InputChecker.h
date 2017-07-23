@@ -16,9 +16,9 @@ namespace GameUtils
 		Game::Transform* leftStickTransform = nullptr;
 		Game::Transform* rightStickTransform = nullptr;
 
-		void start();
-		void update(const Game::UpdateContext* uctx);
-		void stop();
+		void start() override;
+		void update(const Game::UpdateContext* uctx) override;
+		void stop() override;
 	};
 
 }

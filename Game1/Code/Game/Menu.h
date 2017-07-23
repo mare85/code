@@ -34,9 +34,9 @@ namespace Game
 	public:
 		Menu( Game::Scene* scene, char* scriptName );
 		~Menu();
-		void start();
-		void update(const UpdateContext* uctx);
-		void stop();
+		void start() override;
+		void update(const UpdateContext* uctx) override;
+		void stop() override;
 		void setEnabled(bool val) { enabled_ = val; }
 	};
 

@@ -25,8 +25,8 @@ namespace Black
 		GrassMesh( unsigned int layerId, unsigned int sectorId);
 		~GrassMesh();
 
-		bool hasSerialize() { return true; }
-		void serialize(unsigned char* buffer, unsigned int* outBytes, unsigned int maxBytes);
+		bool hasSerialize() override { return true; }
+		void serialize(unsigned char* buffer, unsigned int* outBytes, unsigned int maxBytes) override;
 		Game::Transform* createAndAddTransform( Game::Scene* scene ) const ;
 
 	};

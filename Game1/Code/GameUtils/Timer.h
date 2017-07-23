@@ -14,9 +14,9 @@ namespace GameUtils
 		Timer( Game::Text* text) : text_ ( text ) {}
 		~Timer() {}
 
-		void start();
-		void update(const Game::UpdateContext* uctx);
-		void stop();
+		void start() override;
+		void update(const Game::UpdateContext* uctx) override;
+		void stop() override;
 
 	};
 

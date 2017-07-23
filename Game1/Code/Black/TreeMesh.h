@@ -14,8 +14,8 @@ namespace Black
 		~TreeMesh();
 
 
-		bool hasSerialize() { return true;}
-		void serialize( unsigned char* buffer, unsigned int* outBytes, unsigned int maxBytes );
+		bool hasSerialize() override { return true;}
+		void serialize( unsigned char* buffer, unsigned int* outBytes, unsigned int maxBytes ) override;
 
 		static void __SetElevationCallback(Game::Object* obj);
 	};

@@ -36,10 +36,10 @@ namespace Black
 		{}
 		~GroundMesh();
 
-		void loadData(Graphics::GdiContext* gdiContext);
-		void unloadData(Graphics::GdiContext* gdiContext);
-		void render(Graphics::GdiContext* gdiContext, Graphics::RenderContext* renderContext);
-		void updateGfx(Graphics::GdiContext* gdiContext);
+		void loadData(Graphics::GdiContext* gdiContext) override;
+		void unloadData(Graphics::GdiContext* gdiContext) override;
+		void render(Graphics::GdiContext* gdiContext, Graphics::RenderContext* renderContext) override;
+		void updateGfx(Graphics::GdiContext* gdiContext) override;
 		void requestUpdate() { forceUpdate_ = true; }
 	};
 

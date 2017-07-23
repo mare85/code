@@ -37,10 +37,10 @@ namespace Game
 		void prepareFont(const char* fontName );
 		void setText(const char* src ) ;
 		void setMaxCharNumber(unsigned int num);
-		void loadData(Graphics::GdiContext* gdiContext);
-		void unloadData(Graphics::GdiContext* gdiContext);
+		void loadData(Graphics::GdiContext* gdiContext) override;
+		void unloadData(Graphics::GdiContext* gdiContext) override;
 		void setColor(const vmath::Vector4& col) { color_ = col; }
-		void render(Graphics::GdiContext* gdiContext, Graphics::RenderContext* renderContext);
+		void render(Graphics::GdiContext* gdiContext, Graphics::RenderContext* renderContext) override;
 		void setBaseScale(const vmath::Vector3& val) { baseScale_ = val; }
 	};
 

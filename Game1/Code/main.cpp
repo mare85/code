@@ -27,6 +27,11 @@ int WINAPI wWinMain(HINSTANCE appInstance, HINSTANCE prevInstane, LPWSTR cmdLine
 	(void)cmdLine;
 	(void)prevInstane;
 	//bool fftCorrect = Util::testFFT8();
+	//if (!fftCorrect)
+	//{
+	//	return -1;
+	//}
+	//(void)fftCorrect;
 	WNDCLASSEX windowDesc = { 0 };
 	windowDesc.cbSize = sizeof(WNDCLASSEX);
 	windowDesc.style = CS_HREDRAW | CS_VREDRAW;

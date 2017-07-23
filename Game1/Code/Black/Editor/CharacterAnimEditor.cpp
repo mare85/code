@@ -110,7 +110,7 @@ void Black::Editor::CharacterAnimEditor::updateKeyInput(const Game::UpdateContex
 	{
 		if (uctx->input->getKeyDown(static_cast<unsigned char>(i)))
 		{
-			c = Input::Key::getChar((Input::Key::Keycode)i, isShift);
+			c = Input::getKeyChar((Input::Key)i, isShift);
 		}
 	}
 	unsigned int len = (unsigned int)strlen(keyInput_);

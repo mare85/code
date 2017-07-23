@@ -18,12 +18,12 @@ namespace Black
 		Event(const char* name);
 		~Event() {}
 		const char* getScript() { return scriptPath; }
-		void loadData(Graphics::GdiContext* gdiContext);
-		void unloadData(Graphics::GdiContext* gdiContext);
-		void render(Graphics::GdiContext* gdiContext, Graphics::RenderContext* renderContext);
-		void serialize(unsigned char* buffer, unsigned int* outBytes, unsigned int maxBytes);
-		bool hasSerialize() { return true; }
-		bool isSelectable() { return true; }
+		void loadData(Graphics::GdiContext* gdiContext) override;
+		void unloadData(Graphics::GdiContext* gdiContext) override;
+		void render(Graphics::GdiContext* gdiContext, Graphics::RenderContext* renderContext) override;
+		void serialize(unsigned char* buffer, unsigned int* outBytes, unsigned int maxBytes) override;
+		bool hasSerialize() override { return true; }
+		bool isSelectable() override { return true; }
 		void getBounds(float* minVal, float* maxVal);
 		bool isEnabled() { return enabled_; }
 		void enable() { enabled_ = true; }

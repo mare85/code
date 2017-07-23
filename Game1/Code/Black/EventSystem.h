@@ -44,9 +44,9 @@ namespace Black
 		void addEvent(Event* evt);
 		void removeEvent(Event* evt);
 		void feedPosition(const vmath::Vector3 &pos, unsigned int layerId, unsigned int levelId);
-		void start() {};
-		void update(const Game::UpdateContext* uctx);
-		void stop() {};
+		void start() override {};
+		void update(const Game::UpdateContext* uctx) override;
+		void stop() override {};
 		bool isInEvent(Event* evt);
 	};
 

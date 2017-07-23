@@ -7,11 +7,11 @@ namespace Game
 namespace Game
 {
 	typedef void(*ParamChangeCallback)(Game::Object* obj);
-	enum ParamType
+	enum class ParamType
 	{
-		eFloatParam,
-		eStringParam,
-		eIntParam,
+		Float,
+		String,
+		Int,
 	};
 
 	class ParamSet
@@ -47,13 +47,13 @@ namespace Game
 		unsigned int getIdByname(const char* name);
 		unsigned int registerParam(ParamType type, const char* name, void*paramPtr, ParamChangeCallback changeCallback);
 		unsigned int registerFloat(const char* name, void*paramPtr, ParamChangeCallback changeCallback) {
-			return registerParam(eFloatParam, name, paramPtr, changeCallback);
+			return registerParam(ParamType::Float, name, paramPtr, changeCallback);
 		}
 		unsigned int registerString(const char* name, void*paramPtr, ParamChangeCallback changeCallback) {
-			return registerParam(eStringParam, name, paramPtr, changeCallback);
+			return registerParam(ParamType::String, name, paramPtr, changeCallback);
 		}
 		unsigned int registerInt(const char* name, void*paramPtr, ParamChangeCallback changeCallback) {
-			return registerParam(eIntParam, name, paramPtr, changeCallback);
+			return registerParam(ParamType::Int, name, paramPtr, changeCallback);
 		}
 		void serialize(char* outString, unsigned int stringMaxLen, Game::Object* obj);
 

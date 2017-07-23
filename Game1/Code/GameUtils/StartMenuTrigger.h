@@ -12,9 +12,9 @@ namespace GameUtils
 	public:
 		StartMenuTrigger();
 		~StartMenuTrigger();
-		void start();
-		void update(const Game::UpdateContext* uctx);
-		void stop();
+		void start() override;
+		void update(const Game::UpdateContext* uctx) override;
+		void stop() override;
 	};
 
 }

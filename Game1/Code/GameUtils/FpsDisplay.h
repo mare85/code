@@ -14,9 +14,9 @@ namespace GameUtils
 		FpsDisplay(Game::Text* text) : text_(text) {}
 		~FpsDisplay() {}
 
-		void start();
-		void update(const Game::UpdateContext* uctx);
-		void stop();
+		void start() override;
+		void update(const Game::UpdateContext* uctx) override;
+		void stop() override;
 
 	};
 

@@ -20,17 +20,18 @@ namespace Black
 			enum {
 				maxSelection = 30
 			};
+			enum class ObjectType {
+				None,
+				Tree,
+				Grass,
+				Sprite,
+				Event
+			};
 			struct _CopyPaste
 			{
 				//Game::ParamSet* ps_;
-				enum ObjectType{
-					eNone,
-					eTree,
-					eGrass,
-					eSprite,
-					eEvent
-				};
-				ObjectType ty_ = eNone;
+
+				ObjectType ty_ = ObjectType::None;
 				char stringParam_[250];
 				unsigned char bufferValues_[4096];
 			} copyPaste_;
@@ -79,10 +80,10 @@ namespace Black
 		public:
 			Editor(Game::Scene* scene);
 			~Editor();
-			void start();
-			void update(const Game::UpdateContext* uctx);
+			void start() override;
+			void update(const Game::UpdateContext* uctx) override;
 			void updateKeyInput(const Game::UpdateContext* uctx);
-			void stop();
+			void stop() override;
 
 			static void SetPosition(vmath::Vector3 pos);
 			static void SetLayerID(int val);

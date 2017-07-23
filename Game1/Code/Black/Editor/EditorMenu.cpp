@@ -105,9 +105,9 @@ void Black::Editor::EditorMenu::update(const Game::UpdateContext * uctx)
 			for (unsigned int i = 0; i < ps->getNParams(); ++i)
 			{
 				char content[250];
-				if (ps->getType(i) == Game::eFloatParam)
+				if (ps->getType(i) == Game::ParamType::Float)
 					sprintf_s(content, "%s : %1.2f", ps->getParamName(i), ps->getFloat(i));
-				else if (ps->getType(i) == Game::eIntParam)
+				else if (ps->getType(i) == Game::ParamType::Int)
 					sprintf_s(content, "%s : %d", ps->getParamName(i), ps->getInt(i));
 				else
 					sprintf_s(content, "%s : %s", ps->getParamName(i), ps->getString(i));
@@ -127,14 +127,14 @@ void Black::Editor::EditorMenu::update(const Game::UpdateContext * uctx)
 		}
 		if (input.left)
 		{
-			if (ps->getType(curMenuItem_) == Game::eFloatParam)
+			if (ps->getType(curMenuItem_) == Game::ParamType::Float)
 			{
 				ps->setFloat(curMenuItem_, ps->getFloat(curMenuItem_) - .05f, Editor::GetSelected() );
 				char content[250];
 				sprintf_s(content, "%s : %1.2f", ps->getParamName(curMenuItem_), ps->getFloat(curMenuItem_));
 				label_[curMenuItem_]->setText(content);
 			}
-			if (ps->getType(curMenuItem_) == Game::eIntParam)
+			if (ps->getType(curMenuItem_) == Game::ParamType::Int)
 			{
 				ps->setInt(curMenuItem_, ps->getInt(curMenuItem_) - 1, Editor::GetSelected());
 				char content[250];
@@ -144,14 +144,14 @@ void Black::Editor::EditorMenu::update(const Game::UpdateContext * uctx)
 		}
 		if (input.right)
 		{
-			if (ps->getType(curMenuItem_) == Game::eFloatParam)
+			if (ps->getType(curMenuItem_) == Game::ParamType::Float)
 			{
 				ps->setFloat(curMenuItem_, ps->getFloat(curMenuItem_) + .05f, Editor::GetSelected());
 				char content[250];
 				sprintf_s(content, "%s : %1.2f", ps->getParamName(curMenuItem_), ps->getFloat(curMenuItem_));
 				label_[curMenuItem_]->setText(content);
 			}
-			if (ps->getType(curMenuItem_) == Game::eIntParam)
+			if (ps->getType(curMenuItem_) == Game::ParamType::Int)
 			{
 				ps->setInt(curMenuItem_, ps->getInt(curMenuItem_) + 1, Editor::GetSelected());
 				char content[250];
@@ -179,7 +179,7 @@ void Black::Editor::EditorMenu::update(const Game::UpdateContext * uctx)
 				return;
 			}
 		}
-		else if (chosen_ != 0xffffffff && ps->getType(curMenuItem_) == Game::eStringParam)
+		else if (chosen_ != 0xffffffff && ps->getType(curMenuItem_) == Game::ParamType::String)
 		{
 			thisNode_->keyboardMode_ = true;
 			strcpy_s(thisNode_->keyInput_, ps->getString(curMenuItem_));

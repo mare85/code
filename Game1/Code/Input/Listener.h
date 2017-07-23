@@ -36,8 +36,12 @@ namespace Input
 		~Listener();
 
 		bool isKeyPressed(unsigned char id)  const { return (keyboardKeys_[id] & 0x80) != 0; }
+		bool isKeyPressed(Key c)  const { return isKeyPressed(static_cast<unsigned char>(c)); }
+
 		bool getKeyDown(unsigned char id)    const { return (keyboardKeys_[id] & 0x80) != 0 && (prevKeyboardKeys_[id] & 0x80) == 0; }
+		bool getKeyDown(Key c)  const { return getKeyDown(static_cast<unsigned char>(c)); }
 		bool getKeyUp(unsigned char id)      const { return (keyboardKeys_[id] & 0x80) == 0 && (prevKeyboardKeys_[id] & 0x80) != 0; }
+		bool getKeyUp(Key c)  const { return getKeyUp(static_cast<unsigned char>(c)); }
 		
 		bool isMousePressed(unsigned char id)  const { return mouseButtons_[id] != 0; }
 		bool getMouseDown(unsigned char id)    const { return mouseButtons_[id] != 0 && prevMouseButtons_[id] == 0; }

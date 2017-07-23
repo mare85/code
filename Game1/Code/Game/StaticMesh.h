@@ -27,9 +27,9 @@ namespace Game
 				delete[] data_;
 			}
 		}
-		void loadData(Graphics::GdiContext* gdiContext);
-		void unloadData(Graphics::GdiContext* gdiContext);
-		void render(Graphics::GdiContext* gdiContext, Graphics::RenderContext* renderContext);
+		void loadData(Graphics::GdiContext* gdiContext) override;
+		void unloadData(Graphics::GdiContext* gdiContext) override;
+		void render(Graphics::GdiContext* gdiContext, Graphics::RenderContext* renderContext) override;
 		void* allocateData(unsigned int vertCount, Graphics::VertexDesc* vdesc);
 		void setShader(const char* shaderName, const char* shaderCachename = nullptr);
 		void setBounds( float minv, float maxv ) { minx_ = minv; maxx_ = maxv; }

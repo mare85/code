@@ -38,9 +38,9 @@ namespace Black
 	public:
 		BirdsManager(unsigned int maxBoidCount, Game::Scene* scene);
 		~BirdsManager();
-		void start();
-		void update(const Game::UpdateContext* uctx);
-		void stop();
+		void start() override;
+		void update(const Game::UpdateContext* uctx) override;
+		void stop() override;
 		void burst( float maxRate, float time );
 		static BirdsManager* Instance();
 		static void Release();

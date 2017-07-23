@@ -108,10 +108,10 @@ namespace Black
 		Character(Game::Scene* scene, const char* name);
 		~Character() {};
 
-		void start();
-		void update(const Game::UpdateContext* uctx);
-		
-		void stop();
+		void start() override;
+		void update(const Game::UpdateContext* uctx) override;
+		void stop() override;
+
 		static Character* GetInstance();
 		void teleport(unsigned int layerId, float x);
 		void setVisible(bool val);

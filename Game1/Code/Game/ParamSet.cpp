@@ -20,7 +20,7 @@ void Game::ParamSet::initNames()
 
 void Game::ParamSet::setFloat(unsigned int id, float val, Game::Object* obj)
 {
-	assert(type_[id] == eFloatParam && id < nParams_);
+	assert(type_[id] == ParamType::Float && id < nParams_);
 	float *target = reinterpret_cast<float*>(paramPointer_[id]);
 	*target = val;
 	if (changeCallbacks_[id] )
@@ -31,7 +31,7 @@ void Game::ParamSet::setFloat(unsigned int id, float val, Game::Object* obj)
 
 void Game::ParamSet::setString(unsigned int id, const char * val, Game::Object* obj)
 {
-	assert(type_[id] == eStringParam && id < nParams_);
+	assert(type_[id] == ParamType::String && id < nParams_);
 	char *target = reinterpret_cast<char*>(paramPointer_[id]);
 	strcpy_s(target, nNameMaxLen, val);
 	if (changeCallbacks_[id])
@@ -42,7 +42,7 @@ void Game::ParamSet::setString(unsigned int id, const char * val, Game::Object* 
 
 void Game::ParamSet::setInt(unsigned int id, int val, Game::Object * obj)
 {
-	assert(type_[id] == eIntParam && id < nParams_);
+	assert(type_[id] == ParamType::Int && id < nParams_);
 	int *target = reinterpret_cast<int*>(paramPointer_[id]);
 	*target = val;
 	if (changeCallbacks_[id])
@@ -53,21 +53,21 @@ void Game::ParamSet::setInt(unsigned int id, int val, Game::Object * obj)
 
 float Game::ParamSet::getFloat(unsigned int id)
 {
-	assert(type_[id] == eFloatParam && id < nParams_);
+	assert(type_[id] == ParamType::Float && id < nParams_);
 	float *source = reinterpret_cast<float*>(paramPointer_[id]);
 	return *source;
 }
 
 const char * Game::ParamSet::getString(unsigned int id)
 {
-	assert(type_[id] == eStringParam && id < nParams_);
+	assert(type_[id] == ParamType::String && id < nParams_);
 	const char *source= reinterpret_cast<const char*>(paramPointer_[id]);
 	return source;
 }
 
 int Game::ParamSet::getInt(unsigned int id)
 {
-	assert(type_[id] == eIntParam && id < nParams_);
+	assert(type_[id] == ParamType::Int && id < nParams_);
 	int *source = reinterpret_cast<int*>(paramPointer_[id]);
 	return *source;
 }
@@ -100,12 +100,12 @@ void Game::ParamSet::serialize(char * outString, unsigned int stringMaxLen, Game
 	for (unsigned int i = 0; i < getNParams(); ++i)
 	{
 		Game::ParamType pt = getType(i);
-		if (pt == eFloatParam)
+		if (pt == ParamType::Float)
 		{
 			sprintf_s(bufferOut, stringMaxLen - strlen(outString), "level.setfloat %d %s %3.2f\n",
 				obj->getHashName(), getParamName(i), getFloat(i));
 		}
-		else if (pt == eIntParam)
+		else if (pt == ParamType::Int)
 		{
 			sprintf_s(bufferOut, stringMaxLen - strlen(outString), "level.setint %d %s %d\n",
 				obj->getHashName(), getParamName(i), getInt(i));
@@ -135,7 +135,7 @@ void Game::ParamSet::copyValuesFrom(unsigned char* valueBuffer, Game::Object* ca
 	{
 		switch( type_[i] )
 		{
-			case eFloatParam:
+		case ParamType::Float:
 			{
 				float* fVal = reinterpret_cast<float* >( valuePtr );
 				setFloat( i, *fVal,callbackObject );
@@ -143,14 +143,14 @@ void Game::ParamSet::copyValuesFrom(unsigned char* valueBuffer, Game::Object* ca
 				break;
 				
 			}
-			case eIntParam:
+		case ParamType::Int:
 			{
 				int* iVal = reinterpret_cast<int* >( valuePtr );
 				setInt( i, *iVal,callbackObject );
 				valuePtr += sizeof(int);
 				break;
 			}
-			case eStringParam:
+			case ParamType::String:
 				const char* sVal = reinterpret_cast<const char* >( valuePtr );
 				setString( i, sVal, nullptr );
 				valuePtr += strlen( sVal ) + 1;
@@ -168,7 +168,7 @@ void Game::ParamSet::copyTo(unsigned char* valueBuffer, unsigned int outSize)
 	{
 		switch( type_[i] )
 		{
-			case eFloatParam:
+		case ParamType::Float:
 			{
 				writtenSize += sizeof( float );
 				assert( writtenSize <= outSize );
@@ -177,7 +177,7 @@ void Game::ParamSet::copyTo(unsigned char* valueBuffer, unsigned int outSize)
 				valuePtr += sizeof( float );
 				break;
 			}
-			case eIntParam:
+			case ParamType::Int:
 			{
 				writtenSize += sizeof( int );
 				assert( writtenSize <= outSize );
@@ -186,7 +186,7 @@ void Game::ParamSet::copyTo(unsigned char* valueBuffer, unsigned int outSize)
 				valuePtr += sizeof( int );
 				break;
 			}	
-			case eStringParam:
+			case ParamType::String:
 			{
 				const char* str = getString(i);
 				writtenSize += static_cast<unsigned int>( strlen( str ) + 1 );

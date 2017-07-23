@@ -12,9 +12,9 @@ namespace Black
 	{
 		
 	public:
-		void loadData(Graphics::GdiContext* gdiContext);
-		void unloadData(Graphics::GdiContext* gdiContext);
-		void render(Graphics::GdiContext* gdiContext, Graphics::RenderContext* renderContext);
+		void loadData(Graphics::GdiContext* gdiContext) override;
+		void unloadData(Graphics::GdiContext* gdiContext) override;
+		void render(Graphics::GdiContext* gdiContext, Graphics::RenderContext* renderContext) override;
 		bool hasSerialize() { return true; }
 		void serialize(unsigned char* buffer, unsigned int* outBytes, unsigned int maxBytes );
 		const char* getFilename() {return filename_; }

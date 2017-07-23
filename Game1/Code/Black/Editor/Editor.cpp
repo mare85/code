@@ -175,23 +175,23 @@ void Black::Editor::Editor::update(const Game::UpdateContext* uctx)
 				Game::Object* obj = scene_->findObject(hash);
 				if( dynamic_cast<TreeMesh*>(obj) )
 				{
-					copyPaste_.ty_ = _CopyPaste::eTree;
+					copyPaste_.ty_ = ObjectType::Tree;
 					obj->getPaarmSet()->copyTo( copyPaste_.bufferValues_, 4096);
 				}
 				else if( dynamic_cast<GrassMesh*>(obj) )
 				{
-					copyPaste_.ty_ = _CopyPaste::eGrass;
+					copyPaste_.ty_ = ObjectType::Grass;
 					obj->getPaarmSet()->copyTo( copyPaste_.bufferValues_, 4096);
 				}
 				else if( dynamic_cast<BlackSprite*>(obj) )
 				{
-					copyPaste_.ty_ = _CopyPaste::eSprite;
+					copyPaste_.ty_ = ObjectType::Sprite;
 					obj->getPaarmSet()->copyTo( copyPaste_.bufferValues_, 4096);
 					strcpy_s( copyPaste_.stringParam_, ( static_cast<BlackSprite*>(obj) )->getFilename() );
 				}
 				else if( dynamic_cast<Event*>(obj) )
 				{
-					copyPaste_.ty_ = _CopyPaste::eEvent;
+					copyPaste_.ty_ = ObjectType::Event;
 					obj->getPaarmSet()->copyTo( copyPaste_.bufferValues_, 4096);
 				}
 
@@ -202,26 +202,26 @@ void Black::Editor::Editor::update(const Game::UpdateContext* uctx)
 		{
 			switch( copyPaste_.ty_ )
 			{
-				case _CopyPaste::eTree :
+				case ObjectType::Tree :
 				{
 					Game::Object* tree = add::tree();
 					tree->getPaarmSet()->copyValuesFrom(copyPaste_.bufferValues_, tree);
 					
 					break;
 				}
-				case _CopyPaste::eGrass :
+				case ObjectType::Grass :
 				{
 					Game::Object* grass = add::grass();
 					grass->getPaarmSet()->copyValuesFrom(copyPaste_.bufferValues_, grass);
 					break;
 				}
-				case _CopyPaste::eEvent :
+				case ObjectType::Event :
 				{
 					Game::Object* event = add::event();
 					event->getPaarmSet()->copyValuesFrom(copyPaste_.bufferValues_, event);
 					break;
 				}
-				case _CopyPaste::eSprite :
+				case ObjectType::Sprite :
 				{
 					Game::Object* sprite = add::sprite( copyPaste_.stringParam_ );
 					sprite->getPaarmSet()->copyValuesFrom(copyPaste_.bufferValues_, sprite);
@@ -245,7 +245,7 @@ void Black::Editor::Editor::updateKeyInput(const Game::UpdateContext* uctx)
 	{
 		if (uctx->input->getKeyDown(static_cast<unsigned char>(i)))
 		{
-			c = Input::Key::getChar((Input::Key::Keycode)i, isShift);
+			c = Input::getKeyChar((Input::Key)i, isShift);
 		}
 	}
 	unsigned int len = (unsigned int) strlen(keyInput_);
