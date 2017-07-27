@@ -7,6 +7,7 @@
 #include <Graphics/VertexTypes.h>
 #include <Graphics/Texture.h>
 #include <Graphics/Shader.h>
+#include <initializer_list>
 
 //int (WINAPIV * __vsnprintf)(char *, size_t, const char*, va_list) = _vsnprintf;
 
@@ -123,7 +124,7 @@ namespace Graphics {
 		void bindAsTexture(RenderTarget* rt, unsigned int slot);
 		void unbindTextureSlot( unsigned int slot);
 		void drawTriangles(Buffer* buffer, unsigned int vertCount);
-		void drawTriangles(Buffer* buffer0, Buffer* buffer1, unsigned int stride0, unsigned int stride1, unsigned int vertCount);
+		void drawTriangles(std::initializer_list<Buffer*>buffers, unsigned int vertCount);
 		void setClearColor(float r, float g, float b, float a = 1.0f)
 		{
 			clearColor[0] = r;

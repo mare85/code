@@ -140,19 +140,19 @@ namespace Graphics
 						nBuffers_, stride, D3D11_INPUT_PER_VERTEX_DATA, 0 };
 					stride += 16; ++nrmCounter;
 					break;
-				case Semantic::TexCoord2:
+				case Semantic::Uv2:
 					*layoutPtr = { 
 						"TEXCOORD", texCounter, DXGI_FORMAT_R32G32_FLOAT,
 						nBuffers_, stride, D3D11_INPUT_PER_VERTEX_DATA, 0 };
 					stride += 8; ++texCounter;
 					break;
-				case Semantic::TexCoord3:
+				case Semantic::Uv3:
 					*layoutPtr = { 
 						"TEXCOORD", texCounter, DXGI_FORMAT_R32G32B32_FLOAT,
 						nBuffers_, stride, D3D11_INPUT_PER_VERTEX_DATA, 0 };
 					stride += 12; ++texCounter;
 					break;
-				case Semantic::TexCoord4:
+				case Semantic::Uv4:
 					*layoutPtr = { 
 						"TEXCOORD", texCounter, DXGI_FORMAT_R32G32B32A32_FLOAT,
 						nBuffers_, stride, D3D11_INPUT_PER_VERTEX_DATA, 0 };

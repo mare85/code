@@ -21,7 +21,7 @@ namespace Graphics
 		Pos3, Pos4,
 		Nrm3, Nrm4,
 		Col3, Col4,
-		TexCoord2, TexCoord3, TexCoord4
+		Uv2, Uv3, Uv4
 	};
 
 	typedef std::initializer_list<Semantic> SemanticList;

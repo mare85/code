@@ -45,7 +45,8 @@ namespace MusicRoom
 		Graphics::Texture* texture_ = nullptr;
 
 		Graphics::Shader* shFloor_ = nullptr;
-		Graphics::Buffer* vBuffFloor_ = nullptr;
+		Graphics::Buffer* vBuffFloorPos_ = nullptr;
+		Graphics::Buffer* vBuffFloorUv_ = nullptr;
 		Graphics::Texture* textureFloor_ = nullptr;
 	};
 

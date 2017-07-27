@@ -979,13 +979,15 @@ void Graphics::GdiContext::drawTriangles(Buffer * buffer, unsigned int vertCount
 	d3dContext_->Draw(vertCount, 0);
 }
 
-
-
-void Graphics::GdiContext::drawTriangles(Buffer* buffer0, Buffer* buffer1, unsigned int stride0, unsigned int stride1, unsigned int vertCount)
+void Graphics::GdiContext::drawTriangles(std::initializer_list<Buffer*> buffers, unsigned int vertCount)
 {
+	unsigned int i = 0;
 	unsigned int offset = 0;
-	d3dContext_->IASetVertexBuffers(0, 1, &buffer0, &stride0, &offset);
-	d3dContext_->IASetVertexBuffers(1, 1, &buffer1, &stride1, &offset);
+	for (Buffer* buffer : buffers)
+	{
+		d3dContext_->IASetVertexBuffers(i, 1, &buffer, strides_ + i, &offset);
+		++i;
+	}
 	d3dContext_->Draw(vertCount, 0);
 }
 

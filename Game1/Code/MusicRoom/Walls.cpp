@@ -16,11 +16,12 @@ float __lightness[16 * 8];
 void MusicRoom::Walls::loadData(Graphics::GdiContext* gdiContext)
 {
 	Sound::loadBank("aminharmonic.bnk");
-	Graphics::VertexDescDeprecated vDescPos = Graphics::VertexDescDeprecated::get(Graphics::POS3COL3UV2);
+	typedef Graphics::Semantic S;
+	Graphics::VertexDesc vDescPos = { {S::Pos3, S::Col3, S::Uv2} };// Graphics::VertexDescDeprecated::get(Graphics::POS3COL3UV2);
 	sh_ = gdiContext->createShader("assets/Shaders/Walls.fx", &vDescPos, "Walls");
 
 
-	Graphics::VertexDescDeprecated vDescFloor = Graphics::VertexDescDeprecated::get(Graphics::POS4UV4);
+	Graphics::VertexDesc vDescFloor = { {S::Pos4}, {S::Uv4 } };
 	shFloor_ = gdiContext->createShader("assets/Shaders/Floor.fx", &vDescFloor, "Floor");
 	Graphics::TextureDesc textureDesc;
 	textureDesc.filter_ = Graphics::TextureDesc::eLinear;
@@ -36,22 +37,30 @@ void MusicRoom::Walls::loadData(Graphics::GdiContext* gdiContext)
 
 	float roomSizeHalf = 256.0f;
 	float corridorWidthHalf = 2.0f;
-	//const unsigned int vcount = 256 * 4 * 2 * 6;
 	unsigned int bufferSize = 256 * 4 * 2 * 6 * sizeof(Graphics::VertexP4UV4);
-	//vmath::Vector4 points[ vcount * 2];
 	
 	vBuff_ = gdiContext->createBuffer(nullptr, bufferSize, Graphics::BufferType::DynamicVertex);
-	unsigned int bufferSizeFloor = sizeof(Graphics::VertexP4UV4) * 6;
-	Graphics::VertexP4UV4 pointsFloor[] = {
-		{ vmath::Vector4(-roomSizeHalf, .0f,  corridorWidthHalf, 1.0f), vmath::Vector4(128.0f, 0.0f, .0f, .0f) },
-		{ vmath::Vector4(-roomSizeHalf, .0f, -corridorWidthHalf, 1.0f), vmath::Vector4(128.0f, 1.0f, .0f, .0f) },
-		{ vmath::Vector4( roomSizeHalf, .0f, -corridorWidthHalf, 1.0f), vmath::Vector4(0.0f, 1.0f, .0f, .0f) },
-		{ vmath::Vector4(-roomSizeHalf, .0f,  corridorWidthHalf, 1.0f), vmath::Vector4(128.0f, 0.0f, .0f, .0f) },
-		{ vmath::Vector4( roomSizeHalf, .0f, -corridorWidthHalf, 1.0f), vmath::Vector4(0.0f, 1.0f, .0f, .0f) },
-		{ vmath::Vector4( roomSizeHalf, .0f,  corridorWidthHalf, 1.0f), vmath::Vector4(0.0f, 0.0f, .0f, .0f) }
+	unsigned int bufferSizeFloorPos = sizeof(vmath::Vector4) * 6;
+	vmath::Vector4 pointsFloorPos[] = {
+		vmath::Vector4(-roomSizeHalf, .0f,  corridorWidthHalf, 1.0f), 
+		vmath::Vector4(-roomSizeHalf, .0f, -corridorWidthHalf, 1.0f), 
+		vmath::Vector4( roomSizeHalf, .0f, -corridorWidthHalf, 1.0f), 
+		vmath::Vector4(-roomSizeHalf, .0f,  corridorWidthHalf, 1.0f), 
+		vmath::Vector4( roomSizeHalf, .0f, -corridorWidthHalf, 1.0f), 
+		vmath::Vector4( roomSizeHalf, .0f,  corridorWidthHalf, 1.0f), 
+	};
+	unsigned int bufferSizeFloorUv = sizeof(vmath::Vector4) * 6;
+	vmath::Vector4 pointsFloorUv[] = {
+		vmath::Vector4(128.0f, 0.0f, .0f, .0f),
+		vmath::Vector4(128.0f, 1.0f, .0f, .0f),
+		vmath::Vector4(0.0f, 1.0f, .0f, .0f),
+		vmath::Vector4(128.0f, 0.0f, .0f, .0f),
+		vmath::Vector4(0.0f, 1.0f, .0f, .0f),
+		vmath::Vector4(0.0f, 0.0f, .0f, .0f)
 	};
 	
-	vBuffFloor_ = gdiContext->createBuffer(pointsFloor, bufferSizeFloor, Graphics::BufferType::Vertex);
+	vBuffFloorPos_ = gdiContext->createBuffer(pointsFloorPos, bufferSizeFloorPos, Graphics::BufferType::Vertex);
+	vBuffFloorUv_ = gdiContext->createBuffer(pointsFloorUv, bufferSizeFloorUv, Graphics::BufferType::Vertex);
 
 	cBuff_ = gdiContext->createBuffer(nullptr, sizeof(Graphics::ConstantBufferData), Graphics::BufferType::Constant);
 
@@ -113,7 +122,8 @@ void MusicRoom::Walls::unloadData(Graphics::GdiContext* gdiContext)
 
 	gdiContext->releaseTexture(textureFloor_);
 	gdiContext->releaseShader(shFloor_);
-	gdiContext->releaseBuffer(vBuffFloor_);
+	gdiContext->releaseBuffer(vBuffFloorPos_);
+	gdiContext->releaseBuffer(vBuffFloorUv_);
 	Sound::unloadBank("aminharmonic.bnk");
 }
 
@@ -128,7 +138,7 @@ void MusicRoom::Walls::render(Graphics::GdiContext* gdiContext, Graphics::Render
 	cbData.world_ = getTransform()->getWorldPose();
 	gdiContext->updateBuffer(cBuff_, &cbData);
 	gdiContext->setConstantBuffer(cBuff_);
-	gdiContext->drawTriangles(vBuffFloor_, 6);
+	gdiContext->drawTriangles({ vBuffFloorPos_, vBuffFloorUv_ }, 6);
 
 	gdiContext->bindShader(sh_);
 	gdiContext->drawTriangles( vBuff_, 256 * 4 * 12);
