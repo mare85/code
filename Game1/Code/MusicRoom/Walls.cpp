@@ -40,7 +40,7 @@ void MusicRoom::Walls::loadData(Graphics::GdiContext* gdiContext)
 	unsigned int bufferSize = 256 * 4 * 2 * 6 * sizeof(Graphics::VertexP4UV4);
 	//vmath::Vector4 points[ vcount * 2];
 	
-	vBuff_ = gdiContext->createBuffer(nullptr, bufferSize, Graphics::eDynamicWriteVertexBuffer);
+	vBuff_ = gdiContext->createBuffer(nullptr, bufferSize, Graphics::BufferType::DynamicVertex);
 	unsigned int bufferSizeFloor = sizeof(Graphics::VertexP4UV4) * 6;
 	Graphics::VertexP4UV4 pointsFloor[] = {
 		{ vmath::Vector4(-roomSizeHalf, .0f,  corridorWidthHalf, 1.0f), vmath::Vector4(128.0f, 0.0f, .0f, .0f) },
@@ -51,9 +51,9 @@ void MusicRoom::Walls::loadData(Graphics::GdiContext* gdiContext)
 		{ vmath::Vector4( roomSizeHalf, .0f,  corridorWidthHalf, 1.0f), vmath::Vector4(0.0f, 0.0f, .0f, .0f) }
 	};
 	
-	vBuffFloor_ = gdiContext->createBuffer(pointsFloor, bufferSizeFloor, Graphics::eDefaultVertexBuffer);
+	vBuffFloor_ = gdiContext->createBuffer(pointsFloor, bufferSizeFloor, Graphics::BufferType::Vertex);
 
-	cBuff_ = gdiContext->createBuffer(nullptr, sizeof(Graphics::ConstantBufferData), Graphics::eDefaultConstantBuffer);
+	cBuff_ = gdiContext->createBuffer(nullptr, sizeof(Graphics::ConstantBufferData), Graphics::BufferType::Constant);
 
 }
 

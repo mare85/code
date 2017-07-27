@@ -9,9 +9,9 @@ void Black::UpdatealbeMesh::loadData(Graphics::GdiContext * gdiContext)
 {
 	Graphics::VertexDesc vDescPos = Graphics::VertexDesc::get(Graphics::POS4);
 	sh_ = gdiContext->createShader("assets/Shaders/Black.fx", &vDescPos, "Black");
-	vBuff_[0]= gdiContext->createBuffer(nullptr, sizeof( vmath::Vector4 ) * vertCount_, Graphics::eDynamicWriteVertexBuffer);
-	vBuff_[1] = gdiContext->createBuffer(nullptr, sizeof(vmath::Vector4) * vertCount_, Graphics::eDynamicWriteVertexBuffer);
-	cBuff_ = gdiContext->createBuffer(nullptr, sizeof(Graphics::ConstantBufferData), Graphics::eDefaultConstantBuffer);
+	vBuff_[0]= gdiContext->createBuffer(nullptr, sizeof( vmath::Vector4 ) * vertCount_, Graphics::BufferType::DynamicVertex);
+	vBuff_[1] = gdiContext->createBuffer(nullptr, sizeof(vmath::Vector4) * vertCount_, Graphics::BufferType::DynamicVertex);
+	cBuff_ = gdiContext->createBuffer(nullptr, sizeof(Graphics::ConstantBufferData), Graphics::BufferType::Constant);
 }
 
 void Black::UpdatealbeMesh::unloadData(Graphics::GdiContext * gdiContext)

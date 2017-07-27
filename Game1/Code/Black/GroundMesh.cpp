@@ -14,8 +14,8 @@ void Black::GroundMesh::loadData(Graphics::GdiContext * gdiContext)
 	vmath::Vector4 positions[nSteps * eNSteps * 2];
 	_FillBuffer(positions);
 
-	vBuff_ = gdiContext->createBuffer(positions, sizeof(vmath::Vector4) * vertCount_, Graphics::eDynamicWriteVertexBuffer);
-	cBuff_ = gdiContext->createBuffer(nullptr, sizeof(Graphics::ConstantBufferData), Graphics::eDefaultConstantBuffer);
+	vBuff_ = gdiContext->createBuffer(positions, sizeof(vmath::Vector4) * vertCount_, Graphics::BufferType::DynamicVertex);
+	cBuff_ = gdiContext->createBuffer(nullptr, sizeof(Graphics::ConstantBufferData), Graphics::BufferType::Constant);
 }
 
 void Black::GroundMesh::unloadData(Graphics::GdiContext * gdiContext)

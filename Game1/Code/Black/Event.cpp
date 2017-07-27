@@ -31,8 +31,8 @@ void Black::Event::loadData(Graphics::GdiContext * gdiContext)
 		vmath::Vector4(-hw,  hh, .0f, 1.0f),
 		vmath::Vector4(hw,  hh, .0f, 1.0f),
 	};
-	vBuff_ = gdiContext->createBuffer(positions, 6 * sizeof(vmath::Vector4), Graphics::eDefaultVertexBuffer);
-	cBuff_ = gdiContext->createBuffer(nullptr, sizeof(Graphics::ConstantBufferData), Graphics::eDefaultConstantBuffer);
+	vBuff_ = gdiContext->createBuffer(positions, 6 * sizeof(vmath::Vector4), Graphics::BufferType::Vertex);
+	cBuff_ = gdiContext->createBuffer(nullptr, sizeof(Graphics::ConstantBufferData), Graphics::BufferType::Constant);
 }
 
 void Black::Event::unloadData(Graphics::GdiContext * gdiContext)

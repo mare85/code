@@ -16,10 +16,9 @@ void Game::StaticMesh::loadData(Graphics::GdiContext * gdiContext)
 	{
 		sh_ = gdiContext->createShader(shaderFilename_, &vdesc_ );
 	}
-
-	vBuff_ = gdiContext->createBuffer(data_, vdesc_.stride_ * vertCount_, Graphics::eDefaultVertexBuffer);
-	cBuff_ = gdiContext->createBuffer(nullptr, sizeof(Graphics::ConstantBufferData), Graphics::eDefaultConstantBuffer);
-	
+	vBuff_ = gdiContext->createBuffer(data_, vdesc_.stride_ * vertCount_, Graphics::BufferType::Vertex);
+	cBuff_ = gdiContext->createBuffer(nullptr, sizeof(Graphics::ConstantBufferData), Graphics::BufferType::Constant);
+	Graphics::Uav* uav = gdiContext->createByteAddressUav(vBuff_);
 }
 
 void Game::StaticMesh::unloadData(Graphics::GdiContext * gdiContext)

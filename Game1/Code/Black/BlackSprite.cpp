@@ -39,8 +39,8 @@ void Black::BlackSprite::loadData(Graphics::GdiContext* gdiContext)
 		vmath::Vector4(-extendX,extendY2, .0f, 0.0f)
 	};
 	unsigned int bufferSize = sizeof(vmath::Vector4) * 6;
-	vBuff_ = gdiContext->createBuffer(points, bufferSize, Graphics::eDefaultVertexBuffer);
-	cBuff_ = gdiContext->createBuffer(nullptr, sizeof(Graphics::ConstantBufferData), Graphics::eDefaultConstantBuffer);
+	vBuff_ = gdiContext->createBuffer(points, bufferSize, Graphics::BufferType::Constant);
+	cBuff_ = gdiContext->createBuffer(nullptr, sizeof(Graphics::ConstantBufferData), Graphics::BufferType::Constant);
 
 }
 void Black::BlackSprite::unloadData(Graphics::GdiContext* gdiContext)

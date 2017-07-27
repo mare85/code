@@ -196,10 +196,10 @@ Graphics::Postprocess * Graphics::GdiContext::createPostprocess(const char * sha
 		{ vmath::Vector4(-1.0f,1.0f, .0f, 1.0f), vmath::Vector4(0.0f, 0.0f, .0f, .0f) }
 	};
 	unsigned int bufferSize = sizeof(Graphics::VertexP4UV4) * 6;
-	out->vbuff_ = createBuffer(points, bufferSize, Graphics::eDefaultVertexBuffer);
+	out->vbuff_ = createBuffer(points, bufferSize, Graphics::BufferType::Vertex);
 	Graphics::VertexDesc vDesc = Graphics::VertexDesc::get(Graphics::POS4UV4);
 	out->sh_ = createShader(shaderName, &vDesc);
-	out->cBuff_ = createBuffer(nullptr, cbsize, Graphics::eDefaultConstantBuffer);
+	out->cBuff_ = createBuffer(nullptr, cbsize, Graphics::BufferType::Constant);
 
 	
 	D3D11_TEXTURE2D_DESC textureDesc;
@@ -298,8 +298,8 @@ Graphics::RenderTarget * Graphics::GdiContext::createRenderTarget(unsigned int w
 		{ vmath::Vector4(-1.0f,1.0f, .0f, 1.0f), vmath::Vector4(0.0f, 0.0f, .0f, .0f) }
 	};
 	unsigned int bufferSize = sizeof(Graphics::VertexP4UV4) * 6;
-	out->vbuff_ = createBuffer(points, bufferSize, Graphics::eDefaultVertexBuffer);
-	out->cBuff_ = createBuffer(nullptr, cbsize, Graphics::eDefaultConstantBuffer);
+	out->vbuff_ = createBuffer(points, bufferSize, Graphics::BufferType::Vertex);
+	out->cBuff_ = createBuffer(nullptr, cbsize, Graphics::BufferType::Constant);
 
 
 	D3D11_TEXTURE2D_DESC textureDesc;
@@ -587,21 +587,22 @@ Graphics::Buffer * Graphics::GdiContext::createBuffer(void * data, unsigned int 
 	D3D11_BUFFER_DESC vbDesc;
 	HRESULT d3dResult;
 	Buffer* buff = nullptr;
-	if (bufferType == eDefaultVertexBuffer)
+	if (bufferType == BufferType::Vertex)
 	{
 		ZeroMemory(&vbDesc, sizeof(vbDesc));
 		vbDesc.Usage = D3D11_USAGE_DEFAULT;
-		vbDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
+		vbDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER | D3D11_BIND_UNORDERED_ACCESS;
+		vbDesc.MiscFlags = D3D11_RESOURCE_MISC_BUFFER_ALLOW_RAW_VIEWS;// D3D11_RESOURCE_MISC_BUFFER_STRUCTURED;
 		vbDesc.ByteWidth = size;
 	}
-	else if (bufferType == eDefaultConstantBuffer)
+	else if (bufferType == BufferType::Constant)
 	{
 		ZeroMemory(&vbDesc, sizeof(vbDesc));
 		vbDesc.Usage = D3D11_USAGE_DEFAULT;
 		vbDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
 		vbDesc.ByteWidth = size;
 	}
-	else if (bufferType == eDynamicWriteVertexBuffer)
+	else if (bufferType == BufferType::DynamicVertex)
 	{
 		ZeroMemory(&vbDesc, sizeof(vbDesc));
 		vbDesc.Usage = D3D11_USAGE_DYNAMIC;
@@ -609,12 +610,20 @@ Graphics::Buffer * Graphics::GdiContext::createBuffer(void * data, unsigned int 
 		vbDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
 		vbDesc.ByteWidth = size;
 	}
-	else if (bufferType == eDynamicWriteVertexBuffer)
+	else if (bufferType == BufferType::ComputeVertex)
 	{
 		ZeroMemory(&vbDesc, sizeof(vbDesc));
-		vbDesc.Usage = D3D11_USAGE_DYNAMIC;
-		vbDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
-		vbDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
+		vbDesc.Usage = D3D11_USAGE_DEFAULT;
+		vbDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER | D3D11_BIND_UNORDERED_ACCESS;
+		vbDesc.MiscFlags = D3D11_RESOURCE_MISC_BUFFER_ALLOW_RAW_VIEWS;// D3D11_RESOURCE_MISC_BUFFER_STRUCTURED;
+		vbDesc.ByteWidth = size;
+	}
+	else if (bufferType == BufferType::ComputeByteAddress)
+	{
+		ZeroMemory(&vbDesc, sizeof(vbDesc));
+		vbDesc.Usage = D3D11_USAGE_DEFAULT;
+		vbDesc.BindFlags = D3D11_BIND_SHADER_RESOURCE | D3D11_BIND_UNORDERED_ACCESS;
+		vbDesc.MiscFlags = D3D11_RESOURCE_MISC_BUFFER_ALLOW_RAW_VIEWS;// D3D11_RESOURCE_MISC_BUFFER_STRUCTURED;
 		vbDesc.ByteWidth = size;
 	}
 	else
@@ -635,6 +644,56 @@ Graphics::Buffer * Graphics::GdiContext::createBuffer(void * data, unsigned int 
 		return nullptr;
 	}
 	return buff;
+}
+
+Graphics::Srv * Graphics::GdiContext::createByteAddressSrv(Buffer * buff)
+{	
+	D3D11_BUFFER_DESC buffDesc;
+	ZeroMemory(&buffDesc, sizeof(D3D11_BUFFER_DESC));
+	buff->GetDesc(&buffDesc);
+	unsigned int numElements = buffDesc.ByteWidth / 4;
+	D3D11_SHADER_RESOURCE_VIEW_DESC desc;
+	ZeroMemory(&desc, sizeof(D3D11_SHADER_RESOURCE_VIEW_DESC));
+	desc.ViewDimension = D3D11_SRV_DIMENSION_BUFFEREX;
+	desc.BufferEx.FirstElement = 0;
+	desc.Format = DXGI_FORMAT_R32_TYPELESS;
+	desc.BufferEx.Flags = D3D11_BUFFEREX_SRV_FLAG_RAW;
+	desc.BufferEx.NumElements = numElements;
+	Srv* out = nullptr;
+	d3dDevice_->CreateShaderResourceView(buff, &desc, &out);
+	return out;
+}
+
+void Graphics::GdiContext::releaseSrv(Srv *& srv)
+{
+	if (srv)
+		srv->Release();
+	srv = nullptr;
+}
+
+Graphics::Uav * Graphics::GdiContext::createByteAddressUav(Buffer * buff)
+{
+	Uav *out;
+	D3D11_BUFFER_DESC buffDesc;
+	ZeroMemory(&buffDesc, sizeof(D3D11_BUFFER_DESC));
+	buff->GetDesc(&buffDesc);
+	unsigned int numElements = buffDesc.ByteWidth / 4;
+	D3D11_UNORDERED_ACCESS_VIEW_DESC desc;
+	ZeroMemory(&desc, sizeof(desc));
+	desc.ViewDimension = D3D11_UAV_DIMENSION_BUFFER;
+	desc.Buffer.FirstElement = 0;
+	desc.Format = DXGI_FORMAT_R32_TYPELESS;
+	desc.Buffer.Flags = D3D11_BUFFER_UAV_FLAG_RAW;
+	desc.Buffer.NumElements = numElements;
+	d3dDevice_->CreateUnorderedAccessView(buff, &desc, &out);
+	return out;
+}
+
+void Graphics::GdiContext::releaseUav(Uav *&uav)
+{
+	if (uav)
+		uav->Release();
+	uav = nullptr;
 }
 
 void Graphics::GdiContext::updateBuffer(Buffer * dts, void * src)

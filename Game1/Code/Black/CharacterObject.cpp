@@ -119,9 +119,9 @@ void Black::CharacterObject::loadData(Graphics::GdiContext* gdiContext)
 	sh_->setTexture(0, texture_);
 	
 	unsigned int bufferSize = sizeof(vmath::Vector4) * 6 * (eBoneCount - 1 + eSpineSegments);
-	vBuff_[ 0 ] = gdiContext->createBuffer(nullptr, bufferSize, Graphics::eDynamicWriteVertexBuffer);
-	vBuff_[ 1 ] = gdiContext->createBuffer(nullptr, bufferSize, Graphics::eDynamicWriteVertexBuffer);
-	cBuff_ = gdiContext->createBuffer(nullptr, sizeof(Graphics::ConstantBufferData), Graphics::eDefaultConstantBuffer);
+	vBuff_[ 0 ] = gdiContext->createBuffer(nullptr, bufferSize, Graphics::BufferType::DynamicVertex);
+	vBuff_[ 1 ] = gdiContext->createBuffer(nullptr, bufferSize, Graphics::BufferType::DynamicVertex);
+	cBuff_ = gdiContext->createBuffer(nullptr, sizeof(Graphics::ConstantBufferData), Graphics::BufferType::Constant);
 
 }
 void Black::CharacterObject::unloadData(Graphics::GdiContext* gdiContext)

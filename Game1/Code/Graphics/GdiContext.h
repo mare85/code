@@ -24,11 +24,15 @@ namespace Graphics {
 	class Postprocess;
 	class RenderTarget;
 	typedef ID3D11Buffer Buffer;
+	typedef ID3D11ShaderResourceView Srv;
+	typedef ID3D11UnorderedAccessView Uav;
 
-	enum BufferType {
-		eDefaultVertexBuffer = 0,
-		eDefaultConstantBuffer = 1,
-		eDynamicWriteVertexBuffer = 2
+	enum class BufferType {
+		Vertex = 0,
+		Constant = 1,
+		DynamicVertex = 2,
+		ComputeVertex = 3,
+		ComputeByteAddress = 4
 	};
 
 	enum RTFormat {
@@ -100,6 +104,11 @@ namespace Graphics {
 		void releaseShader(Shader*& sh, bool byStore = false);
 		Buffer* createBuffer(void* data, unsigned int size, BufferType bufferType);
 		void releaseBuffer(Buffer*&);
+		Srv* createByteAddressSrv(Buffer* buff);
+		void releaseSrv(Srv*&);
+		Uav* createByteAddressUav(Buffer* buff);
+		void releaseUav(Uav*&);
+
 		Texture* createTexture(const char* filename, TextureDesc *desc,const char* storeName = nullptr);
 		void releaseTexture(Texture*& tex, bool byStore = false);
 		void* mapWrite(Buffer* buff);

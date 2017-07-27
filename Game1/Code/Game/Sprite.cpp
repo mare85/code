@@ -31,8 +31,8 @@ namespace Game
 			{ vmath::Vector4(-extendX,extendY, .0f, 1.0f), vmath::Vector4(0.0f, 0.0f, .0f, .0f) }
 		};
 		unsigned int bufferSize = sizeof(Graphics::VertexP4UV4) * 6;
-		vBuff_ = gdiContext->createBuffer(points, bufferSize, Graphics::eDefaultVertexBuffer);
-		cBuff_ = gdiContext->createBuffer(nullptr, sizeof(Graphics::ConstantBufferData), Graphics::eDefaultConstantBuffer);
+		vBuff_ = gdiContext->createBuffer(points, bufferSize, Graphics::BufferType::Vertex);
+		cBuff_ = gdiContext->createBuffer(nullptr, sizeof(Graphics::ConstantBufferData), Graphics::BufferType::Constant);
 
 	}
 

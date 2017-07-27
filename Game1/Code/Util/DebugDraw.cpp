@@ -13,8 +13,8 @@ void Util::DebugDraw::init(Graphics::GdiContext * gdiContext)
 	__inst = new DebugDraw();
 	Graphics::VertexDesc vDescPos = Graphics::VertexDesc::get(Graphics::POS4COL4);
 	__inst->sh_ = gdiContext->createShader("assets/Shaders/DebugDraw.fx", &vDescPos, "DebugDraw");
-	__inst->vBuff_ = gdiContext->createBuffer(nullptr, sizeof(vmath::Vector4) * eMaxVerts * 2, Graphics::eDynamicWriteVertexBuffer);
-	__inst->cBuff_ = gdiContext->createBuffer(nullptr, sizeof(vmath::Matrix4) * 2, Graphics::eDefaultConstantBuffer);
+	__inst->vBuff_ = gdiContext->createBuffer(nullptr, sizeof(vmath::Vector4) * eMaxVerts * 2, Graphics::BufferType::DynamicVertex);
+	__inst->cBuff_ = gdiContext->createBuffer(nullptr, sizeof(vmath::Matrix4) * 2, Graphics::BufferType::Constant);
 }
 
 void Util::DebugDraw::release(Graphics::GdiContext * gdiContext)
