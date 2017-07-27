@@ -9,13 +9,13 @@ struct VS_Input
 {
 	float4 pos : POSITION;
 	float4 tex0 : TEXCOORD0;
-	float4 col : COLOR0;
+	float col : COLOR0;
 };
 struct PS_Input
 {
 	float4 pos : SV_POSITION;
 	float2 tex0 : TEXCOORD0;
-	float4 col : COLOR0;
+	float col : COLOR0;
 	float dist : TEXCOORD1;
 };
 
@@ -41,8 +41,8 @@ float4 ps_main(PS_Input frag ) : SV_TARGET
 	float x = frac( frag.tex0.x );
 	float y = frac( frag.tex0.y );
 	
-	float col = pow( x * (1-x) * 16 * y * (1 - y), .2 );
-	float4 texCol = float4( col * frag.col.rgb,1.0 );
+	float col = pow( x * (1-x) * 16 * y * (1 - y), .2 ) * frag.col;
+	float4 texCol = float4(col, col, col,1.0 );
 		
 	//float4 texCol = float4( col * frag.col.r,col * frag.col.g,col * frag.col.b,1.0 );
 	float fogClarity = max( min( 16.0 / frag.dist - 0.3, 1.0 ) , .0 );

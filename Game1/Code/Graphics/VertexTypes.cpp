@@ -128,6 +128,12 @@ namespace Graphics
 						nBuffers_, stride, D3D11_INPUT_PER_VERTEX_DATA, 0 };
 					stride += 16; ++nrmCounter;
 					break;
+				case Semantic::Col1:
+					*layoutPtr = {
+						"COLOR", colCounter, DXGI_FORMAT_R32G32B32_FLOAT,
+						nBuffers_, stride, D3D11_INPUT_PER_VERTEX_DATA, 0 };
+					stride += 4; ++colCounter;
+					break;
 				case Semantic::Col3:
 					*layoutPtr = { 
 						"COLOR", colCounter, DXGI_FORMAT_R32G32B32_FLOAT,

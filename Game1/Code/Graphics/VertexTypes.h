@@ -20,7 +20,7 @@ namespace Graphics
 	enum class Semantic {
 		Pos3, Pos4,
 		Nrm3, Nrm4,
-		Col3, Col4,
+		Col1, Col3, Col4,
 		Uv2, Uv3, Uv4
 	};
 
