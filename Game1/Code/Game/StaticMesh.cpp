@@ -16,7 +16,7 @@ void Game::StaticMesh::loadData(Graphics::GdiContext * gdiContext)
 	{
 		sh_ = gdiContext->createShader(shaderFilename_, &vdesc_ );
 	}
-	vBuff_ = gdiContext->createBuffer(data_, vdesc_.stride_ * vertCount_, Graphics::BufferType::Vertex);
+	vBuff_ = gdiContext->createBuffer(data_, vdesc_.strides_[0] * vertCount_, Graphics::BufferType::Vertex);
 	cBuff_ = gdiContext->createBuffer(nullptr, sizeof(Graphics::ConstantBufferData), Graphics::BufferType::Constant);
 	Graphics::Uav* uav = gdiContext->createByteAddressUav(vBuff_);
 }
@@ -66,13 +66,13 @@ void Game::StaticMesh::render(Graphics::GdiContext * gdiContext, Graphics::Rende
 
 void* Game::StaticMesh::allocateData(unsigned int vertCount, Graphics::VertexDesc* vdesc)
 {
-	vdesc_.copyFrom( vdesc );
+	vdesc_ = *vdesc;
 	vertCount_ = vertCount;
 	if (data_)
 	{
 		delete[] data_;
 	}
-	data_ = new unsigned char[ vertCount * vdesc_.stride_ ];
+	data_ = new unsigned char[ vertCount * vdesc_.strides_[0] ];
 	return data_;
 }
 

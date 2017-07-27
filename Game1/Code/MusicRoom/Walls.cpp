@@ -16,11 +16,11 @@ float __lightness[16 * 8];
 void MusicRoom::Walls::loadData(Graphics::GdiContext* gdiContext)
 {
 	Sound::loadBank("aminharmonic.bnk");
-	Graphics::VertexDesc vDescPos = Graphics::VertexDesc::get(Graphics::POS3COL3UV2);
+	Graphics::VertexDescDeprecated vDescPos = Graphics::VertexDescDeprecated::get(Graphics::POS3COL3UV2);
 	sh_ = gdiContext->createShader("assets/Shaders/Walls.fx", &vDescPos, "Walls");
 
 
-	Graphics::VertexDesc vDescFloor = Graphics::VertexDesc::get(Graphics::POS4UV4);
+	Graphics::VertexDescDeprecated vDescFloor = Graphics::VertexDescDeprecated::get(Graphics::POS4UV4);
 	shFloor_ = gdiContext->createShader("assets/Shaders/Floor.fx", &vDescFloor, "Floor");
 	Graphics::TextureDesc textureDesc;
 	textureDesc.filter_ = Graphics::TextureDesc::eLinear;

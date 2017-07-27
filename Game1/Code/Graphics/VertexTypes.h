@@ -3,6 +3,7 @@
 #include <d3dx11.h>
 #include <dxerr.h>
 #include <Util/Utils.h>
+#include <initializer_list>
 namespace Graphics
 {
 	enum VertexDescPreset
@@ -14,15 +15,41 @@ namespace Graphics
 		COL4 = 4
 	};
 
-	struct VertexDesc
-	{
 
+
+	enum class Semantic {
+		Pos3, Pos4,
+		Nrm3, Nrm4,
+		Col3, Col4,
+		TexCoord2, TexCoord3, TexCoord4
+	};
+
+	typedef std::initializer_list<Semantic> SemanticList;
+	typedef std::initializer_list<SemanticList> BufferSemanticList;
+	struct VertexDescDeprecated
+	{
 		D3D11_INPUT_ELEMENT_DESC* layout_;
 		unsigned int nElems_;
 		unsigned int stride_;
 
-		static VertexDesc get(VertexDescPreset preset);
-		void copyFrom(VertexDesc* other);
+		static VertexDescDeprecated get(VertexDescPreset preset);
+		void copyFrom(VertexDescDeprecated* other);
+	};
+
+	struct VertexDesc
+	{
+		enum {
+			nMaxElems = 10,
+			nMaxBuffers = 6
+		};
+		D3D11_INPUT_ELEMENT_DESC layout_[nMaxElems];
+		unsigned int strides_[nMaxBuffers];
+		unsigned int nElems_ = 0;
+		unsigned int nBuffers_ = 0;
+		VertexDesc(BufferSemanticList list);
+		VertexDesc() {};
+		VertexDesc(const VertexDesc& orig);
+
 	};
 
 	struct VertexP4UV4

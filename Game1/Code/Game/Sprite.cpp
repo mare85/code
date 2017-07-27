@@ -7,7 +7,7 @@ namespace Game
 
 	void Sprite::loadData(Graphics::GdiContext * gdiContext)
 	{
-		Graphics::VertexDesc vDescPos = Graphics::VertexDesc::get(Graphics::POS4UV4);
+		Graphics::VertexDescDeprecated vDescPos = Graphics::VertexDescDeprecated::get(Graphics::POS4UV4);
 		sh_ = gdiContext->createShader("assets/Shaders/Sprite.fx", &vDescPos, filename_);
 
 		Graphics::TextureDesc textureDesc;

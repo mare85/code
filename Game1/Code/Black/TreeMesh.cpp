@@ -16,8 +16,8 @@ Black::TreeMesh::TreeMesh(const char * name)
 	const unsigned int nBranches = 50;
 	const unsigned int nSegments = 20;
 	unsigned int vcount = nBranches * (nSegments + 1) * 2;
-
-	Graphics::VertexDesc vdesc = Graphics::VertexDesc::get(Graphics::POS4);
+	typedef Graphics::Semantic S;
+	Graphics::VertexDesc vdesc = { {S::Pos4} };
 	vmath::Vector4 *data = reinterpret_cast<vmath::Vector4* >( allocateData(vcount, &vdesc) );
 	vmath::Vector4 *out = data;
 	//setShader("assets/Shaders/Black.fx", "Black");

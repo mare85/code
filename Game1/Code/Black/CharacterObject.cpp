@@ -108,7 +108,7 @@ Black::CharacterObject::CharacterObject(const char* name, const char* filename, 
 
 void Black::CharacterObject::loadData(Graphics::GdiContext* gdiContext)
 {
-	Graphics::VertexDesc vDescPos = Graphics::VertexDesc::get(Graphics::POS4);
+	Graphics::VertexDescDeprecated vDescPos = Graphics::VertexDescDeprecated::get(Graphics::POS4);
 	sh_ = gdiContext->createShader("assets/Shaders/BlackSprite.fx", &vDescPos, filename_);
 
 	Graphics::TextureDesc textureDesc;

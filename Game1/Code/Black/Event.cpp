@@ -17,7 +17,7 @@ Black::Event::Event(const char * name)
 }
 void Black::Event::loadData(Graphics::GdiContext * gdiContext)
 {
-	Graphics::VertexDesc vdesc = Graphics::VertexDesc::get(Graphics::POS4);
+	Graphics::VertexDescDeprecated vdesc = Graphics::VertexDescDeprecated::get(Graphics::POS4);
 	sh_ = gdiContext->createShader("assets/Shaders/Black.fx", &vdesc, "Black");
 	float hh = 3.0f;
 	float hw= width_ * .5f;

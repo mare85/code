@@ -14,8 +14,10 @@ namespace Graphics
 		ID3D11PixelShader* ps_;
 		ID3D11InputLayout* il_;
 		Texture* textures_[nShaderTextureSlots];
+		VertexDescDeprecated descDeprecated_;
 		VertexDesc desc_;
 		bool stored_ = false;
+		bool useDeprecated_ = true;
 		Shader() { clearTextures(); }
 		~Shader() {}
 	public:

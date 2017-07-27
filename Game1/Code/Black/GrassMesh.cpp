@@ -34,7 +34,8 @@ void Black::GrassMesh::_generateGrass(vmath::Vector4 * outData )
 void Black::GrassMesh::__OnParamChange(Game::Object * obj)
 {
 	GrassMesh* gm = reinterpret_cast<GrassMesh*>(obj);
-	Graphics::VertexDesc grassDesc = Graphics::VertexDesc::get(Graphics::POS4);
+	typedef Graphics::Semantic S;
+	Graphics::VertexDesc grassDesc = { {S::Pos4} };
 	vmath::Vector4* grassData = reinterpret_cast<vmath::Vector4*>(gm->allocateData(2 * gm->grassSteps_ * gm->grassCount_, &grassDesc));
 	gm->_generateGrass(grassData);
 	Game::App::Instance()->requestReloadLayerGraphics(gm->layerId_);
@@ -60,7 +61,9 @@ Black::GrassMesh::GrassMesh(unsigned int layerId, unsigned int sectorId)
 	
 	setShader("assets/Shaders/BlackWave.fx", "BlackWave");
 
-	Graphics::VertexDesc grassDesc = Graphics::VertexDesc::get(Graphics::POS4);
+	//Graphics::VertexDescDeprecated grassDesc = Graphics::VertexDescDeprecated::get(Graphics::POS4);
+	typedef Graphics::Semantic S;
+	Graphics::VertexDesc grassDesc ({ {S::Pos4} });
 	vmath::Vector4* grassData = reinterpret_cast<vmath::Vector4*>(allocateData(2 * grassSteps_ * grassCount_, &grassDesc));
 	_generateGrass(grassData);
 	float halfWidth = GroundManager::HalfSegmentWidth;

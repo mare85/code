@@ -11,7 +11,7 @@
 
 void Game::PostprocessSystem::init(Graphics::GdiContext * gdiContext)
 {
-	Graphics::VertexDesc vDesc = Graphics::VertexDesc::get(Graphics::POS4UV4);
+	Graphics::VertexDescDeprecated vDesc = Graphics::VertexDescDeprecated::get(Graphics::POS4UV4);
 	postprocessSh_ = gdiContext->createShader("assets/Shaders/Postprocess.fx", &vDesc);
 	gaussianX_ = gdiContext->createShader("assets/Shaders/GaussianX.fx", &vDesc);
 	gaussianY_ = gdiContext->createShader("assets/Shaders/GaussianY.fx", &vDesc);

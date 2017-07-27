@@ -100,7 +100,8 @@ namespace Graphics {
 		void resetRenderTarget();
 		void setViewport(unsigned int width, unsigned int height);
 
-		Shader* createShader(const char* filename, VertexDesc* desc, const char* storeName = nullptr );
+		Shader* createShader(const char* filename, VertexDescDeprecated* desc, const char* storeName = nullptr );
+		Shader* createShader(const char* filename, VertexDesc* desc, const char* storeName = nullptr);
 		void releaseShader(Shader*& sh, bool byStore = false);
 		Buffer* createBuffer(void* data, unsigned int size, BufferType bufferType);
 		void releaseBuffer(Buffer*&);
@@ -148,7 +149,7 @@ namespace Graphics {
 		unsigned int height_ = 0;
 		ID3D11DepthStencilView* depthBufferTarget_ = nullptr;
 
-		unsigned int stride_ = 0;
+		unsigned int strides_[VertexDesc::nMaxBuffers];
 		float clearColor[4];
 
 		bool _CompileShader(const char* filename, const char* entryPoint, const char* shaderModel, ID3D10Blob** out);
