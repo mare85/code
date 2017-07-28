@@ -101,7 +101,6 @@ namespace Graphics {
 		void resetRenderTarget();
 		void setViewport(unsigned int width, unsigned int height);
 
-		Shader* createShader(const char* filename, VertexDescDeprecated* desc, const char* storeName = nullptr );
 		Shader* createShader(const char* filename, VertexDesc* desc, const char* storeName = nullptr);
 		void releaseShader(Shader*& sh, bool byStore = false);
 		Buffer* createBuffer(void* data, unsigned int size, BufferType bufferType);

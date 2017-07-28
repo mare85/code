@@ -6,7 +6,8 @@
 
 void Black::BlackSprite::loadData(Graphics::GdiContext* gdiContext)
 {
-	Graphics::VertexDescDeprecated vDescPos = Graphics::VertexDescDeprecated::get(Graphics::POS4);
+	typedef Graphics::Semantic S;
+	Graphics::VertexDesc vDescPos = {{S::Pos4}};
 	sh_ = gdiContext->createShader("assets/Shaders/BlackSprite.fx", &vDescPos, filename_);
 
 	Graphics::TextureDesc textureDesc;

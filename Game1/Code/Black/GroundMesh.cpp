@@ -6,7 +6,8 @@
 void Black::GroundMesh::loadData(Graphics::GdiContext * gdiContext)
 {
 
-	Graphics::VertexDescDeprecated vDescPos = Graphics::VertexDescDeprecated::get(Graphics::POS4);
+	typedef Graphics::Semantic S;
+	Graphics::VertexDesc vDescPos = {{S::Pos4}};
 	sh_ = gdiContext->createShader("assets/Shaders/Black.fx", &vDescPos, "Black");
 	const int minScope = -Black::Ground::eNColliders / 4;
 	const int maxScope = Black::Ground::eNColliders * 5 / 4;

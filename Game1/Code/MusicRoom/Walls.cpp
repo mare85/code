@@ -10,14 +10,11 @@
 
 float __lightness[16 * 8];
 
-
-
-
 void MusicRoom::Walls::loadData(Graphics::GdiContext* gdiContext)
 {
 	Sound::loadBank("aminharmonic.bnk");
 	typedef Graphics::Semantic S;
-	Graphics::VertexDesc vDescPos = { {S::Pos3, S::Uv2, }, {S::Col1 } };
+	Graphics::VertexDesc vDescPos = { {S::Pos3, S::Uv2 }, {S::Col1 } };
 	sh_ = gdiContext->createShader("assets/Shaders/Walls.fx", &vDescPos, "Walls");
 
 	Graphics::VertexDesc vDescFloor = { {S::Pos3}, {S::Uv2 } };
@@ -88,7 +85,6 @@ void MusicRoom::Walls::loadData(Graphics::GdiContext* gdiContext)
 	};
 	vBuffFloorPos_ = gdiContext->createBuffer(pointsFloorPos, bufferSizeFloorPos, Graphics::BufferType::Vertex);
 	vBuffFloorUv_ = gdiContext->createBuffer(pointsFloorUv, bufferSizeFloorUv, Graphics::BufferType::Vertex);
-
 	cBuff_ = gdiContext->createBuffer(nullptr, sizeof(Graphics::ConstantBufferData), Graphics::BufferType::Constant);
 
 }

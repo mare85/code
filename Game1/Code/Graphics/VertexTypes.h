@@ -26,16 +26,6 @@ namespace Graphics
 
 	typedef std::initializer_list<Semantic> SemanticList;
 	typedef std::initializer_list<SemanticList> BufferSemanticList;
-	struct VertexDescDeprecated
-	{
-		D3D11_INPUT_ELEMENT_DESC* layout_;
-		unsigned int nElems_;
-		unsigned int stride_;
-
-		static VertexDescDeprecated get(VertexDescPreset preset);
-		void copyFrom(VertexDescDeprecated* other);
-	};
-
 	struct VertexDesc
 	{
 		enum {

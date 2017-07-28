@@ -11,7 +11,8 @@ void Util::DebugDraw::init(Graphics::GdiContext * gdiContext)
 	if (__inst)
 		return;
 	__inst = new DebugDraw();
-	Graphics::VertexDescDeprecated vDescPos = Graphics::VertexDescDeprecated::get(Graphics::POS4COL4);
+	typedef Graphics::Semantic S;
+	Graphics::VertexDesc vDescPos = {{S::Pos4, S::Col4}};
 	__inst->sh_ = gdiContext->createShader("assets/Shaders/DebugDraw.fx", &vDescPos, "DebugDraw");
 	__inst->vBuff_ = gdiContext->createBuffer(nullptr, sizeof(vmath::Vector4) * eMaxVerts * 2, Graphics::BufferType::DynamicVertex);
 	__inst->cBuff_ = gdiContext->createBuffer(nullptr, sizeof(vmath::Matrix4) * 2, Graphics::BufferType::Constant);

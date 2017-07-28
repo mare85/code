@@ -61,7 +61,6 @@ Black::GrassMesh::GrassMesh(unsigned int layerId, unsigned int sectorId)
 	
 	setShader("assets/Shaders/BlackWave.fx", "BlackWave");
 
-	//Graphics::VertexDescDeprecated grassDesc = Graphics::VertexDescDeprecated::get(Graphics::POS4);
 	typedef Graphics::Semantic S;
 	Graphics::VertexDesc grassDesc ({ {S::Pos4} });
 	vmath::Vector4* grassData = reinterpret_cast<vmath::Vector4*>(allocateData(2 * grassSteps_ * grassCount_, &grassDesc));

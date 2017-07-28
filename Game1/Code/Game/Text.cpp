@@ -71,7 +71,8 @@ void Game::Text::setMaxCharNumber(unsigned int num)
 
 void Game::Text::loadData(Graphics::GdiContext * gdiContext)
 {
-	Graphics::VertexDescDeprecated vDesc = Graphics::VertexDescDeprecated::get(Graphics::POS4UV4);
+	typedef Graphics::Semantic S;
+	Graphics::VertexDesc vDesc = {{S::Pos4,S::Uv4}};
 	sh_ = gdiContext->createShader("assets/Shaders/Text.fx", &vDesc, fontName_);
 
 	char texFilename[250];

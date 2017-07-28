@@ -197,7 +197,8 @@ Graphics::Postprocess * Graphics::GdiContext::createPostprocess(const char * sha
 	};
 	unsigned int bufferSize = sizeof(Graphics::VertexP4UV4) * 6;
 	out->vbuff_ = createBuffer(points, bufferSize, Graphics::BufferType::Vertex);
-	Graphics::VertexDescDeprecated vDesc = Graphics::VertexDescDeprecated::get(Graphics::POS4UV4);
+	typedef Graphics::Semantic S;
+	Graphics::VertexDesc vDesc = {{S::Pos4, S::Uv4}};
 	out->sh_ = createShader(shaderName, &vDesc);
 	out->cBuff_ = createBuffer(nullptr, cbsize, Graphics::BufferType::Constant);
 
@@ -488,88 +489,6 @@ void Graphics::GdiContext::setViewport(unsigned int width, unsigned int height)
 	d3dContext_->RSSetViewports(1, &viewport);
 }
 
-Graphics::Shader* Graphics::GdiContext::createShader
-	( const char * filename 
-	, Graphics::VertexDescDeprecated* desc
-	, const char* storeName 
-	)
-{
-	unsigned int storeHash = 0;
-	if (storeName)
-	{
-		storeHash = Util::createHash(storeName);
-	}
-	Store* store = Store::getInstance();
-	if (storeName)
-	{
-		Shader* sh = store->getShader(storeHash);
-		if (sh)
-			return  sh;
-	}
-	Shader* out = new Shader();
-	ID3D10Blob* compiledShaderVS = nullptr;
-	ID3D10Blob* compiledShaderPS = nullptr;
-	{
-		bool compileRes = _CompileShader(filename, "vs_main", "vs_4_0", &compiledShaderVS);
-		if (compileRes == false)
-		{
-			MessageBox(0, "error loading vertex shader!", "Compile Error", MB_OK);
-		}
-		HRESULT d3dResult;
-		d3dResult = d3dDevice_->CreateVertexShader(
-			compiledShaderVS->GetBufferPointer(),
-			compiledShaderVS->GetBufferSize(), 0, &( out->vs_ )
-			);
-		if (FAILED(d3dResult))
-		{
-			if (compiledShaderVS)
-				compiledShaderVS->Release();
-			delete out;
-			return nullptr;
-		}
-	}
-	{
-		bool compileRes = _CompileShader(filename, "ps_main", "ps_4_0", &compiledShaderPS);
-		if (compileRes == false)
-		{
-			MessageBox(0, "error loading vertex shader!", "Compile Error", MB_OK);
-		}
-		HRESULT d3dResult;
-		d3dResult = d3dDevice_->CreatePixelShader(
-			compiledShaderPS->GetBufferPointer(),
-			compiledShaderPS->GetBufferSize(), 0, &(out->ps_)
-			);
-		if (FAILED(d3dResult))
-		{
-			if (compiledShaderVS)
-				compiledShaderVS->Release();
-			if (compiledShaderPS)
-				compiledShaderPS->Release();
-			delete out;
-			return nullptr;
-		}
-	}
-	HRESULT d3dResult = d3dDevice_->CreateInputLayout(desc->layout_,
-		desc->nElems_, compiledShaderVS->GetBufferPointer(),
-		compiledShaderVS->GetBufferSize(), &( out->il_ ) );
-	compiledShaderPS->Release();
-	compiledShaderVS->Release();
-	if (FAILED(d3dResult))
-	{
-		delete out;
-		return nullptr;
-	}
-	out->descDeprecated_.copyFrom(desc);
-	if (storeName)
-	{
-		out->stored_ = true;
-		store->addShader(storeHash, out);
-	}
-
-	return out;
-	
-}
-
 Graphics::Shader * Graphics::GdiContext::createShader(const char * filename, VertexDesc * desc, const char * storeName)
 {
 	unsigned int storeHash = 0;
@@ -638,8 +557,6 @@ Graphics::Shader * Graphics::GdiContext::createShader(const char * filename, Ver
 		return nullptr;
 	}
 	out->desc_ = *desc;
-	out->useDeprecated_= false;
-
 	if (storeName)
 	{
 		out->stored_ = true;
@@ -949,12 +866,8 @@ void Graphics::GdiContext::bindShader(Shader * shader, PrimitiveTopology topolog
 			d3dContext_->PSSetSamplers(i, 1, &tex->sampler_);
 		}
 	}
-	if (shader->useDeprecated_)
-		strides_[0] = shader->descDeprecated_.stride_;
-	else
-		for( unsigned int i = 0; i < shader->desc_.nBuffers_; ++i)
-			strides_[i] = shader->desc_.strides_[i];
-	
+	for( unsigned int i = 0; i < shader->desc_.nBuffers_; ++i)
+		strides_[i] = shader->desc_.strides_[i];
 }
 
 void Graphics::GdiContext::bindAsTexture(RenderTarget * rt, unsigned int slot)
