@@ -622,6 +622,13 @@ Graphics::Buffer * Graphics::GdiContext::createBuffer(void * data, unsigned int 
 		vbDesc.MiscFlags = D3D11_RESOURCE_MISC_BUFFER_ALLOW_RAW_VIEWS;// D3D11_RESOURCE_MISC_BUFFER_STRUCTURED;
 		vbDesc.ByteWidth = size;
 	}
+	else if (bufferType == BufferType::Index)
+	{
+		ZeroMemory(&vbDesc, sizeof(vbDesc));
+		vbDesc.Usage = D3D11_USAGE_DEFAULT;
+		vbDesc.BindFlags = D3D11_BIND_INDEX_BUFFER;
+		vbDesc.ByteWidth = size;
+	}
 	else
 	{
 		return nullptr;
@@ -892,6 +899,14 @@ void Graphics::GdiContext::drawTriangles(Buffer * buffer, unsigned int vertCount
 	d3dContext_->Draw(vertCount, 0);
 }
 
+void Graphics::GdiContext::drawTriangles(Buffer * indexBuffer, Buffer * vbuffer, unsigned int indexCount)
+{
+	unsigned int offset = 0;
+	d3dContext_->IASetVertexBuffers(0, 1, &vbuffer, strides_, &offset);
+	d3dContext_->IASetIndexBuffer(indexBuffer,DXGI_FORMAT_R32_UINT, 0);
+	d3dContext_->DrawIndexed( indexCount, 0, 0);
+}
+
 void Graphics::GdiContext::drawTriangles(std::initializer_list<Buffer*> buffers, unsigned int vertCount)
 {
 	unsigned int i = 0;
@@ -902,6 +917,19 @@ void Graphics::GdiContext::drawTriangles(std::initializer_list<Buffer*> buffers,
 		++i;
 	}
 	d3dContext_->Draw(vertCount, 0);
+}
+
+void Graphics::GdiContext::drawTriangles(Buffer * indexBuffer, std::initializer_list<Buffer*> buffers, unsigned int indexCount)
+{
+	unsigned int offset = 0;
+	unsigned int i = 0;
+	for (Buffer* buffer : buffers)
+	{
+		d3dContext_->IASetVertexBuffers(i, 1, &buffer, strides_ + i, &offset);
+		++i;
+	}
+	d3dContext_->IASetIndexBuffer(indexBuffer,DXGI_FORMAT_R32_UINT, 0);
+	d3dContext_->DrawIndexed( indexCount, 0, 0);
 }
 
 bool Graphics::GdiContext::_CompileShader(const char * filename, const char * entryPoint, const char * shaderModel, ID3D10Blob ** out)

@@ -33,7 +33,8 @@ namespace Graphics {
 		Constant = 1,
 		DynamicVertex = 2,
 		ComputeVertex = 3,
-		ComputeByteAddress = 4
+		ComputeByteAddress = 4,
+		Index = 5
 	};
 
 	enum RTFormat {
@@ -123,7 +124,9 @@ namespace Graphics {
 		void bindAsTexture(RenderTarget* rt, unsigned int slot);
 		void unbindTextureSlot( unsigned int slot);
 		void drawTriangles(Buffer* buffer, unsigned int vertCount);
+		void drawTriangles(Buffer* indexBuffer, Buffer* vbuffer, unsigned int indexCount);
 		void drawTriangles(std::initializer_list<Buffer*>buffers, unsigned int vertCount);
+		void drawTriangles(Buffer* indexBuffer, std::initializer_list<Buffer*>buffers, unsigned int indexCount);
 		void setClearColor(float r, float g, float b, float a = 1.0f)
 		{
 			clearColor[0] = r;
