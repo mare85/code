@@ -628,7 +628,6 @@ Graphics::ComputeShader * Graphics::GdiContext::createComputeShader(const char *
 	}
 
 	return out;
-	return nullptr;
 }
 
 void Graphics::GdiContext::releaseComputeShader(Graphics::ComputeShader *& sh, bool byStore)
@@ -664,21 +663,10 @@ void Graphics::GdiContext::dispatchComputeShader(
 	d3dContext_->Dispatch(countX,countY,countZ);
 
 	//unbinding
-	srvInd = 0;
-	uavInd = 0;
 	Srv* nullSrv = nullptr;
 	Uav* nullUav = nullptr;
-	for(Srv* srv : srvs)
-	{
-		d3dContext_->CSSetShaderResources(srvInd, 1, &nullSrv);
-		++srvInd;
-	}
-
-	for(Uav* uav : uavs)
-	{
-		d3dContext_->CSSetUnorderedAccessViews(uavInd, 1, &nullUav, nullptr);
-		++uavInd;
-	}
+	for(srvInd = 0; srvInd != srvs.size(); ++srvInd) d3dContext_->CSSetShaderResources(srvInd, 1, &nullSrv);
+	for(uavInd = 0; uavInd != uavs.size(); ++uavInd) d3dContext_->CSSetUnorderedAccessViews(uavInd, 1, &nullUav, nullptr);
 	d3dContext_->CSSetShader( nullptr, nullptr, 0 );
 }
 
@@ -702,7 +690,7 @@ Graphics::Buffer * Graphics::GdiContext::createBuffer(void * data, unsigned int 
 		vbDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
 		vbDesc.ByteWidth = size;
 	}
-	else if (bufferType == BufferType::DynamicVertex)
+	else if (bufferType == BufferType::CpuToVertex)
 	{
 		ZeroMemory(&vbDesc, sizeof(vbDesc));
 		vbDesc.Usage = D3D11_USAGE_DYNAMIC;
@@ -710,20 +698,28 @@ Graphics::Buffer * Graphics::GdiContext::createBuffer(void * data, unsigned int 
 		vbDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
 		vbDesc.ByteWidth = size;
 	}
-	else if (bufferType == BufferType::ComputeVertex)
+	else if (bufferType == BufferType::ComputeToVertex)
 	{
 		ZeroMemory(&vbDesc, sizeof(vbDesc));
 		vbDesc.Usage = D3D11_USAGE_DEFAULT;
 		vbDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER | D3D11_BIND_UNORDERED_ACCESS;
-		vbDesc.MiscFlags = D3D11_RESOURCE_MISC_BUFFER_ALLOW_RAW_VIEWS;// D3D11_RESOURCE_MISC_BUFFER_STRUCTURED;
+		vbDesc.MiscFlags = D3D11_RESOURCE_MISC_BUFFER_ALLOW_RAW_VIEWS;
 		vbDesc.ByteWidth = size;
 	}
-	else if (bufferType == BufferType::ComputeByteAddress)
+	else if (bufferType == BufferType::CpuToCompute)
 	{
 		ZeroMemory(&vbDesc, sizeof(vbDesc));
 		vbDesc.Usage = D3D11_USAGE_DYNAMIC;
 		vbDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
 		vbDesc.BindFlags = D3D11_BIND_SHADER_RESOURCE;
+		vbDesc.MiscFlags = D3D11_RESOURCE_MISC_BUFFER_ALLOW_RAW_VIEWS;// D3D11_RESOURCE_MISC_BUFFER_STRUCTURED;
+		vbDesc.ByteWidth = size;
+	}
+	else if (bufferType == BufferType::Compute)
+	{
+		ZeroMemory(&vbDesc, sizeof(vbDesc));
+		vbDesc.Usage = D3D11_USAGE_DEFAULT;
+		vbDesc.BindFlags = D3D11_BIND_SHADER_RESOURCE | D3D11_BIND_UNORDERED_ACCESS;
 		vbDesc.MiscFlags = D3D11_RESOURCE_MISC_BUFFER_ALLOW_RAW_VIEWS;// D3D11_RESOURCE_MISC_BUFFER_STRUCTURED;
 		vbDesc.ByteWidth = size;
 	}
@@ -738,7 +734,6 @@ Graphics::Buffer * Graphics::GdiContext::createBuffer(void * data, unsigned int 
 	{
 		ZeroMemory(&vbDesc, sizeof(vbDesc));
 		vbDesc.Usage = D3D11_USAGE_STAGING;
-		//vbDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
 		vbDesc.CPUAccessFlags = D3D11_CPU_ACCESS_READ;
 		vbDesc.ByteWidth = size;
 	}
@@ -1055,12 +1050,7 @@ void Graphics::GdiContext::drawTriangles(std::initializer_list<Buffer*> buffers,
 	d3dContext_->Draw(vertCount, 0);
 	// unbinding - for compute shaders to have a free way
 	Buffer* nullbuff = nullptr;
-	i = 0;
-	for (Buffer* buffer : buffers)
-	{
-		d3dContext_->IASetVertexBuffers(i,1,&nullbuff, &offset,&offset);
-		++i;
-	}
+	for ( i = 0; i < buffers.size(); ++i) d3dContext_->IASetVertexBuffers(i,1,&nullbuff, &offset,&offset);
 }
 
 void Graphics::GdiContext::drawTriangles(Buffer * indexBuffer, std::initializer_list<Buffer*> buffers, unsigned int indexCount)
@@ -1076,13 +1066,7 @@ void Graphics::GdiContext::drawTriangles(Buffer * indexBuffer, std::initializer_
 	d3dContext_->DrawIndexed( indexCount, 0, 0);
 	// unbinding - for compute shaders to have a free way
 	Buffer* nullbuff = nullptr;
-	i = 0;
-	for (Buffer* buffer : buffers)
-	{
-		d3dContext_->IASetVertexBuffers(i,1,&nullbuff, &offset,&offset);
-		++i;
-	}
-
+	for ( i = 0; i < buffers.size(); ++i) d3dContext_->IASetVertexBuffers(i,1,&nullbuff, &offset,&offset);
 }
 
 bool Graphics::GdiContext::_CompileShader(const char * filename, const char * entryPoint, const char * shaderModel, ID3D10Blob ** out)

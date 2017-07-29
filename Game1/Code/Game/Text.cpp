@@ -99,7 +99,7 @@ void Game::Text::loadData(Graphics::GdiContext * gdiContext)
 	}
 	textToUpdate_ = false;
 	unsigned int bufferSize = sizeof(Graphics::VertexP4UV4) * 6 * maxCharNumber_;
-	vBuff_ = gdiContext->createBuffer(points, bufferSize, Graphics::BufferType::DynamicVertex );
+	vBuff_ = gdiContext->createBuffer(points, bufferSize, Graphics::BufferType::CpuToVertex );
 	cBuff_ = gdiContext->createBuffer(nullptr, sizeof(_TextConstantBuffer), Graphics::BufferType::Constant);
 	delete points;
 

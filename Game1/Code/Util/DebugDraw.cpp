@@ -14,7 +14,7 @@ void Util::DebugDraw::init(Graphics::GdiContext * gdiContext)
 	typedef Graphics::Semantic S;
 	Graphics::VertexDesc vDescPos = {{S::Pos4, S::Col4}};
 	__inst->sh_ = gdiContext->createShader("assets/Shaders/DebugDraw.fx", &vDescPos, "DebugDraw");
-	__inst->vBuff_ = gdiContext->createBuffer(nullptr, sizeof(vmath::Vector4) * eMaxVerts * 2, Graphics::BufferType::DynamicVertex);
+	__inst->vBuff_ = gdiContext->createBuffer(nullptr, sizeof(vmath::Vector4) * eMaxVerts * 2, Graphics::BufferType::CpuToVertex);
 	__inst->cBuff_ = gdiContext->createBuffer(nullptr, sizeof(vmath::Matrix4) * 2, Graphics::BufferType::Constant);
 }
 
@@ -35,6 +35,7 @@ void Util::DebugDraw::render(Graphics::GdiContext * gdiContext, Graphics::Render
 {
 	if (__inst->mappedData_ )
 	{
+		gdiContext->unmap(__inst->vBuff_);
 		if (__inst->nVertPoints_)
 		{
 			gdiContext->bindShader(__inst->sh_, Graphics::eLines);
@@ -46,7 +47,6 @@ void Util::DebugDraw::render(Graphics::GdiContext * gdiContext, Graphics::Render
 			gdiContext->setConstantBuffer(__inst->cBuff_);
 			gdiContext->drawTriangles(__inst->vBuff_, __inst->nVertPoints_);
 		}
-		gdiContext->unmap(__inst->vBuff_);
 	}
 	__inst->nVertPoints_ = 0;
 	__inst->mappedData_ = reinterpret_cast< vmath::Vector4* >( gdiContext->mapWrite(__inst->vBuff_) );

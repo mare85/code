@@ -10,8 +10,8 @@ void Black::UpdatealbeMesh::loadData(Graphics::GdiContext * gdiContext)
 	typedef Graphics::Semantic S;
 	Graphics::VertexDesc vDescPos = {{S::Pos4}};
 	sh_ = gdiContext->createShader("assets/Shaders/Black.fx", &vDescPos, "Black");
-	vBuff_[0]= gdiContext->createBuffer(nullptr, sizeof( vmath::Vector4 ) * vertCount_, Graphics::BufferType::DynamicVertex);
-	vBuff_[1] = gdiContext->createBuffer(nullptr, sizeof(vmath::Vector4) * vertCount_, Graphics::BufferType::DynamicVertex);
+	vBuff_[0]= gdiContext->createBuffer(nullptr, sizeof( vmath::Vector4 ) * vertCount_, Graphics::BufferType::CpuToVertex);
+	vBuff_[1] = gdiContext->createBuffer(nullptr, sizeof(vmath::Vector4) * vertCount_, Graphics::BufferType::CpuToVertex);
 	cBuff_ = gdiContext->createBuffer(nullptr, sizeof(Graphics::ConstantBufferData), Graphics::BufferType::Constant);
 }
 

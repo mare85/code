@@ -61,10 +61,9 @@ void MusicRoom::Walls::loadData(Graphics::GdiContext* gdiContext)
 
 	vBuffPosUv_ = gdiContext->createBuffer(posUv, bufferSizePos, Graphics::BufferType::Vertex);
 	delete[] posUv;
-	vBuffCol_ = gdiContext->createBuffer(nullptr, bufferSizeCol, Graphics::BufferType::ComputeVertex);
-	debugBuff_ = gdiContext->createBuffer(nullptr, bufferSizeCol, Graphics::BufferType::Debug);
+	vBuffCol_ = gdiContext->createBuffer(nullptr, bufferSizeCol, Graphics::BufferType::ComputeToVertex);
 
-	vBuffColShort_ = gdiContext->createBuffer(nullptr, bufferSizeCol / 4, Graphics::BufferType::ComputeByteAddress);
+	vBuffColShort_ = gdiContext->createBuffer(nullptr, bufferSizeCol / 4, Graphics::BufferType::CpuToCompute);
 	srv_ = gdiContext->createByteAddressSrv(vBuffColShort_ );
 	uav_ = gdiContext->createByteAddressUav(vBuffCol_ );
 	unsigned int* indices = new unsigned int[256 * 4 * 2 * 6];
@@ -104,21 +103,15 @@ void MusicRoom::Walls::loadData(Graphics::GdiContext* gdiContext)
 	vBuffFloorUv_ = gdiContext->createBuffer(pointsFloorUv, bufferSizeFloorUv, Graphics::BufferType::Vertex);
 	iBuffFloor_ = gdiContext->createBuffer(floorIndices, sizeof(unsigned int) * 6, Graphics::BufferType::Index);
 	cBuff_ = gdiContext->createBuffer(nullptr, sizeof(Graphics::ConstantBufferData), Graphics::BufferType::Constant);
-
 }
 
 void MusicRoom::Walls::updateGfx(Graphics::GdiContext* gdiContext)
 {
-	float corridorWidthHalf = 2.0f;
 	float * out = reinterpret_cast<float*>( gdiContext->mapWrite( vBuffColShort_) );
 	for (unsigned int x = 0; x < 256; ++x)
 	{
-		float x0 = x * .5f - 64.0f;
-		float x1 = x0 + .5f;
 		for (unsigned int i = 0; i < 4; ++i)
 		{
-			float y0 = 1.0f + .5f * (float)i;
-			float y1 = y0 + .5f;
 			unsigned int colIndex1 = (x * 8 + i) % 128;
 			unsigned int colIndex2 = (x * 8 + i + 4) % 128;
 			float col1 = __lightness[colIndex1];
@@ -127,32 +120,8 @@ void MusicRoom::Walls::updateGfx(Graphics::GdiContext* gdiContext)
 			*out = col2; ++out;
 		}
 	}
-
-	gdiContext->copyBuffer( debugBuff_, vBuffCol_);
-	float* debugShaderData = static_cast<float*>( gdiContext->mapRead( debugBuff_ ) );
-	bool correct = true;
-	for( unsigned int i = 0; i < 256*2*4; ++i )
-	{
-		correct &= ( debugShaderData[i] != .0f );
-	}
-
-	gdiContext->unmap(debugBuff_);
-
 	gdiContext->unmap( vBuffColShort_);
 	gdiContext->dispatchComputeShader(cs_,{srv_},{uav_},256*2*4);
-	gdiContext->copyBuffer( debugBuff_, vBuffCol_);
-	debugShaderData = static_cast<float*>( gdiContext->mapRead( debugBuff_ ) );
-	correct = true;
-	for( unsigned int i = 0; i < 256*2*4; ++i )
-	{
-		correct &= ( debugShaderData[i] != .0f );
-	}
-
-	if(!correct)
-		{ OutputDebugStringA("wrong output");}
-	gdiContext->unmap(debugBuff_);
-	
-
 }
 
 void MusicRoom::Walls::unloadData(Graphics::GdiContext* gdiContext)
@@ -291,7 +260,7 @@ void MusicRoom::WallsUpdater::update(const Game::UpdateContext* uctx)
 			float x = floor( 2.0f * target.getX() - .5f);
 			target.setX( x * .5f + .25f );
 			target.setY( y * .5f + 1.25f );
-			//Util::DebugDraw::addPoint( target, .05f, vmath::Vector4( 1.0f, 0.0f, 1.0f, 1.0f ) );
+			Util::DebugDraw::addPoint( target, .05f, vmath::Vector4( 1.0f, 0.0f, 1.0f, 1.0f ) );
 			unsigned int ix = ( (unsigned int)( x + 256 ) )% 16;
 			unsigned int iy = (unsigned int)y;
 			unsigned int index = ix * 8 + iy;

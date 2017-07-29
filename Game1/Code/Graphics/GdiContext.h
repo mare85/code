@@ -31,11 +31,12 @@ namespace Graphics {
 	enum class BufferType {
 		Vertex = 0,
 		Constant = 1,
-		DynamicVertex = 2,
-		ComputeVertex = 3,
-		ComputeByteAddress = 4,
-		Index = 5,
-		Debug = 6
+		CpuToVertex = 2,
+		ComputeToVertex = 3,
+		CpuToCompute = 4,
+		Compute = 5,
+		Index = 6,
+		Debug = 7
 	};
 
 	enum RTFormat {

@@ -44,7 +44,6 @@ float4 ps_main(PS_Input frag ) : SV_TARGET
 	float col = pow( x * (1-x) * 16 * y * (1 - y), .2 ) * frag.col;
 	float4 texCol = float4(col, col, col,1.0 );
 		
-	//float4 texCol = float4( col * frag.col.r,col * frag.col.g,col * frag.col.b,1.0 );
 	float fogClarity = max( min( 16.0 / frag.dist - 0.3, 1.0 ) , .0 );
 	texCol.r = texCol.r * fogClarity;
 	texCol.g = texCol.g * fogClarity;

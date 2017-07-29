@@ -46,7 +46,6 @@ namespace MusicRoom
 		Graphics::Buffer* vBuffColShort_ = nullptr;
 		Graphics::Buffer* iBuff_ = nullptr;
 		Graphics::Buffer* cBuff_ = nullptr;
-		Graphics::Buffer* debugBuff_ = nullptr;
 		Graphics::Texture* texture_ = nullptr;
 		Graphics::Srv* srv_;
 		Graphics::Uav* uav_;
