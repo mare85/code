@@ -2,6 +2,7 @@
 #include <D3DCompiler.h>
 #include <Graphics/Store.h>
 #include <Graphics/Postprocess.h>
+#include <assert.h>
 
 Graphics::GdiContext::GdiContext()
 {
@@ -15,7 +16,10 @@ Graphics::GdiContext::~GdiContext()
 {
 }
 
-bool Graphics::GdiContext::startUp(HINSTANCE appInstance, HWND windowHandle, unsigned int flags, unsigned int w, unsigned int h)
+bool Graphics::GdiContext::startUp(
+	HINSTANCE appInstance, HWND windowHandle, 
+	unsigned int flags, unsigned int w, unsigned int h,
+	bool windowed)
 {
 	appInstance_ = appInstance;
 	windowHandle_ = windowHandle;
@@ -26,6 +30,8 @@ bool Graphics::GdiContext::startUp(HINSTANCE appInstance, HWND windowHandle, uns
 	width_ = w;
 	height_ = h;
 	aspect_ = (float)width_ / (float)height_;
+	windowed_ = windowed;
+	swapFlags_ = windowed ? 0 : DXGI_PRESENT_RESTART;
 	D3D_DRIVER_TYPE driverTypes[] = {
 		D3D_DRIVER_TYPE_HARDWARE,
 		D3D_DRIVER_TYPE_WARP,
@@ -49,7 +55,8 @@ bool Graphics::GdiContext::startUp(HINSTANCE appInstance, HWND windowHandle, uns
 	swapChainDesc.BufferDesc.RefreshRate.Denominator = 1;
 	swapChainDesc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
 	swapChainDesc.OutputWindow = windowHandle_;
-	swapChainDesc.Windowed = true;
+	swapChainDesc.Windowed = windowed;
+
 // #ifndef _DEBUG
 // 	swapChainDesc.Windowed = false;
 // #endif
@@ -181,7 +188,7 @@ void Graphics::GdiContext::clearRender()
 
 void Graphics::GdiContext::swapRender()
 {
-	swapChain_->Present(1, DXGI_PRESENT_RESTART);
+	swapChain_->Present(1, swapFlags_);
 }
 
 Graphics::Postprocess * Graphics::GdiContext::createPostprocess(const char * shaderName, unsigned int width, unsigned int height, unsigned int cbsize)
@@ -578,6 +585,103 @@ void Graphics::GdiContext::releaseShader(Shader *&sh, bool byStore)
 	}
 }
 
+Graphics::ComputeShader * Graphics::GdiContext::createComputeShader(const char * filename, const char* entryname, const char * storeName)
+{
+	unsigned int storeHash = 0;
+	if (storeName)
+	{
+		storeHash = Util::createHash(storeName);
+	}
+	Store* store = Store::getInstance();
+	if (storeName)
+	{
+		ComputeShader* sh = store->getComputeShader(storeHash);
+		if (sh)
+			return sh;
+	}
+	ComputeShader* out = new ComputeShader();
+	ID3D10Blob* compiledShader = nullptr;
+	{
+		LPCSTR profile = ( d3dDevice_->GetFeatureLevel() >= D3D_FEATURE_LEVEL_11_0 ) ? "cs_5_0" : "cs_4_0";
+		bool compileRes = _CompileShader(filename, entryname, profile, &compiledShader);
+		if (compileRes == false)
+		{
+			MessageBox(0, "error loading vertex shader!", "Compile Error", MB_OK);
+		}
+		HRESULT d3dResult;
+		d3dResult = d3dDevice_->CreateComputeShader(
+			compiledShader->GetBufferPointer(),
+			compiledShader->GetBufferSize(), 0, &(out->cs_)
+		);
+		if (FAILED(d3dResult))
+		{
+			if (compiledShader)
+				compiledShader->Release();
+			delete out;
+			return nullptr;
+		}
+	}
+	if (storeName)
+	{
+		out->stored_ = true;
+		store->addComputeShader(storeHash, out);
+	}
+
+	return out;
+	return nullptr;
+}
+
+void Graphics::GdiContext::releaseComputeShader(Graphics::ComputeShader *& sh, bool byStore)
+{
+	if (sh && ( !sh->stored_ || byStore) )
+	{
+		if (sh->cs_) sh->cs_->Release();
+		delete sh;
+		sh = nullptr;
+	}
+}
+
+void Graphics::GdiContext::dispatchComputeShader(
+	ComputeShader * sh, 
+	std::initializer_list<Srv*> srvs, 
+	std::initializer_list<Uav*> uavs,
+	unsigned int countX,unsigned int countY,unsigned int countZ)
+{
+	d3dContext_->CSSetShader(sh->cs_, 0, 0);
+	unsigned int srvInd = 0;
+	unsigned int uavInd = 0;
+	for(Srv* srv : srvs)
+	{
+		d3dContext_->CSSetShaderResources(srvInd, 1, &srv);
+		++srvInd;
+	}
+
+	for(Uav* uav : uavs)
+	{
+		d3dContext_->CSSetUnorderedAccessViews(uavInd, 1, &uav, nullptr);
+		++uavInd;
+	}	
+	d3dContext_->Dispatch(countX,countY,countZ);
+
+	//unbinding
+	srvInd = 0;
+	uavInd = 0;
+	Srv* nullSrv = nullptr;
+	Uav* nullUav = nullptr;
+	for(Srv* srv : srvs)
+	{
+		d3dContext_->CSSetShaderResources(srvInd, 1, &nullSrv);
+		++srvInd;
+	}
+
+	for(Uav* uav : uavs)
+	{
+		d3dContext_->CSSetUnorderedAccessViews(uavInd, 1, &nullUav, nullptr);
+		++uavInd;
+	}
+	d3dContext_->CSSetShader( nullptr, nullptr, 0 );
+}
+
 Graphics::Buffer * Graphics::GdiContext::createBuffer(void * data, unsigned int size, BufferType bufferType)
 {
 	D3D11_BUFFER_DESC vbDesc;
@@ -617,8 +721,9 @@ Graphics::Buffer * Graphics::GdiContext::createBuffer(void * data, unsigned int 
 	else if (bufferType == BufferType::ComputeByteAddress)
 	{
 		ZeroMemory(&vbDesc, sizeof(vbDesc));
-		vbDesc.Usage = D3D11_USAGE_DEFAULT;
-		vbDesc.BindFlags = D3D11_BIND_SHADER_RESOURCE | D3D11_BIND_UNORDERED_ACCESS;
+		vbDesc.Usage = D3D11_USAGE_DYNAMIC;
+		vbDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+		vbDesc.BindFlags = D3D11_BIND_SHADER_RESOURCE;
 		vbDesc.MiscFlags = D3D11_RESOURCE_MISC_BUFFER_ALLOW_RAW_VIEWS;// D3D11_RESOURCE_MISC_BUFFER_STRUCTURED;
 		vbDesc.ByteWidth = size;
 	}
@@ -627,6 +732,14 @@ Graphics::Buffer * Graphics::GdiContext::createBuffer(void * data, unsigned int 
 		ZeroMemory(&vbDesc, sizeof(vbDesc));
 		vbDesc.Usage = D3D11_USAGE_DEFAULT;
 		vbDesc.BindFlags = D3D11_BIND_INDEX_BUFFER;
+		vbDesc.ByteWidth = size;
+	}
+	else if ( bufferType == BufferType::Debug)
+	{
+		ZeroMemory(&vbDesc, sizeof(vbDesc));
+		vbDesc.Usage = D3D11_USAGE_STAGING;
+		//vbDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
+		vbDesc.CPUAccessFlags = D3D11_CPU_ACCESS_READ;
 		vbDesc.ByteWidth = size;
 	}
 	else
@@ -766,6 +879,11 @@ void Graphics::GdiContext::releaseBuffer(Buffer *& buff)
 	buff = nullptr;
 }
 
+void Graphics::GdiContext::copyBuffer(Buffer * dst, Buffer * src)
+{
+	d3dContext_->CopyResource(dst, src);
+}
+
 Graphics::Texture * Graphics::GdiContext::createTexture(const char * filename, TextureDesc *desc, const char* storeName )
 {
 	unsigned int storeHash = 0;
@@ -845,6 +963,18 @@ void * Graphics::GdiContext::mapWrite(Buffer * buff)
 	}
 	return mappedSubresource.pData;
 }
+void * Graphics::GdiContext::mapRead(Buffer * buff)
+{
+	D3D11_MAPPED_SUBRESOURCE mappedSubresource;
+	HRESULT d3dResult = d3dContext_->Map(buff, 0, D3D11_MAP_READ, 0, &mappedSubresource);
+	if (FAILED(d3dResult))
+	{
+		DXTRACE_MSG("Failed to map resource!");
+		return nullptr;
+	}
+	return mappedSubresource.pData;
+}
+
 
 void Graphics::GdiContext::unmap(Buffer * buff)
 {
@@ -897,6 +1027,9 @@ void Graphics::GdiContext::drawTriangles(Buffer * buffer, unsigned int vertCount
 	unsigned int offset = 0;
 	d3dContext_->IASetVertexBuffers(0, 1, &buffer, strides_, &offset);
 	d3dContext_->Draw(vertCount, 0);
+	// unbinding - for compute shaders to have a free way
+	Buffer* nullbuff = nullptr;
+	d3dContext_->IASetVertexBuffers(0,1,&nullbuff, &offset,&offset);
 }
 
 void Graphics::GdiContext::drawTriangles(Buffer * indexBuffer, Buffer * vbuffer, unsigned int indexCount)
@@ -905,6 +1038,9 @@ void Graphics::GdiContext::drawTriangles(Buffer * indexBuffer, Buffer * vbuffer,
 	d3dContext_->IASetVertexBuffers(0, 1, &vbuffer, strides_, &offset);
 	d3dContext_->IASetIndexBuffer(indexBuffer,DXGI_FORMAT_R32_UINT, 0);
 	d3dContext_->DrawIndexed( indexCount, 0, 0);
+	// unbinding - for compute shaders to have a free way
+	Buffer* nullbuff = nullptr;
+	d3dContext_->IASetVertexBuffers(0,1,&nullbuff, &offset,&offset);
 }
 
 void Graphics::GdiContext::drawTriangles(std::initializer_list<Buffer*> buffers, unsigned int vertCount)
@@ -917,6 +1053,14 @@ void Graphics::GdiContext::drawTriangles(std::initializer_list<Buffer*> buffers,
 		++i;
 	}
 	d3dContext_->Draw(vertCount, 0);
+	// unbinding - for compute shaders to have a free way
+	Buffer* nullbuff = nullptr;
+	i = 0;
+	for (Buffer* buffer : buffers)
+	{
+		d3dContext_->IASetVertexBuffers(i,1,&nullbuff, &offset,&offset);
+		++i;
+	}
 }
 
 void Graphics::GdiContext::drawTriangles(Buffer * indexBuffer, std::initializer_list<Buffer*> buffers, unsigned int indexCount)
@@ -930,6 +1074,15 @@ void Graphics::GdiContext::drawTriangles(Buffer * indexBuffer, std::initializer_
 	}
 	d3dContext_->IASetIndexBuffer(indexBuffer,DXGI_FORMAT_R32_UINT, 0);
 	d3dContext_->DrawIndexed( indexCount, 0, 0);
+	// unbinding - for compute shaders to have a free way
+	Buffer* nullbuff = nullptr;
+	i = 0;
+	for (Buffer* buffer : buffers)
+	{
+		d3dContext_->IASetVertexBuffers(i,1,&nullbuff, &offset,&offset);
+		++i;
+	}
+
 }
 
 bool Graphics::GdiContext::_CompileShader(const char * filename, const char * entryPoint, const char * shaderModel, ID3D10Blob ** out)

@@ -11,7 +11,6 @@ void Sound::BankScriptContainer::init(Bank * bnk, Util::StringArray & tokenizedS
 	unsigned int index = 0xffffffff;
 	while ((index = tokenizedString.findNext("script", index)) != 0xffffffff)
 	{
-		OutputDebugStringA(tokenizedString[index]);
 		++nScripts_;
 	}
 	// count commands

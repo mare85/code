@@ -370,6 +370,11 @@
   <ItemGroup>
     <None Include="assets\sounds\bank.bnk" />
   </ItemGroup>
+  <ItemGroup>
+    <Text Include="assets\Shaders\walls_cs.fx">
+      <FileType>Document</FileType>
+    </Text>
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

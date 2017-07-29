@@ -26,6 +26,12 @@ namespace Graphics
 			return nullptr;
 		return shaders_[hashName];
 	}
+	ComputeShader * Store::getComputeShader(unsigned int hashName)
+	{
+		if (computeShaders_.find(hashName) == computeShaders_.end())
+			return nullptr;
+		return computeShaders_[hashName];
+	}
 	void Store::addTexture(unsigned int hashName, Texture * texture)
 	{
 		if (textures_.find(hashName) != textures_.end())
@@ -37,6 +43,12 @@ namespace Graphics
 		if (shaders_.find(hashName) != shaders_.end())
 			return;
 		shaders_[hashName] = shader;
+	}
+	void Store::addComputeShader(unsigned int hashName, ComputeShader * shader)
+	{
+		if (computeShaders_.find(hashName) != computeShaders_.end())
+			return;
+		computeShaders_[hashName] = shader;
 	}
 	void Store::releaseInstance()
 	{

@@ -34,7 +34,8 @@ namespace Graphics {
 		DynamicVertex = 2,
 		ComputeVertex = 3,
 		ComputeByteAddress = 4,
-		Index = 5
+		Index = 5,
+		Debug = 6
 	};
 
 	enum RTFormat {
@@ -79,7 +80,7 @@ namespace Graphics {
 
 		GdiContext();
 		~GdiContext();
-		bool startUp(HINSTANCE appInstance, HWND windowHandle, unsigned int flags, unsigned int w, unsigned int h);
+		bool startUp(HINSTANCE appInstance, HWND windowHandle, unsigned int flags, unsigned int w, unsigned int h, bool windowed = true);
 		void shutDown();
 		void update(float deltaTime);
 		void clearRender();
@@ -104,8 +105,14 @@ namespace Graphics {
 
 		Shader* createShader(const char* filename, VertexDesc* desc, const char* storeName = nullptr);
 		void releaseShader(Shader*& sh, bool byStore = false);
+		ComputeShader* createComputeShader(const char* filename, const char* entryname="cs_main", const char* storeName = nullptr);
+		void releaseComputeShader(ComputeShader*& sh, bool byStore = false);
+		void dispatchComputeShader(ComputeShader* sh, std::initializer_list<Srv*> srvs, std::initializer_list<Uav*>uavs, unsigned int countX,unsigned int countY = 1,unsigned int countZ=1);
+
+
 		Buffer* createBuffer(void* data, unsigned int size, BufferType bufferType);
 		void releaseBuffer(Buffer*&);
+		void copyBuffer(Buffer* dst, Buffer* src);
 		Srv* createByteAddressSrv(Buffer* buff);
 		void releaseSrv(Srv*&);
 		Uav* createByteAddressUav(Buffer* buff);
@@ -114,6 +121,7 @@ namespace Graphics {
 		Texture* createTexture(const char* filename, TextureDesc *desc,const char* storeName = nullptr);
 		void releaseTexture(Texture*& tex, bool byStore = false);
 		void* mapWrite(Buffer* buff);
+		void* mapRead(Buffer* buff);
 		void unmap(Buffer* buff);
 		float getAspect() const { return aspect_; }
 		unsigned int getWidth() { return width_; }
@@ -151,6 +159,8 @@ namespace Graphics {
 		unsigned int width_ = 0;
 		unsigned int height_ = 0;
 		ID3D11DepthStencilView* depthBufferTarget_ = nullptr;
+		bool windowed_ = true;
+		unsigned int swapFlags_;
 
 		unsigned int strides_[VertexDesc::nMaxBuffers];
 		float clearColor[4];

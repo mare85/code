@@ -40,11 +40,16 @@ namespace MusicRoom
 		~Walls() {};
 	protected:
 		Graphics::Shader* sh_ = nullptr;
+		Graphics::ComputeShader* cs_ = nullptr;
 		Graphics::Buffer* vBuffPosUv_ = nullptr;
 		Graphics::Buffer* vBuffCol_ = nullptr;
+		Graphics::Buffer* vBuffColShort_ = nullptr;
 		Graphics::Buffer* iBuff_ = nullptr;
 		Graphics::Buffer* cBuff_ = nullptr;
+		Graphics::Buffer* debugBuff_ = nullptr;
 		Graphics::Texture* texture_ = nullptr;
+		Graphics::Srv* srv_;
+		Graphics::Uav* uav_;
 
 		Graphics::Shader* shFloor_ = nullptr;
 		Graphics::Buffer* vBuffFloorPos_ = nullptr;

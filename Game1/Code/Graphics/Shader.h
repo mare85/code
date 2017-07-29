@@ -25,4 +25,12 @@ namespace Graphics
 			textures_[slot] = nullptr;
 		}
 	};
+
+	class ComputeShader
+	{
+		friend class GdiContext;
+	private:
+		ID3D11ComputeShader* cs_;
+		bool stored_ = false;
+	};
 }
