@@ -155,6 +155,7 @@
     <ClCompile Include="Code\Black\Editor\CharacterAnimEditor.cpp" />
     <ClCompile Include="Code\Black\Event.cpp" />
     <ClCompile Include="Code\Black\EventSystem.cpp" />
+    <ClCompile Include="Code\Black\Launcher.cpp" />
     <ClCompile Include="Code\Black\TextIndex.cpp" />
     <ClCompile Include="Code\Black\TextSubsystem.cpp" />
     <ClCompile Include="Code\Game\Object.cpp" />
@@ -193,7 +194,10 @@
     <ClCompile Include="Code\Game\Sprite.cpp" />
     <ClCompile Include="Code\GameUtils\Timer.cpp" />
     <ClCompile Include="Code\MusicRoom\Character.cpp" />
+    <ClCompile Include="Code\MusicRoom\Launcher.cpp" />
     <ClCompile Include="Code\MusicRoom\Walls.cpp" />
+    <ClCompile Include="Code\Neuron\Launcher.cpp" />
+    <ClCompile Include="Code\Neuron\Network.cpp" />
     <ClCompile Include="Code\Physics\CapsuleColider.cpp" />
     <ClCompile Include="Code\Black\Ground.cpp" />
     <ClCompile Include="Code\Script\CharacterFunctions.cpp" />
@@ -223,6 +227,7 @@
     <ClInclude Include="Code\Black\Editor\CharacterAnimEditor.h" />
     <ClInclude Include="Code\Black\Event.h" />
     <ClInclude Include="Code\Black\EventSystem.h" />
+    <ClInclude Include="Code\Black\Launcher.h" />
     <ClInclude Include="Code\Black\TextIndex.h" />
     <ClInclude Include="Code\Black\TextSubsystem.h" />
     <ClInclude Include="Code\Game\ParamSet.h" />
@@ -262,7 +267,10 @@
     <ClInclude Include="Code\Input\Listener.h" />
     <ClInclude Include="Code\Input\MenuInput.h" />
     <ClInclude Include="Code\MusicRoom\Character.h" />
+    <ClInclude Include="Code\MusicRoom\Launcher.h" />
     <ClInclude Include="Code\MusicRoom\Walls.h" />
+    <ClInclude Include="Code\Neuron\Launcher.h" />
+    <ClInclude Include="Code\Neuron\Network.h" />
     <ClInclude Include="Code\Physics\CapsuleColider.h" />
     <ClInclude Include="Code\Black\Ground.h" />
     <ClInclude Include="Code\Script\CharacterFunctions.h" />
@@ -372,6 +380,14 @@
   </ItemGroup>
   <ItemGroup>
     <Text Include="assets\Shaders\walls_cs.fx">
+      <FileType>Document</FileType>
+    </Text>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="assets\Shaders\neuron_cs.fx">
+      <FileType>Document</FileType>
+    </Text>
+    <Text Include="assets\Shaders\neuronColor.fx">
       <FileType>Document</FileType>
     </Text>
   </ItemGroup>
