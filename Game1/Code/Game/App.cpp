@@ -58,7 +58,7 @@ void Game::App::start(HINSTANCE appInstance, HWND windowHandle)
 	unsigned int height = 720;
 	Script::registerMainMenuFunctions();
 	Script::initFileLoader();
-	gdiContext_->startUp(appInstance, windowHandle, 0, width, height);
+	gdiContext_->startUp(appInstance, windowHandle, (depthEnabled_ ? Graphics::GdiContext::UseDepthBuffer : 0), width, height);
 	Sound::startUp(windowHandle, "assets/sounds");
 
 	Sound::loadBank("bank.bnk");

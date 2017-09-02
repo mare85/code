@@ -1,18 +1,10 @@
 #include "MenuScriptFunctions.h"
 #include <Script/MenuScript.h>
 #include <Game/App.h>
-#include <Game/Transform.h>
-#include <Game/Sprite.h>
-#include <Game/Text.h>
-#include <Game/Scene.h>
+#include <Sound/System.h>
 #include <MusicRoom/Launcher.h>
 #include <Black/Launcher.h>
 #include <Neuron/Launcher.h>
-
-#include <GameUtils/Timer.h>
-#include <GameUtils/InputChecker.h>
-#include <GameUtils/StartMenuTrigger.h>
-#include <Sound/System.h>
 
 static void __showMenu() { Game::App::Instance()->showMenu(); }
 static void __hideMenu() { Game::App::Instance()->hideMenu(); }
@@ -32,53 +24,14 @@ static void __loadMainMenu()
 	Game::App::Instance()->loadMenu("mainMenu");
 }
 
-static void __newGameMusicRoom()
+template <void (*PARAM)(void)>
+void launch()
 {
 	Game::App::Instance()->hideMenu();
 	Script::addTimedFunction(1.0f, &__fadeOut);
 	Script::addTimedFunction(1.1f, &__dropMenu);
 	Script::addTimedFunction(1.2f, &__loadStartMenu);
-	Script::addTimedFunction(2.0f, &MusicRoom::launch);
-	Script::addTimedFunction(2.0f, &__fadeIn);
-}
-
-static void __neuron()
-{
-	Game::App::Instance()->hideMenu();
-	Script::addTimedFunction(1.0f, &__fadeOut);
-	Script::addTimedFunction(1.1f, &__dropMenu);
-	Script::addTimedFunction(1.2f, &__loadStartMenu);
-	Script::addTimedFunction(2.0f, &Neuron::launch);
-	Script::addTimedFunction(2.0f, &__fadeIn);
-}
-
-static void __newGame()
-{
-	Game::App::Instance()->hideMenu();
-	Script::addTimedFunction(1.0f, &__fadeOut);
-	Script::addTimedFunction(1.1f, &__dropMenu);
-	Script::addTimedFunction(1.2f, &__loadStartMenu);
-	Script::addTimedFunction(2.0f, &Black::run);
-	Script::addTimedFunction(2.0f, &__fadeIn);
-}
-
-static void __editor()
-{
-	Game::App::Instance()->hideMenu();
-	Script::addTimedFunction(1.0f, &__fadeOut);
-	Script::addTimedFunction(1.1f, &__dropMenu);
-	Script::addTimedFunction(1.2f, &__loadStartMenu);
-	Script::addTimedFunction(2.0f, &Black::levelEditor);
-	Script::addTimedFunction(2.0f, &__fadeIn);
-}
-
-static void __animEditor()
-{
-	Game::App::Instance()->hideMenu();
-	Script::addTimedFunction(1.0f, &__fadeOut);
-	Script::addTimedFunction(1.1f, &__dropMenu);
-	Script::addTimedFunction(1.2f, &__loadStartMenu);
-	Script::addTimedFunction(2.0f, &Black::animEditor);
+	Script::addTimedFunction(2.0f, PARAM);
 	Script::addTimedFunction(2.0f, &__fadeIn);
 }
 
@@ -123,15 +76,15 @@ static void __exitGame()
 void Script::registerMainMenuFunctions()
 {
 	registerMainMenuCall( "exit", &__exitGame);
-	registerMainMenuCall( "start", &__newGame);
-	registerMainMenuCall( "startMusicRoom", &__newGameMusicRoom);
-	registerMainMenuCall( "startNeuron", &__neuron);
-	registerMainMenuCall( "editor", &__editor);
-	registerMainMenuCall( "animEditor", &__animEditor);
+	registerMainMenuCall( "start", &launch<&Black::run>);
+	registerMainMenuCall( "startMusicRoom", &launch<&MusicRoom::launch>);
+	registerMainMenuCall( "startNeuron", &launch<&Neuron::launch>);
+	registerMainMenuCall( "editor", &launch<&Black::levelEditor>);
+	registerMainMenuCall( "animEditor", &launch<&Black::animEditor>);
 	registerMainMenuCall( "showMenu", &__showMenu);
 	registerMainMenuCall( "hideMenu", &__hideMenu);
 	registerMainMenuCall( "dropMenu", &__dropMenu);
 	registerMainMenuCall( "dropScene", &__dropScene);
 	registerMainMenuCall( "startMenu_continue", &__startMenu_Continue);
-	registerMainMenuCall("startMenu_backToMain", &__startMenu_BackToMenu);
+	registerMainMenuCall( "startMenu_backToMain", &__startMenu_BackToMenu);
 }

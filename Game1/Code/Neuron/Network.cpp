@@ -11,9 +11,9 @@ namespace Neuron {
 struct Nodes
 {
 	enum {
-		nNodes = 200,
+		nNodes = 100,
 		nEdges = 400,
-		nEdgesPerNode = 5,
+		nEdgesPerNode = 15,
 	};
 	struct Node
 	{
@@ -41,9 +41,9 @@ struct Nodes
 	{
 		Util::RandomGenerator gen;
 		// picking random node positions
-		for( unsigned int i = 0; i < nNodes; ++i )
+		for( unsigned int ni = 0; ni < nNodes; ++ni )
 		{
-			nodes_[ i ].pos_ = vmath::Vector3( 
+			nodes_[ ni ].pos_ = vmath::Vector3( 
 				gen.getFloat( -1.0f, 1.0f),
 				gen.getFloat( -1.0f, 1.0f),
 				gen.getFloat( -1.0f, 1.0f)
@@ -51,14 +51,14 @@ struct Nodes
 		}
 		unsigned int curNEdges = 0;
 		unsigned int i = 0;
-		float sizeSqr = 4.0f * range * range;	
+		float sizeSqr = 16.0f * range * range;	
 		while( curNEdges < nEdges)
 		{
 			float nearestDistSqr = sizeSqr;
 			unsigned int nearestI = 0xffffffff;
 			if( isFull(i))
 			{
-				i = (i+1)%nNodes;
+				i = ( (i+1)%nNodes );
 				continue;
 			}
 			//finding nearest node to current
@@ -76,7 +76,7 @@ struct Nodes
 			}
 			if( nearestI != 0xffffffff)
 				addConnection( i, nearestI, curNEdges );
-			i = (i+1)%nNodes;
+			i = ( (i+1)%nNodes );
 		}
 		// deternining edge directions for all the nodes
 		for( unsigned int i = 0; i < nNodes; ++i)

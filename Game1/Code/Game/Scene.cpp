@@ -30,7 +30,8 @@ namespace Game
 		{
 			for (Object * obj : objects_)
 			{
-				obj->render(gdiContext, renderContext);
+				if(obj->getTransform()->isVisible())
+					obj->render(gdiContext, renderContext);
 			}
 		}
 	}

@@ -214,6 +214,7 @@
     <ClCompile Include="Code\Sound\System.cpp" />
     <ClCompile Include="Code\Sound\Mixer.cpp" />
     <ClCompile Include="Code\Sound\WaveLoader.cpp" />
+    <ClCompile Include="Code\Util\Collisions.cpp" />
     <ClCompile Include="Code\Util\DebugDraw.cpp" />
     <ClCompile Include="Code\Util\fft.cpp" />
     <ClCompile Include="Code\Util\StringArray.cpp" />
@@ -287,6 +288,7 @@
     <ClInclude Include="Code\Sound\System.h" />
     <ClInclude Include="Code\Sound\Mixer.h" />
     <ClInclude Include="Code\Sound\WaveLoader.h" />
+    <ClInclude Include="Code\Util\Collisions.h" />
     <ClInclude Include="Code\Util\DebugDraw.h" />
     <ClInclude Include="Code\Util\fft.h" />
     <ClInclude Include="Code\Util\RandomGenerator.h" />
@@ -388,6 +390,11 @@
       <FileType>Document</FileType>
     </Text>
     <Text Include="assets\Shaders\neuronColor.fx">
+      <FileType>Document</FileType>
+    </Text>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="assets\Shaders\Blue.fx">
       <FileType>Document</FileType>
     </Text>
   </ItemGroup>

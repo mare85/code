@@ -12,7 +12,7 @@
 void MusicRoom::launch()
 {
 	Game::App::Instance()->setRenderFunction(Game::RenderFunction::kStandard);
-	Game::App::Instance()->setEditorEnabled(false);
+	Game::App::Instance()->setDepthEnabled(true);
 	Game::Transform* mainCam = new Game::Transform("mainCam");
 	mainCam->setTranslation(vmath::Vector3(0.0f, 0.0f, .0f));
 

@@ -31,8 +31,8 @@ PS_Input vs_main(VS_Input vertex)
 float4 ps_main(PS_Input frag ) : SV_TARGET
 {
 	float texCol = texture_.Sample(textureSampler_, frag.tex0).x;
-	texCol = 1.0;
-	if (texCol < .05)
+	//texCol = 1.0;
+	if (texCol < .5)
 		discard;
 	return texture_.Sample(textureSampler_, frag.tex0).x;
 }

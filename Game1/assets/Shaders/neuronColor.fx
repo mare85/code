@@ -25,6 +25,6 @@ PS_Input vs_main(VS_Input vertex)
 }
 float4 ps_main(PS_Input frag ) : SV_TARGET
 {
-	float col = 1.0;//frag.pos.z * .25 + .75;
+	float col = 1.0 - frag.pos.z;
 	return float4(col, col, col, 1.0); 
 }

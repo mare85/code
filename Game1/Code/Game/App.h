@@ -30,7 +30,6 @@ namespace Game
 		Scene* menuScene_ = nullptr;
 		Menu* menu_ = nullptr;
 
-
 		vmath::Vector3 waveCenter_;
 
 		PostprocessSystem postprocess_;
@@ -49,6 +48,7 @@ namespace Game
 		bool paused_ = false;
 		bool reloadGraphicsRequest_ = false;
 		bool editorEnabled_ = false;
+		bool depthEnabled_ = true;
 		int reloadLayerRequest_ = -1;
 		RenderFunction::_Enum renderFunction_= RenderFunction::kStandard;
 
@@ -87,6 +87,7 @@ namespace Game
 		void dropMenu() { dropMenuRequest_ = true; }
 		void setPaused(bool val) { paused_ = val; }
 		void setWaveCenter( const vmath::Vector3 &wc ) { waveCenter_ = wc; }
+		void setDepthEnabled( bool val ) {depthEnabled_ = val;}
 
 		void loadMenu( const char *menuName );
 

@@ -6,7 +6,6 @@
 
 namespace Game 
 {
-
 	class Transform;
 	class Scene;
 	class Object;
@@ -30,7 +29,7 @@ namespace Game
 		vmath::Matrix4 localPose_ = vmath::Matrix4::identity();
 		vmath::Matrix4 worldPose_ = vmath::Matrix4::identity();
 
-
+		bool visible_ = true;
 
 	public:
 		Transform(const char* name);
@@ -54,9 +53,8 @@ namespace Game
 		Game::Scene* getScene() const { return scene_; }
 		void removeChild( Transform* child );
 		Transform* getParent( ) const { return parent_; }
-		
-
-		//Transform* findTransformByName(  )
+		void setVisible(bool val) {visible_ = val;}
+		bool isVisible() const {return visible_;}
 	};
 }
 
