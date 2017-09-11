@@ -1,5 +1,5 @@
-#ifndef UTILS_TOKENIZER_DEF
-#define UTILS_TOKENIZER_DEF
+#ifndef UTIL_TOKENIZER_DEF
+#define UTIL_TOKENIZER_DEF
 /*
  * Created by Marek Bielawski
  * Util::Collisions
@@ -58,7 +58,7 @@ inline Tokenizer Tokenizer::createChild(Iterator st, Iterator en)
 	out.pointers_ = pointers_ + st.getIndex();
 	out.nPointers_ = en - st;
 	out.isRoot_ = false;
-	return Tokenizer();
+	return out;
 }
 
 }
