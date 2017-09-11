@@ -1,7 +1,7 @@
 #pragma once
 
 #include <windows.h>
-#include <Util/StringArray.h>
+#include <Util/Tokenizer.h>
 #include <assert.h>
 
 namespace Sound
@@ -76,7 +76,7 @@ namespace Sound
 		void** commandParam_ = nullptr; // x nCommands
 
 		BankScriptContainer() {}
-		void init(Bank* bnk, Util::StringArray& tokenizedString );
+		void init(Bank* bnk, Util::Tokenizer& tokenizedString );
 		
 	public:
 		~BankScriptContainer();

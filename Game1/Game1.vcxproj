@@ -217,7 +217,7 @@
     <ClCompile Include="Code\Util\Collisions.cpp" />
     <ClCompile Include="Code\Util\DebugDraw.cpp" />
     <ClCompile Include="Code\Util\fft.cpp" />
-    <ClCompile Include="Code\Util\StringArray.cpp" />
+    <ClCompile Include="Code\Util\Tokenizer.cpp" />
     <ClCompile Include="Code\Util\Utils.cpp" />
     <ClCompile Include="Code\Game\App.cpp" />
   </ItemGroup>
@@ -292,7 +292,7 @@
     <ClInclude Include="Code\Util\DebugDraw.h" />
     <ClInclude Include="Code\Util\fft.h" />
     <ClInclude Include="Code\Util\RandomGenerator.h" />
-    <ClInclude Include="Code\Util\StringArray.h" />
+    <ClInclude Include="Code\Util\Tokenizer.h" />
     <ClInclude Include="Code\Util\Utils.h" />
     <ClInclude Include="Code\Game\App.h" />
   </ItemGroup>

@@ -2,25 +2,16 @@
 #include <Sound/Bank.h>
 #include <stdio.h>
 
-void Sound::BankScriptContainer::init(Bank * bnk, Util::StringArray & tokenizedString)
+void Sound::BankScriptContainer::init(Bank * bnk, Util::Tokenizer & tokenizedString)
 {
 	assert(bank_ == nullptr);
 	bank_ = bnk;
-	//count scripts
-	nScripts_ = 0;
-	unsigned int index = 0xffffffff;
-	while ((index = tokenizedString.findNext("script", index)) != 0xffffffff)
-	{
-		++nScripts_;
-	}
+	nScripts_ = tokenizedString.numberOf( "script" );
 	// count commands
-	nCommands_ = 0;
-	while ((index = tokenizedString.findNext("play", index)) != 0xffffffff)
-		++nCommands_;
-	while ((index = tokenizedString.findNext("loop", index)) != 0xffffffff)
-		++nCommands_;
-	while ((index = tokenizedString.findNext("random", index)) != 0xffffffff)
-		++nCommands_;
+	nCommands_ = 
+		tokenizedString.numberOf( "play" ) + 
+		tokenizedString.numberOf( "loop" ) + 
+		tokenizedString.numberOf( "random" );
 	assert(nCommands_ && nScripts_);
 	// alloc
 	scriptStarts_ = new unsigned char[nScripts_ * 2];
@@ -42,84 +33,82 @@ void Sound::BankScriptContainer::init(Bank * bnk, Util::StringArray & tokenizedS
 	}
 	unsigned char commandIndex = 0;
 	unsigned char scriptIndex = 0;
-	index = tokenizedString.findNext("script", 0xffffffff);
-	while (commandIndex != nCommands_)
+	typedef Util::Tokenizer::Iterator Iter;
+	Iter scriptIt = tokenizedString.find( "script" );
+	while ( scriptIt != end( tokenizedString ) )
 	{
-		++index;
-		strcpy_s(names_[scriptIndex], eNameLength, tokenizedString[index] );
-		++index;
-		unsigned int nextIndex = tokenizedString.findNext("script", index);
+		Iter scriptEnd = tokenizedString.findNext( "script" , scriptIt );
+		assert ( scriptEnd - scriptIt > 2 );
+		strcpy_s( names_[ scriptIndex ], eNameLength, *( scriptIt + 1 ) );
 		scriptStarts_[scriptIndex] = commandIndex;
 		scriptLengths_[scriptIndex] = 0;
-		while (index < nextIndex && commandIndex != nCommands_)
+		for( Iter it = scriptIt + 2; it != scriptEnd; )
 		{
-			
-			sscanf_s(tokenizedString[index], "@%f", delays_ + commandIndex);
-			++index;
+			sscanf_s( *it, "@%f", delays_ + commandIndex );
+			++it;
 			float vol = 1.0f;
 			float pan = 0.0f;
-			if (strcmp( tokenizedString[index], "random") == 0 )
+			if (strcmp( *it, "random") == 0 )
 			{
 				commandIds_[commandIndex] = eCommandRandom;
 				RandomParams* params = reinterpret_cast<RandomParams*>(commandParam_[commandIndex]);
-				++index;
-				
+				++it;
 
-				sscanf_s(tokenizedString[index], "%d", &(params->nEntries ) );
+				sscanf_s( *it, "%d", &(params->nEntries ) );
+				++it;
 				for (unsigned int i = 0; i < params->nEntries; ++i)
 				{
-					++index;
-					params->bankIds[ i ] = bank_->getNameIndex(tokenizedString[index]);
+					params->bankIds[ i ] = bank_->getNameIndex( *it );
+					++it;
 				}
-				if (index + 1 < tokenizedString.size() && strcmp(tokenizedString[index + 1], "volpan") == 0)
+
+				if ( it != scriptEnd && strcmp( *it, "volpan") == 0)
 				{
-					sscanf_s(tokenizedString[index + 2], "%f", &(vol));
-					sscanf_s(tokenizedString[index + 3], "%f", &(pan));
-					
-					index += 3;
+					++it;
+					sscanf_s( *it, "%f", &(vol)); ++it;
+					sscanf_s( *it, "%f", &(pan)); ++it;
 				}
 				params->volume = (unsigned  short)(vol * 0xffff);
 				params->pan = (unsigned  short)(pan * 0x7fff);
 			}
-			else if (strcmp(tokenizedString[index], "play") == 0)
+			else if (strcmp( *it ,"play") == 0)
 			{
 				commandIds_[commandIndex] = eCommandPlay;
 				PlayParams* params = reinterpret_cast<PlayParams*>(commandParam_[commandIndex]);
-				++index;
-				params->bankId = bank_->getNameIndex(tokenizedString[index]);
-				if (index + 1 < tokenizedString.size() && strcmp(tokenizedString[index + 1], "volpan") == 0)
+				++it;
+
+				params->bankId = bank_->getNameIndex( *it );
+				++it;
+				if ( it != scriptEnd && strcmp( *it, "volpan") == 0)
 				{
-					sscanf_s(tokenizedString[index + 2], "%f", &(vol));
-					sscanf_s(tokenizedString[index + 3], "%f", &(pan));
-					index += 3;
+					++it;
+					sscanf_s( *it, "%f", &(vol)); ++it;
+					sscanf_s( *it, "%f", &(pan)); ++it;
 				}
 				params->volume = (unsigned  short)(vol * 0xffff);
 				params->pan = (unsigned  short)(pan * 0x7fff);
 			}
-			else if (strcmp(tokenizedString[index], "loop") == 0)
+			else if( strcmp( *it, "loop") == 0 )
 			{
 				commandIds_[commandIndex] = eCommandLoop;
 				LoopParams* params = reinterpret_cast<LoopParams*>(commandParam_[commandIndex]);
-				++index;
-				params->bankId = bank_->getNameIndex(tokenizedString[index]);
-				if (index + 1 < tokenizedString.size() && strcmp(tokenizedString[index + 1], "volpan") == 0)
+				++it;
+				params->bankId = bank_->getNameIndex( *it );
+				++it;
+				if ( it != scriptEnd && strcmp( *it, "volpan") == 0)
 				{
-					sscanf_s(tokenizedString[index + 2], "%f", &(vol));
-					sscanf_s(tokenizedString[index + 3], "%f", &(pan));
-					index += 3;
+					++it;
+					sscanf_s( *it, "%f", &(vol)); ++it;
+					sscanf_s( *it, "%f", &(pan)); ++it;
 				}
 				params->volume = (unsigned  short)(vol * 0xffff);
 				params->pan = (unsigned  short)(pan * 0x7fff);
 			}
-			else
-			{
-				assert(false);
-			}
 			++commandIndex;
-			++scriptLengths_[scriptIndex];
-			++index;
+			++scriptLengths_[ scriptIndex ];
 		}
 		++scriptIndex;
+		scriptIt = scriptEnd;
 	}
 }
 
