@@ -26,10 +26,7 @@ int WINAPI wWinMain(HINSTANCE appInstance, HINSTANCE prevInstane, LPWSTR cmdLine
 {
 	(void)cmdLine;
 	(void)prevInstane;
-	//bool fftCorrect = Util::testFFT<4>();
-	//unsigned int reshuffle1 = Util::bitReshuffle<1024>(512 + 256);//3
-	//unsigned int reshuffle2 = Util::bitReshuffle<1024>(112);//0001110000 -> 0000111000 <=> 112 -> 56
-	//unsigned int reshuffle3 = Util::bitReshuffle<1024>(12);//0000001100 -> 0011000000 <=> 12 -> +++++192
+	//bool fftCorrect = Util::testFFT<1024>();
 	//if (!fftCorrect)
 	//{
 	//	return -1;

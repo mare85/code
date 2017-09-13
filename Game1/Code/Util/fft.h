@@ -32,81 +32,84 @@ class FFT
 {
 	float sins[N];
 	float coss[N];
-	unsigned int bitSwaps[N>>1];
+	unsigned int bitSwaps[N];
 	void _ForwardInplace( float* re, float* im ) 
 	{
-		unsigned int nBitswaps = N>>1;
-		for( unsigned int i = 0; i < nBitswaps; ++i )
+		for( unsigned int i = 0; i < N; ++i )
 		{
 			unsigned int j = bitSwaps[i];
-			std::swap( re[i], re[j] );
-			std::swap( im[i], im[j] );
+			if( i < j )
+			{
+				std::swap( re[i], re[j] );
+				std::swap( im[i], im[j] );
+			}
 		}
-		unsigned int sinStep = N;
-		for( unsigned int j = 1; j < N; j <<= 1 )
+		unsigned int sinStep = N>>1;
+		for( unsigned int spread = 1; spread < N; spread <<= 1 )
 		{
 			unsigned int sinIndex = 0;
-			unsigned int j2 = j<<1;
-			for( unsigned int m = 0; m < j; ++m ) 
+			unsigned int step = spread<<1;
+			for( unsigned int k = 0; k < spread; ++k ) 
 			{
-				//auto t = pi * sign * m / j;
 				float& co = coss[ sinIndex ];
 				float& si = sins[ sinIndex ];
-				//auto w = complex<double>( cos( t ), sin( t ) );
-				for(unsigned int i = m; i < N; i += j2) 
+				for(unsigned int i = k; i < N; i += step) 
 				{
 					float reE = re[i], imE = im[i];
-					float reO = re[i + j], imO = im[i + j];
-					//co,si * z = ( co - i * si ) * (z.r + i * z.i ) = co * (z.r + i*z.i) - i * si( z.r + i*z.i ) =
-					// = (co * z.r + si * z.i ) + i * ( -si * z.r + co * z.i ) 
+					float reO = re[i + spread], imO = im[i + spread];
 					float reOddIngredient = co * reO + si * imO;
-					float imOddIngredient = - si * reO + co * imO;
-
+					float imOddIngredient = -si * reO + co * imO;
 					re[ i ] = reE + reOddIngredient;
 					im[ i ] = imE + imOddIngredient;
-					re[ i + j ] = reE - reOddIngredient;
-					im[ i + j ] = imE - imOddIngredient;
-					//complex<double> zi = zs.at(i), t = w * zs.at(i + j);
-					//zs.at(i) = zi + t;
-					//zs.at(i + j) = zi - t;
+					re[ i + spread ] = reE - reOddIngredient;
+					im[ i + spread ] = imE - imOddIngredient;
 				}
 				sinIndex += sinStep;
 			}
 			sinStep >>= 1;
 		}
-		//if(n == 1)
-		//{
-		//	*out1 = *in1;
-		//	*out2 = *in2;
-		//	return;
-		//}
-		//const unsigned int nOver2 = n>>1;
-		//// scrambling
-		//for( unsigned int i = 0; i < nOver2; ++i)
-		//{
-		//	unsigned int iE = i<<1;
-		//	unsigned int iO = iE + 1;
-		//	out1[ i ] = in1[ iE ];
-		//	out2[ i ] = in2[ iE ];
-		//	out1[ i + nOver2 ] = in1[ iO ];
-		//	out2[ i + nOver2 ] = in2[ iO ];
-		//}
-		//_Forward( out1, out2, in1, in2, nOver2 );
-		//_Forward( out1 + nOver2, out2 + nOver2, in1 + nOver2, in2 + nOver2, nOver2 );
-		//const unsigned int sinIndex = N / n;
-		//const float& co = coss[ sinIndex ];
-		//const float& si = sins[ sinIndex ];
-		//for( unsigned int i = 0; i < nOver2; ++i )
-		//{
-		//	unsigned int iE = i;
-		//	unsigned int iO = i + nOver2;
-		//	float odd1 = co * in1[ iO ] + si * in2[iO];
-		//	float odd2 = co * in2[ iO ] - si * in1[iO];
-		//	out1[ iE ] = in1[ iE ] + odd1;
-		//	out2[ iE ] = in2[ iE ] + odd2;
-		//	out1[ iO ] = in1[ iE ] - odd1;
-		//	out2[ iO ] = in2[ iE ] - odd2;
-		//}
+	}
+	void _ReverseInplace( float* re, float* im )
+	{
+		for( unsigned int i = 0; i < N; ++i )
+		{
+			unsigned int j = bitSwaps[i];
+			if( i < j )
+			{
+				std::swap( re[i], re[j] );
+				std::swap( im[i], im[j] );
+			}
+		}
+		unsigned int sinStep = N>>1;
+		for( unsigned int spread = 1; spread < N; spread <<= 1 )
+		{
+			unsigned int sinIndex = 0;
+			unsigned int step = spread<<1;
+			for( unsigned int k = 0; k < spread; ++k ) 
+			{
+				float& co = coss[ sinIndex ];
+				float& si = sins[ sinIndex ];
+				for(unsigned int i = k; i < N; i += step) 
+				{
+					float reE = re[i], imE = im[i];
+					float reO = re[i + spread], imO = im[i + spread];
+					float reOddIngredient = co * reO - si * imO;
+					float imOddIngredient = si * reO + co * imO;
+					re[ i ] = reE + reOddIngredient;
+					im[ i ] = imE + imOddIngredient;
+					re[ i + spread ] = reE - reOddIngredient;
+					im[ i + spread ] = imE - imOddIngredient;
+				}
+				sinIndex += sinStep;
+			}
+			sinStep >>= 1;
+		}
+		float scale = 1.0f / N;
+		for( unsigned int i =0; i < N; ++i )
+		{
+			re[ i ] *= scale;
+			im[ i ] *= scale;
+		}
 	}
 public:
 	void init() {
@@ -119,20 +122,24 @@ public:
 			coss[i] = cosf(angle);
 			angle += step;
 		}
-		unsigned int nBitswaps = N>>1;
-		for( unsigned int i = 0; i < nBitswaps; ++i )
+		for( unsigned int i = 0; i < N; ++i )
 		{
 			bitSwaps[i] = bitReshuffle<N>(i);
 		}
 	}
-	void forward(float* in1, float*in2, float*out1, float*out2)
+	void forward( float* in1, float* in2, float* out1, float* out2 )
 	{
-		//float tmp1[N];
-		//float tmp2[N];
 		static const unsigned int nBytes = sizeof(float) * N;
 		memcpy( out1, in1, nBytes);
 		memcpy( out2, in2, nBytes);
 		_ForwardInplace( out1, out2);
+	}
+	void reverse( float* in1, float* in2, float* out1, float* out2 )
+	{
+		static const unsigned int nBytes = sizeof(float) * N;
+		memcpy( out1, in1, nBytes);
+		memcpy( out2, in2, nBytes);
+		_ReverseInplace( out1, out2);
 	}
 	void dft(float* in1, float* in2, float *out1, float *out2)
 	{
@@ -144,8 +151,8 @@ public:
 			{
 				unsigned int index = (k*n) & (N-1);
 				o1 += in1[n] * coss[index];
-				o1 += in1[n] * sins[index];
-				o2 -= in2[n] * sins[index];
+				o1 += in2[n] * sins[index];
+				o2 -= in1[n] * sins[index];
 				o2 += in2[n] * coss[index];
 			}
 			out1[k] = o1;
@@ -178,6 +185,8 @@ bool testFFT()
 	float imOutDft[N];
 	float reOutFft[N];
 	float imOutFft[N];
+	float re2[N];
+	float im2[N];
 	Util::RandomGenerator gen;
 	float tolerance = .001f;
 	for (unsigned int ti = 0; ti < 100; ++ti)
@@ -197,6 +206,15 @@ bool testFFT()
 			if (abs(diff1) > tolerance || abs(diff2) > tolerance)
 				failed = true;
 		}
+		fft.reverse( reOutFft, imOutFft, re2, im2 );
+		for (unsigned int i = 0; i < N; ++i)
+		{
+			float diff1 = reIn[i] - re2[i];
+			float diff2 = imIn[i] - im2[i];
+			if (abs(diff1) > tolerance || abs(diff2) > tolerance)
+				failed = true;
+		}
+
 		if (failed)
 		{
 			return false;
