@@ -12,6 +12,7 @@ class Spectrum
 {
 public:
 	static const unsigned int WindowSize = 4096;
+	static const unsigned int FeedSize = 1024;
 private:
 	short* feedBuffer_;
 	short* windowBuffer_;

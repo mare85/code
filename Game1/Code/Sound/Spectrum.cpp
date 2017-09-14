@@ -81,11 +81,15 @@ void Spectrum::feed( short* data, size_t count )
 		feedBuffer_[ feedSize_ ] = data[ inIndex ];
 		++feedSize_;
 
-		if( feedSize_ == WindowSize )
+		if( feedSize_ == FeedSize )
 		{
 			std::lock_guard<std::mutex> lck (windowBufferMutex_);
 
-			for( unsigned int i = 0; i < WindowSize; ++i )
+			for( unsigned int i = WindowSize - FeedSize - 1; i < WindowSize; --i )
+			{
+				windowBuffer_[ i + FeedSize ] = windowBuffer_[ i ];
+			}
+			for( unsigned int i = 0; i < feedSize_; ++i )
 			{
 				windowBuffer_[ i ] = feedBuffer_[ i ];
 			}
