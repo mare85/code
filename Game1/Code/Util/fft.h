@@ -25,8 +25,14 @@ template<> inline unsigned int bitReshuffle<1024>(unsigned int val)
 	out = ( out & 0x129 )<<1 | ( out & 0x252 )>>1;
 	return out | valcenter;
 }
+template<> inline unsigned int bitReshuffle<4096>( unsigned int val)
+{
+	unsigned int
+	out = ( val & 0x00F )<<8 | ( val & 0xF00 )>>8 | ( val & 0x0F0 );
+	out = ( out & 0x333 )<<2 | ( out & 0xCCC )>>2;
+	return ( out & 0x555 )<<1 | ( out & 0xAAA )>>1;
+}
 static const float TWO_PI = 6.28318f;
-void dft(float* in1, float* in2, float *out1, float *out2, unsigned int nSamples);
 template <unsigned int N>
 class FFT
 {
@@ -171,55 +177,5 @@ public:
 	void dft(float* in1, float* in2, float *out1, float *out2);
 	void forward(float* in1, float*in2, float*out1, float*out2);
 };
-bool testFFT8();
-bool testFFT1024();
-template <unsigned int N>
-bool testFFT()
-{	
-	FFT<N> fft;
-	fft.init();
-	float reIn[N];
-	float imIn[N];
-		
-	float reOutDft[N];
-	float imOutDft[N];
-	float reOutFft[N];
-	float imOutFft[N];
-	float re2[N];
-	float im2[N];
-	Util::RandomGenerator gen;
-	float tolerance = .001f;
-	for (unsigned int ti = 0; ti < 100; ++ti)
-	{
-		bool failed = false;
-		for (unsigned int i = 0; i < N; ++i)
-		{
-			reIn[i] = gen.getFloat(-.5f, .5f);
-			imIn[i] = gen.getFloat(-.5f, .5f);
-		}
-		fft.dft(reIn, imIn, reOutDft, imOutDft);
-		fft.forward(reIn, imIn, reOutFft, imOutFft);
-		for (unsigned int i = 0; i < N; ++i)
-		{
-			float diff1 = reOutDft[i] - reOutFft[i];
-			float diff2 = imOutDft[i] - imOutFft[i];
-			if (abs(diff1) > tolerance || abs(diff2) > tolerance)
-				failed = true;
-		}
-		fft.reverse( reOutFft, imOutFft, re2, im2 );
-		for (unsigned int i = 0; i < N; ++i)
-		{
-			float diff1 = reIn[i] - re2[i];
-			float diff2 = imIn[i] - im2[i];
-			if (abs(diff1) > tolerance || abs(diff2) > tolerance)
-				failed = true;
-		}
 
-		if (failed)
-		{
-			return false;
-		}
-	}
-	return true;
-}
 }

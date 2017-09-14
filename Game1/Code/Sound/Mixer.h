@@ -9,6 +9,7 @@ namespace Sound
 	class Buffer;
 	class Bank;
 	class BankScript;
+	class Spectrum;
 	class VoiceInput
 	{
 		short * buffer_ = nullptr;
@@ -51,8 +52,6 @@ namespace Sound
 		bool isPlaying() { return bank_ && ( sampleNum_ > progress_ || looping_ ); }
 		bool isInBank(Bank* bnk) { return bnk == bank_; }
 		void readSample(short* l, short* r);
-		//short panning() const { return panning_; }
-		//unsigned short volume() const { return volume_; }
 		unsigned int soundId() const { return soundId_; }
 		void volume(unsigned short val) { if(!stopping_) targetVolume_ = val; }
 		void panning(short val) { targetPanning_ = val; }
@@ -70,6 +69,7 @@ namespace Sound
 			nQueueLength = 32,
 		};
 		Buffer* buffer_;
+		Spectrum* spectrum_ = nullptr;
 		unsigned int capturePosition_ = 0;
 		VoiceInput voice_[nMaxVoices];
 		unsigned int freeVoicesIndices_[nMaxVoices];
@@ -96,7 +96,7 @@ namespace Sound
 		unsigned int _reserveVoice();
 		void _freeVoice( unsigned int i);
 		Mixer();
-		~Mixer() {}
+		~Mixer();
 		void __process();
 		bool terminate_ = false;
 		std::thread thread_;
@@ -105,8 +105,6 @@ namespace Sound
 	public:
 		static void StartUp();
 		static void ShutDown();
-		//unsigned int playVoice(const char* bankName, const char* soundName);
-		//unsigned int playVoice(Bank * bnk, unsigned int index);
 		unsigned int play(Bank * bnk, unsigned int index, unsigned short volume, short panning);
 		unsigned int play(const char* bankName, const char* soundName, unsigned short volume, short panning);
 		void addBankScript(BankScript* script, unsigned int soundId, unsigned short volume, short panning );
@@ -126,6 +124,10 @@ namespace Sound
 		void setVolume(unsigned int soundId, unsigned short volume);
 		void setPan(unsigned int soundId, short pan);
 		void stopBank(Bank * bnk);
+		bool hasSpectrum() const { return spectrum_ != nullptr; }
+		void initSpectrum();
+		void freeSpectrum();
+		void getSpectrum( float* normBuffer );
 		static Mixer* Instance();
 
 		

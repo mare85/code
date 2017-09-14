@@ -15,3 +15,6 @@ Game1/Todo.txt
 *.opendb
 *codeanalysis.xml
 *.nativecodeanalysis.all.xml
+*.psess
+*.db-shm
+*.db-wal

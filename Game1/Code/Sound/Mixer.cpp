@@ -4,7 +4,7 @@
 #include <Sound/Bank.h>
 #include <Sound/Buffer.h>
 #include <Sound/BankManager.h>
-
+#include <Sound/Spectrum.h>
 
 void Sound::VoiceInput::load(Bank* bnk, unsigned int inBankSoundId, 
 	unsigned int soundId, bool looping, bool softAttack,
@@ -148,6 +148,11 @@ Sound::Mixer::Mixer()
 	nFreeVoiceIndices_ = nMaxVoices;
 }
 
+Sound::Mixer::~Mixer()
+{
+	delete spectrum_;
+}
+
 void Sound::Mixer::__process()
 {
 	std::lock_guard<std::mutex> lock(mutex_);
@@ -205,8 +210,20 @@ void Sound::Mixer::__process()
 		// voices here
 		*outPtr = outSampleL;++outPtr;
 		*outPtr = outSampleR;++outPtr;
+
 		outData[(i << 1)] = outSampleL;
 		outData[(i << 1) + 1] = outSampleR;
+	}
+	if( spectrum_ )
+	{
+		short spectrumFeed[1024];
+		short* outPtr = outData;
+		for( unsigned int i = 0 ; i < 1024; ++i )
+		{
+			spectrumFeed[ i ] = (short)( ( (int)*outPtr + (int)*(outPtr + 1) ) / 2 );
+			outPtr += 2;
+		}
+		spectrum_->feed( spectrumFeed, 1024 );
 	}
 	buffer_->fillPartBuffer(outData, 4096 * capturePosition_, 4096);
 	capturePosition_ = (capturePosition_ + 1 ) & 3;
@@ -485,15 +502,38 @@ void Sound::Mixer::stopBank(Bank * bnk)
 		}
 	}
 }
-//unsigned int Sound::Mixer::playVoice(Bank * bnk, unsigned int index)
-//{
-//	std::lock_guard<std::mutex>lock(mutex_);
-//	unsigned int voiceIndex = _reserveVoice();
-//	VoiceInput& voice = voice_[voiceIndex];
-//	++soundCyclicCounter_;
-//	voice.load(bnk, index, soundCyclicCounter_);
-//	return voiceIndex;
-//}
+
+void Sound::Mixer::initSpectrum()
+{
+	if( spectrum_ == nullptr )
+	{
+		spectrum_ = new Spectrum();
+	}
+	else
+	{
+		spectrum_->incrementReferences();
+	}
+}
+
+void Sound::Mixer::freeSpectrum()
+{
+	if( spectrum_ )
+	{
+		spectrum_->decrementReferences();
+		if( ! spectrum_->isReferenced() )
+		{
+			delete spectrum_;
+			spectrum_ = nullptr;
+		}
+	}
+}
+
+void Sound::Mixer::getSpectrum( float* outNorm )
+{
+	if( spectrum_ )
+		spectrum_->getNorm( outNorm );
+}
+
 Sound::Mixer* Sound::Mixer::Instance()
 {
 	assert(__instance);
@@ -518,6 +558,7 @@ void Sound::Mixer::updateQueue(float deltaTime)
 		VoiceInput& voice = voice_[voiceIndex];
 		voice.load(playQueueBanks_[i], playQueueBankIds_[i], playQueueSoundIds_[i], playQueueLooping_[i], playQueueSoftAttack_[i],
 			playQueueVolumes_[i], playQueuePanning_[i], playQueueScriptVolumes_[i], playQueueScriptPanning_[i]);
+
 		if( playQueueIsPaused_[i] )
 		{
 			voice.pause();

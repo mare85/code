@@ -66,6 +66,13 @@ void MusicRoom::Character::update(const Game::UpdateContext* uctx)
 	rootTransform_->setRotation( yawQuat );
 	cameraTransform_->setRotation( pitchQuat );
 	front_ = -normalize( cameraTransform_->getWorldPose().getCol2().getXYZ() );
+
+	if( extraXModifyTransform_ )
+	{
+		vmath::Vector3 pos = extraXModifyTransform_->getTranslation();
+		pos.setX( position_.getX() );
+		extraXModifyTransform_->setTranslation( pos );
+	}
 }
 
 void MusicRoom::Character::stop()

@@ -158,6 +158,7 @@
     <ClCompile Include="Code\Black\Launcher.cpp" />
     <ClCompile Include="Code\Black\TextIndex.cpp" />
     <ClCompile Include="Code\Black\TextSubsystem.cpp" />
+    <ClCompile Include="Code\GameUtils\SpectrumVisualisation.cpp" />
     <ClCompile Include="Code\Game\Object.cpp" />
     <ClCompile Include="Code\Game\ParamSet.cpp" />
     <ClCompile Include="Code\Black\Editor\Add.cpp" />
@@ -211,12 +212,14 @@
     <ClCompile Include="Code\Sound\BankManager.cpp" />
     <ClCompile Include="Code\Sound\BankScript.cpp" />
     <ClCompile Include="Code\Sound\Buffer.cpp" />
+    <ClCompile Include="Code\Sound\Spectrum.cpp" />
     <ClCompile Include="Code\Sound\System.cpp" />
     <ClCompile Include="Code\Sound\Mixer.cpp" />
     <ClCompile Include="Code\Sound\WaveLoader.cpp" />
     <ClCompile Include="Code\Util\Collisions.cpp" />
     <ClCompile Include="Code\Util\DebugDraw.cpp" />
-    <ClCompile Include="Code\Util\fft.cpp" />
+    <ClCompile Include="Code\Util\FFT.cpp" />
+    <ClCompile Include="Code\Util\FFTTest.cpp" />
     <ClCompile Include="Code\Util\Tokenizer.cpp" />
     <ClCompile Include="Code\Util\Utils.cpp" />
     <ClCompile Include="Code\Game\App.cpp" />
@@ -231,6 +234,7 @@
     <ClInclude Include="Code\Black\Launcher.h" />
     <ClInclude Include="Code\Black\TextIndex.h" />
     <ClInclude Include="Code\Black\TextSubsystem.h" />
+    <ClInclude Include="Code\GameUtils\SpectrumVisualisation.h" />
     <ClInclude Include="Code\Game\ParamSet.h" />
     <ClInclude Include="Code\Black\Editor\Add.h" />
     <ClInclude Include="Code\Black\Editor\Editor.h" />
@@ -285,12 +289,14 @@
     <ClInclude Include="Code\Sound\BankManager.h" />
     <ClInclude Include="Code\Sound\BankScript.h" />
     <ClInclude Include="Code\Sound\Buffer.h" />
+    <ClInclude Include="Code\Sound\Spectrum.h" />
     <ClInclude Include="Code\Sound\System.h" />
     <ClInclude Include="Code\Sound\Mixer.h" />
     <ClInclude Include="Code\Sound\WaveLoader.h" />
     <ClInclude Include="Code\Util\Collisions.h" />
     <ClInclude Include="Code\Util\DebugDraw.h" />
-    <ClInclude Include="Code\Util\fft.h" />
+    <ClInclude Include="Code\Util\FFT.h" />
+    <ClInclude Include="Code\Util\FFTTest.h" />
     <ClInclude Include="Code\Util\RandomGenerator.h" />
     <ClInclude Include="Code\Util\Tokenizer.h" />
     <ClInclude Include="Code\Util\Utils.h" />

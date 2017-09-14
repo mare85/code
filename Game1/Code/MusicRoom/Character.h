@@ -19,6 +19,7 @@ namespace MusicRoom
 	{
 		Game::Transform * rootTransform_ = nullptr;
 		Game::Transform * cameraTransform_ = nullptr;
+		Game::Transform * extraXModifyTransform_ = nullptr;
 		Game::Scene * scene_ = nullptr;
 		Game::Camera* cam_;
 		vmath::Vector3 position_;
@@ -37,6 +38,7 @@ namespace MusicRoom
 		void stop();
 		vmath::Vector3 getFront() { return front_; }
 		vmath::Vector3 getPosition() { return position_; }
+		void setExtraTransform( Game::Transform* t ) { extraXModifyTransform_ = t; }
 	};
 
 
