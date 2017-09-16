@@ -11,7 +11,7 @@ namespace Neuron {
 struct Nodes
 {
 	enum {
-		nNodes = 100,
+		nNodes = 200,
 		nEdges = 400,
 		nEdgesPerNode = 15,
 	};
@@ -52,6 +52,7 @@ struct Nodes
 		unsigned int curNEdges = 0;
 		unsigned int i = 0;
 		float sizeSqr = 16.0f * range * range;	
+		
 		while( curNEdges < nEdges)
 		{
 			float nearestDistSqr = sizeSqr;
@@ -92,6 +93,9 @@ struct Nodes
 				n.edgeDirs_ [ei] = dir; 
 				massCenter += dir;
 			}
+			vmath::Quat randomRotation = vmath::Quat::rotation( 1.5f,
+				normalize( gen.getVector3(1.0f ) )
+				);
 			if( n.nConnections_ > 1)
 			{
 				massCenter *= 1.0f / n.nConnections_;
@@ -100,6 +104,7 @@ struct Nodes
 					vmath::Vector3 dir = n.edgeDirs_[ ei ] - massCenter;
 					if( lengthSqr( dir ) > .001f)
 						n.edgeDirs_[ ei ] = normalize( n.edgeDirs_[ ei ] - massCenter );
+					n.edgeDirs_[ ei ] = vmath::rotate( randomRotation, n.edgeDirs_[ ei ] );
 				}
 			}
 		}
@@ -209,7 +214,8 @@ void Network::_initRadiusBuffers(Graphics::GdiContext* gdiContext)
 	for( unsigned int i = 0; i != nSegmentsPerEdge; ++i)
 	{
 		float x = t * (1.0f - t) * 4.0f;
-		radiuses[ i ] = nodeRadius_ * (1.0f - .95f * x);
+		radiuses[ i ] = nodeRadius_ * (1.0f - .8f * x);
+		t += step;
 	}
 	radiusesBuffer_ = gdiContext->createBuffer( radiuses, nSegmentsPerEdge * sizeof(float), Graphics::BufferType::Compute);
 	delete[] radiuses;
@@ -227,13 +233,14 @@ void Network::_initRadiusBuffers(Graphics::GdiContext* gdiContext)
 void Network::loadData(Graphics::GdiContext* gdiContext) 
 {
 	if ( ! nodes_)
-		nodes_ = new Nodes(50.0f);
+		nodes_ = new Nodes(25.0f);
 	_initBeziers(gdiContext);
 	_initRadiusBuffers(gdiContext);
 	_initMatrixBuffer(gdiContext);
 	drawCBuff_ = gdiContext->createBuffer(nullptr, sizeof(Graphics::ConstantBufferData), Graphics::BufferType::Constant);
 	nVerts_ = nodes_->nEdges * nSegmentsPerEdge * 10;
 	nIndices_ = nodes_->nEdges * nSegmentsPerEdge * 60;
+	unsigned int nRings = nodes_->nEdges * nSegmentsPerEdge;
 	unsigned int nPosBytes = nVerts_ * 12;
 	vertexPosBuffer_ = gdiContext->createBuffer( nullptr, nPosBytes, Graphics::BufferType::ComputeToVertex);
 	uavVertexPos_ = gdiContext->createByteAddressUav( vertexPosBuffer_ );
@@ -241,33 +248,34 @@ void Network::loadData(Graphics::GdiContext* gdiContext)
 	{
 		unsigned int* outIndex = indices;
 		unsigned int inIndex = 0;
-		unsigned int nQuads = nIndices_ / 12;
-		for( unsigned int i = 0; i < nQuads; ++i )
+		for( unsigned int i = 0; i < nRings; ++i )
 		{
-			unsigned int nextInIndex = ( inIndex + 2 ) % 10;
-			nextInIndex += inIndex;
-			*outIndex = inIndex; ++outIndex;
-			*outIndex = inIndex + 1; ++outIndex;
-			*outIndex = nextInIndex + 1; ++outIndex;
-			*outIndex = inIndex; ++outIndex;
-			*outIndex = nextInIndex + 1; ++outIndex;
-			*outIndex = nextInIndex; ++outIndex;
-
-			*outIndex = inIndex; ++outIndex;
-			*outIndex = nextInIndex + 1; ++outIndex;
-			*outIndex = inIndex + 1; ++outIndex;
-			*outIndex = inIndex; ++outIndex;
-			*outIndex = nextInIndex; ++outIndex;
-			*outIndex = nextInIndex + 1; ++outIndex;
-			inIndex += 2;
+			for( unsigned int i2 = 0; i2 < 5; ++i2 )
+			{
+				unsigned int ti = i2;
+				unsigned int ni = ( i2 + 1 ) % 5;
+				*outIndex = inIndex + ti * 2; ++outIndex;
+				*outIndex = inIndex + ti * 2 + 1; ++outIndex;
+				*outIndex = inIndex + ni * 2 + 1; ++outIndex;
+				*outIndex = inIndex + ti * 2; ++outIndex;
+				*outIndex = inIndex + ni * 2 + 1; ++outIndex;
+				*outIndex = inIndex + ni * 2; ++outIndex;
+				*outIndex = inIndex + ti * 2; ++outIndex;
+				*outIndex = inIndex + ni * 2 + 1; ++outIndex;
+				*outIndex = inIndex + ti * 2 + 1; ++outIndex;
+				*outIndex = inIndex + ti * 2; ++outIndex;
+				*outIndex = inIndex + ni * 2; ++outIndex;
+				*outIndex = inIndex + ni * 2 + 1; ++outIndex;
+			}
+			inIndex += 10;
 		}
 	}
 	indexBuffer_ = gdiContext->createBuffer( indices, nIndices_ * sizeof(unsigned int), Graphics::BufferType::Index );
 	delete[] indices;
 	typedef Graphics::Semantic S;
-	Graphics::VertexDesc vDescPos = { {S::Pos3} };
-	sh_ = gdiContext->createShader("assets/Shaders/neuronColor.fx", &vDescPos, "neuronColor");
-	cs_ = gdiContext->createComputeShader("assets/Shaders/neuron_cs.fx","cs_getVPos","neuron/cs_main");
+	Graphics::VertexDesc vDescPos = { { S::Pos3 } };
+	sh_ = gdiContext->createShader( "assets/Shaders/neuronColor.fx", &vDescPos, "neuronColor" );
+	cs_ = gdiContext->createComputeShader( "assets/Shaders/neuron_cs.fx","cs_getVPos","neuron/cs_main" );
 	
 	//debugBuffer_ = gdiContext->createBuffer( nullptr, nPosBytes, Graphics::BufferType::Debug );
 }

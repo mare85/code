@@ -158,6 +158,7 @@
     <ClCompile Include="Code\Black\Launcher.cpp" />
     <ClCompile Include="Code\Black\TextIndex.cpp" />
     <ClCompile Include="Code\Black\TextSubsystem.cpp" />
+    <ClCompile Include="Code\GameUtils\FreeRoamCamera.cpp" />
     <ClCompile Include="Code\GameUtils\SpectrumVisualisation.cpp" />
     <ClCompile Include="Code\Game\Object.cpp" />
     <ClCompile Include="Code\Game\ParamSet.cpp" />
@@ -234,6 +235,7 @@
     <ClInclude Include="Code\Black\Launcher.h" />
     <ClInclude Include="Code\Black\TextIndex.h" />
     <ClInclude Include="Code\Black\TextSubsystem.h" />
+    <ClInclude Include="Code\GameUtils\FreeRoamCamera.h" />
     <ClInclude Include="Code\GameUtils\SpectrumVisualisation.h" />
     <ClInclude Include="Code\Game\ParamSet.h" />
     <ClInclude Include="Code\Black\Editor\Add.h" />
