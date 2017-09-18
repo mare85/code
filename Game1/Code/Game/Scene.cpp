@@ -122,13 +122,14 @@ namespace Game
 			Transform* tr = kv.second;
 			delete tr;
 		}
+		for (Updater* upd : updaters_)
+		{
+			if( upd->isUpdaterManagedByScene() )
+				delete upd;
+		}
 		for (Object* obj: objects_)
 		{
 			delete obj;
-		}
-		for (Updater* upd : updaters_)
-		{
-			delete upd;
 		}
 
 	}

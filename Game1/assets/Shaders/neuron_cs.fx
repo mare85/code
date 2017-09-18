@@ -1,20 +1,45 @@
 //srvMatrix_,srvRadiuses_,srvPulse_,srvBeziers_ -> uavVertexPos_
 ByteAddressBuffer BufferMatrix: register(t0);
 ByteAddressBuffer BufferRadius: register(t1);
-ByteAddressBuffer BufferPulse: register(t2);
+ByteAddressBuffer BufferProgAmp: register(t2);
 ByteAddressBuffer BufferBeziers: register(t3);
+ByteAddressBuffer BufferOffsets: register(t4);
 RWByteAddressBuffer vpos: register(u0);
 
 [numthreads(64, 1, 1)]
 void cs_getVPos( uint3 DTid : SV_DispatchThreadID )
 {
+	const int nSegmentsPerEdge  = 50;
+	const int edgeIndex = DTid.x / nSegmentsPerEdge;
+	const int tIndex = DTid.x - edgeIndex * nSegmentsPerEdge;
+	float t = ( .5 + tIndex ) / nSegmentsPerEdge;
+	const int progAmpIndex = edgeIndex * 8;
+	const int offsetIndex1 = edgeIndex * 32;
+	const int offsetIndex2 = offsetIndex1 + 16;
+	const int beziersIndex = tIndex * 16;
+
+	float prog = asfloat( BufferProgAmp.Load( progAmpIndex ) );
+	float amp = asfloat( BufferProgAmp.Load( progAmpIndex + 4 ) );
+	float x = t - prog;
+	float pulse0 = max(.0f, 1.0 - 10.0 * x*x);
+	pulse0 *= amp * 16.0 * prog * (1.0 - prog) * t * (1.0 - t);
+	float pulse = pulse0 + 1.0;
+
 	float4 matx = asfloat( BufferMatrix.Load4( DTid.x * 64 ) );
 	float4 maty = asfloat( BufferMatrix.Load4( DTid.x * 64 + 16 ) );
 	float4 matz = asfloat( BufferMatrix.Load4( DTid.x * 64 + 32 ) );
 	float4 matt = asfloat( BufferMatrix.Load4( DTid.x * 64 + 48 ) );
+
+	float3 offs1 = asfloat( BufferOffsets.Load3( offsetIndex1 ) );
+	float3 offs2 = asfloat( BufferOffsets.Load3( offsetIndex2 ) );
+	float4 b = asfloat( BufferBeziers.Load4( beziersIndex ) );
+	offs1 = .2 * sin( offs1 * 6.283 );
+	offs2 = .2 * sin( offs2 * 6.283 );
+	float3 offset = offs1 * (b.x + b.y ) + offs2 * (b.z + b.w) + pulse0 * matx * .3;
+	matt += float4( offset, .0 );
+
 	uint radiusIndex = ( DTid.x % (50) ) * 4;
 	float radius = asfloat( BufferRadius.Load( radiusIndex ) );
-	float pulse = asfloat( BufferPulse.Load( DTid.x * 4 ) );
 	float thickness = .1;
 	float3 thicknessDir = thickness * matz.xyz;
 	float3 halfThicknesDir = thicknessDir * -.5;

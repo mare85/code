@@ -22,7 +22,7 @@ void Neuron::launch()
 	GameUtils::StartMenuTrigger* startMenuTrigger = new GameUtils::StartMenuTrigger();
 	scene->addUpdater(startMenuTrigger);
 	Neuron::Network* network = new Neuron::Network();
-	//scene->addUpdater(network);
+	scene->addUpdater(network);
 
 	GameUtils::FreeRoamCamera* cam = new GameUtils::FreeRoamCamera( scene, "camera" );
 	(void)cam;

@@ -9,8 +9,8 @@
 #include <Input/Listener.h>
 namespace GameUtils {
 
-const float FreeRoamCamera::MaxSpeed = 5.0f;
-const float FreeRoamCamera::Acceleration = 20.0f;
+const float FreeRoamCamera::MaxSpeed = 15.0f;
+const float FreeRoamCamera::Acceleration = 60.0f;
 const float FreeRoamCamera::Damping = 5.0f;
 const float FreeRoamCamera::AngleDamping = 7.0f;
 const float FreeRoamCamera::MaxRotSpeed = 10.0f;
@@ -66,7 +66,7 @@ void FreeRoamCamera::update( const Game::UpdateContext* uctx )
 	);
 
 	vmath::Vector3 side = vmath::rotate( yawQuat, vmath::Vector3( 1.0f, .0f, .0f ) );
-	vmath::Vector3 top = cross( front, top );
+	vmath::Vector3 top = cross( side, front );
 
 	speed_ *= max( .5f, 1.0f - uctx->deltaTime * Damping );
 	if( input->isKeyPressed( Input::Key::W ) )

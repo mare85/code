@@ -30,6 +30,6 @@ PS_Input vs_main(VS_Input vertex)
 }
 float4 ps_main(PS_Input frag ) : SV_TARGET
 {
-	float col = max( .025, 1.0 - frag.dist * .02 );
+	float col = max( .025, 1.0 - frag.dist * .015 );
 	return float4(col, col, col, 1.0); 
 }

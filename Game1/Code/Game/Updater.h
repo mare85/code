@@ -20,6 +20,7 @@ namespace Game
 		
 		Updater() {}
 		virtual ~Updater() {}
+		virtual bool isUpdaterManagedByScene() const { return true; }
 
 		virtual void start() = 0;
 		virtual void update(const UpdateContext* uctx) = 0;
