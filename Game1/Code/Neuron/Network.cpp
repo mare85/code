@@ -9,6 +9,12 @@
 
 namespace Neuron {
 
+
+const unsigned int Network::nSegmentsPerEdge = 50;
+const float Network::NodesRange = 25.0f;
+const float Network::NodeOffsetRange = .2f;
+
+
 // Neuron::Network
 void Network::_initBeziers(Graphics::GdiContext * gdiCtx)
 {
@@ -30,7 +36,6 @@ void Network::_initBeziers(Graphics::GdiContext * gdiCtx)
 }
 void Network::_initMatrixBuffer( Graphics::GdiContext * gdiContex )
 {
-	assert( nodes_ );
 	nMats_ = nodes_->nEdges * nSegmentsPerEdge;
 	const unsigned int buffSize = nMats_ * sizeof( vmath::Matrix4 );
 	vmath::Matrix4 *data = new vmath::Matrix4[nMats_];
@@ -90,7 +95,6 @@ void Network::_initMatrixBuffer( Graphics::GdiContext * gdiContex )
 
 void Network::_initProgAmp( Graphics::GdiContext* ctx )
 {
-	assert( nodes_ );
 	const unsigned int buffSize = nodes_->nEdges * sizeof( ProgAmp );
 	progAmpBuffer_ = ctx->createBuffer( nullptr, buffSize, Graphics::BufferType::CpuToCompute );
 	srvProgAmp_ = ctx->createByteAddressSrv( progAmpBuffer_ );
@@ -98,7 +102,6 @@ void Network::_initProgAmp( Graphics::GdiContext* ctx )
 
 void Network::_initOffsets( Graphics::GdiContext* ctx )
 {
-	assert( nodes_ );
 	const unsigned int buffSize = nodes_->nEdges * 2 * sizeof( vmath::Vector3 );
 	offsetsBuffer_ = ctx->createBuffer( nullptr, buffSize, Graphics::BufferType::CpuToCompute );
 	srvOffsets_ = ctx->createByteAddressSrv( offsetsBuffer_ );
@@ -126,24 +129,26 @@ Network::Network()
 : Game::Object( "network" )
 {
 	gen = new Util::RandomGenerator();
+	nodes_ = new Nodes( NodesRange );
 }
+
 Network::~Network()
 {
 	delete gen;
+	delete nodes_; 
 }
 
 //Game::Object
 void Network::loadData(Graphics::GdiContext* gdiContext) 
 {
-	if ( ! nodes_)
-		nodes_ = new Nodes(25.0f);
 
 	_initBeziers( gdiContext );
 	_initRadiusBuffers( gdiContext );
 	_initMatrixBuffer( gdiContext );
 	_initProgAmp( gdiContext );
 	_initOffsets( gdiContext );
-	drawCBuff_ = gdiContext->createBuffer(nullptr, sizeof(Graphics::ConstantBufferData), Graphics::BufferType::Constant);
+	drawCBuff_ = gdiContext->createBuffer(nullptr, sizeof(Graphics::ConstantBufferData), Graphics::BufferType::Constant );
+	computeCBuff_ = gdiContext->createBuffer( nullptr, sizeof( ComputeCBuffData ), Graphics::BufferType::Constant );
 	nVerts_ = nodes_->nEdges * nSegmentsPerEdge * 10;
 	nIndices_ = nodes_->nEdges * nSegmentsPerEdge * 60;
 	unsigned int nRings = nodes_->nEdges * nSegmentsPerEdge;
@@ -197,7 +202,8 @@ void Network::unloadData(Graphics::GdiContext* gdiContext)
 	gdiContext->releaseSrv( srvProgAmp_ );
 	gdiContext->releaseSrv( srvOffsets_ );
 
-
+	gdiContext->releaseBuffer( drawCBuff_ );
+	gdiContext->releaseBuffer( computeCBuff_ );
 	gdiContext->releaseBuffer( indexBuffer_ );
 	gdiContext->releaseBuffer( vertexPosBuffer_ );
 	gdiContext->releaseBuffer( matrixBuffer_ );
@@ -206,8 +212,8 @@ void Network::unloadData(Graphics::GdiContext* gdiContext)
 	gdiContext->releaseBuffer( progAmpBuffer_ );
 	gdiContext->releaseBuffer( offsetsBuffer_ );
 	delete[] beziers_; beziers_ = nullptr;
-	delete nodes_; nodes_ = nullptr;
 }
+
 void Network::render(Graphics::GdiContext* gdiContext, Graphics::RenderContext* renderContext ) 
 {
 	Graphics::ConstantBufferData cbData;
@@ -219,6 +225,7 @@ void Network::render(Graphics::GdiContext* gdiContext, Graphics::RenderContext* 
 	gdiContext->setConstantBuffer(drawCBuff_);
 	gdiContext->drawTriangles(indexBuffer_, vertexPosBuffer_, nIndices_);
 }
+
 void Network::updateGfx(Graphics::GdiContext* gdiContext) 
 {
 	//updating prog amp buffer
@@ -246,23 +253,23 @@ void Network::updateGfx(Graphics::GdiContext* gdiContext)
 	}
 	gdiContext->unmap( offsetsBuffer_ );
 
+	ComputeCBuffData cbData;
+	cbData.nSegmentsPerEdge_ = nSegmentsPerEdge;
+	cbData.offsetRange_ = NodeOffsetRange;
+	gdiContext->updateBuffer(computeCBuff_, &cbData);
+	gdiContext->setCsConstantBuffer(computeCBuff_);
 	gdiContext->dispatchComputeShader(csVPos_,{srvMatrix_,srvRadiuses_,srvProgAmp_,srvBeziers_, srvOffsets_},{uavVertexPos_},nMats_);
-	//gdiContext->copyBuffer( debugBuffer_, vertexPosBuffer_ );
-	//float* outVerts = reinterpret_cast<float*>(gdiContext->mapRead(debugBuffer_));
-	//gdiContext->unmap(debugBuffer_);
 
 }
+
 //Game::Updater
 void Network::start() 
 {
 }
+
 void Network::update(const Game::UpdateContext* uctx) 
 {
-	if( ! nodes_ )
-		return;
-
 	pulseTimer -= uctx->deltaTime;
-	
 	if( pulseTimer < .0f )
 	{
 		nodes_->burstSignal( gen->getUint( nodes_->nNodes ),Nodes::StartingAmp );

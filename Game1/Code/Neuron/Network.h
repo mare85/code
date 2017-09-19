@@ -18,8 +18,15 @@ class Network :
 	public Game::Updater,
 	public Game::Object
 {
-	enum {
-		nSegmentsPerEdge = 50 
+	static const unsigned int nSegmentsPerEdge;
+	static const float NodesRange;
+	static const float NodeOffsetRange;
+
+	struct ComputeCBuffData {
+		unsigned int nSegmentsPerEdge_;
+		float offsetRange_;
+		float padding[2];
+
 	};
 	struct ProgAmp { float progress; float amp; };
 	Util::RandomGenerator* gen;
@@ -31,6 +38,7 @@ class Network :
 	Graphics::Buffer* matrixBuffer_ = nullptr;
 	Graphics::Buffer* vertexPosBuffer_ = nullptr;
 	Graphics::Buffer* drawCBuff_ = nullptr;
+	Graphics::Buffer* computeCBuff_ = nullptr;
 	Graphics::Buffer* indexBuffer_ = nullptr;
 	Graphics::Buffer* debugBuffer_ = nullptr;
 	Graphics::Buffer* progAmpBuffer_ = nullptr;

@@ -812,9 +812,14 @@ void Graphics::GdiContext::updateBuffer(Buffer * dts, void * src)
 	d3dContext_->UpdateSubresource(dts, 0, 0, src, 0, 0);
 }
 
-void Graphics::GdiContext::setConstantBuffer(Buffer * buff)
+void Graphics::GdiContext::setConstantBuffer( Buffer * buff )
 {
-	d3dContext_->VSSetConstantBuffers(0, 1, &buff);
+	d3dContext_->VSSetConstantBuffers( 0, 1, &buff );
+}
+
+void Graphics::GdiContext::setCsConstantBuffer( Buffer* buff )
+{
+	d3dContext_->CSSetConstantBuffers( 0, 1, &buff );
 }
 
 Graphics::BlendState * Graphics::GdiContext::createBlendState(BlendType type)

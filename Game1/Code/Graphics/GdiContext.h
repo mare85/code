@@ -88,7 +88,8 @@ namespace Graphics {
 		void swapRender();
 
 		void updateBuffer(Buffer* dst, void* src);
-		void setConstantBuffer(Buffer* dts);
+		void setConstantBuffer( Buffer* dts );
+		void setCsConstantBuffer( Buffer* buff );
 
 
 		BlendState* createBlendState(BlendType type);

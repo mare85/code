@@ -22,8 +22,6 @@
 
 Game::App* __instance = nullptr;
 
-
-
 Game::App::App()
 {
 	gdiContext_ = new Graphics::GdiContext();
@@ -58,7 +56,7 @@ void Game::App::start(HINSTANCE appInstance, HWND windowHandle)
 	unsigned int height = 720;
 	Script::registerMainMenuFunctions();
 	Script::initFileLoader();
-	gdiContext_->startUp(appInstance, windowHandle, (depthEnabled_ ? Graphics::GdiContext::UseDepthBuffer : 0), width, height);
+	gdiContext_->startUp(appInstance, windowHandle, (depthEnabled_ ? Graphics::GdiContext::UseDepthBuffer : 0), width, height );
 	Sound::startUp(windowHandle, "assets/sounds");
 
 	Sound::loadBank("bank.bnk");
@@ -171,6 +169,8 @@ void Game::App::stop()
 		menuScene_->stop();
 	}
 	Graphics::Store::getInstance()->unloadResources(gdiContext_);
+
+
 	
 	input_->shutDown();
 	

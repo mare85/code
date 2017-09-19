@@ -201,6 +201,7 @@
     <ClCompile Include="Code\Neuron\Launcher.cpp" />
     <ClCompile Include="Code\Neuron\Network.cpp" />
     <ClCompile Include="Code\Neuron\Nodes.cpp" />
+    <ClCompile Include="Code\Neuron\TravelCamera.cpp" />
     <ClCompile Include="Code\Physics\CapsuleColider.cpp" />
     <ClCompile Include="Code\Black\Ground.cpp" />
     <ClCompile Include="Code\Script\CharacterFunctions.cpp" />
@@ -280,6 +281,7 @@
     <ClInclude Include="Code\Neuron\Launcher.h" />
     <ClInclude Include="Code\Neuron\Network.h" />
     <ClInclude Include="Code\Neuron\Nodes.h" />
+    <ClInclude Include="Code\Neuron\TravelCamera.h" />
     <ClInclude Include="Code\Physics\CapsuleColider.h" />
     <ClInclude Include="Code\Black\Ground.h" />
     <ClInclude Include="Code\Script\CharacterFunctions.h" />

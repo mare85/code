@@ -8,8 +8,11 @@
 namespace Neuron {
 
 const float Nodes::StartingAmp = 4.0f;
-const float Nodes::AmpFadeOff = Nodes::StartingAmp * .15f;
-const float Nodes::DefaultProgressSpeed = 3.0f;
+const float Nodes::AmpFadeOff = Nodes::StartingAmp * .05f;
+const float Nodes::DefaultProgressSpeed = 5.0f;
+const float Nodes::FadeOffTime = 2.0f;
+const float Nodes::BoostFadeOffSpeed = 2.5f;
+const float Nodes::BoostStrength = 20.0f;
 
 Nodes::Nodes( float range )
 {
@@ -21,6 +24,7 @@ Nodes::Nodes( float range )
 		nodes_[ ni ].offsetPhase_ = gen.getVector3( .5f ) + vmath::Vector3( .5f );
 		nodes_[ ni ].offsetSpeed_ = gen.getVector3( .1f ) + vmath::Vector3( .1f );
 		nodes_[ ni ].offsetBoost_ = .0f;
+		nodes_[ ni ].fadeOffTimer_ = .0f;
 	}
 	unsigned int curNEdges = 0;
 	unsigned int i = 0;
@@ -117,6 +121,7 @@ void Nodes::update( float deltaTime )
 	{
 		Edge& e = edges_[ i ];
 		e.progress_ += e.progressSpeed_ * deltaTime;
+
 		if( e.progressSpeed_ < .0f && e.progress_ < .0f )
 		{
 			e.progressSpeed_ = .0f;
@@ -132,28 +137,42 @@ void Nodes::update( float deltaTime )
 			e.amp_ = .0f;
 		}
 	}
+
+	const vmath::Vector3 HalfVec( .5f );
+	const vmath::Vector3 OneVec( 1.0f );
+
 	for( unsigned int i = 0; i < nNodes; ++i )
 	{
 		Node& n = nodes_[ i ];
-		n.offsetBoost_ = fmaxf( n.offsetBoost_ - deltaTime * 1.5f, .0f );
+		n.fadeOffTimer_ = fmaxf( n.fadeOffTimer_ - deltaTime, .0f ); 
+		n.offsetBoost_ = fmaxf( n.offsetBoost_ - deltaTime * BoostFadeOffSpeed * n.boostAmp_, .0f );
 		float boost = 1.0f - n.offsetBoost_;
-		boost = n.offsetBoost_ * boost * boost * 7.0f;
-		vmath::Vector3 speed = n.offsetSpeed_ * (1.0f + 10.0f * boost );
+		boost = n.offsetBoost_ * boost * boost * 7.0f; // 7 reaches value of about 1.0 at maximum t*(1.0 - t)^2
+		vmath::Vector3 speed = n.offsetSpeed_ * (1.0f + BoostStrength * boost );
 		n.offsetPhase_ += deltaTime * speed;
-		n.offsetPhase_ -= vmath::Vector3( .5f ) + 
-			vmath::copySignPerElem( vmath::Vector3( .5f ), n.offsetPhase_ - vmath::Vector3( 1.0f ) );
+		n.offsetPhase_ -= HalfVec + // non iffy fractPerElem 
+			vmath::copySignPerElem( HalfVec, n.offsetPhase_ - OneVec );
 	}
 }
 
 void Nodes::burstSignal( unsigned int nodeIndex, float amp )
 {
 	Node& n = nodes_[ nodeIndex ];
+
+	if( n.fadeOffTimer_ > .0f )
+		return;
+
+	n.fadeOffTimer_ = FadeOffTime;
 	n.offsetBoost_ = 1.0f;
+	n.boostAmp_ = amp;
 	float speedRandomness = .6f / 15.0f;
+
 	for( unsigned int i = 0; i < n.nConnections_; ++i )
 	{
 		Edge& e = edges_[ n.edgeIndices_[ i ] ];
+
 		if( e.amp_ > .0f ) continue;
+
 		if( e.index0_ == nodeIndex )
 		{
 			e.amp_ = amp;

@@ -1,4 +1,10 @@
 //srvMatrix_,srvRadiuses_,srvPulse_,srvBeziers_ -> uavVertexPos_
+cbuffer cbChangesPerFrame : register(b0)
+{
+	uint nSegmentsPerEdge_;
+	float offsetRange_;
+};
+
 ByteAddressBuffer BufferMatrix: register(t0);
 ByteAddressBuffer BufferRadius: register(t1);
 ByteAddressBuffer BufferProgAmp: register(t2);
@@ -9,10 +15,9 @@ RWByteAddressBuffer vpos: register(u0);
 [numthreads(64, 1, 1)]
 void cs_getVPos( uint3 DTid : SV_DispatchThreadID )
 {
-	const int nSegmentsPerEdge  = 50;
-	const int edgeIndex = DTid.x / nSegmentsPerEdge;
-	const int tIndex = DTid.x - edgeIndex * nSegmentsPerEdge;
-	float t = ( .5 + tIndex ) / nSegmentsPerEdge;
+	const int edgeIndex = DTid.x / nSegmentsPerEdge_;
+	const int tIndex = DTid.x - edgeIndex * nSegmentsPerEdge_;
+	float t = ( .5 + tIndex ) / nSegmentsPerEdge_;
 	const int progAmpIndex = edgeIndex * 8;
 	const int offsetIndex1 = edgeIndex * 32;
 	const int offsetIndex2 = offsetIndex1 + 16;
@@ -33,12 +38,12 @@ void cs_getVPos( uint3 DTid : SV_DispatchThreadID )
 	float3 offs1 = asfloat( BufferOffsets.Load3( offsetIndex1 ) );
 	float3 offs2 = asfloat( BufferOffsets.Load3( offsetIndex2 ) );
 	float4 b = asfloat( BufferBeziers.Load4( beziersIndex ) );
-	offs1 = .2 * sin( offs1 * 6.283 );
-	offs2 = .2 * sin( offs2 * 6.283 );
+	offs1 = offsetRange_ * sin( offs1 * 6.283 );
+	offs2 = offsetRange_ * sin( offs2 * 6.283 );
 	float3 offset = offs1 * (b.x + b.y ) + offs2 * (b.z + b.w) + pulse0 * matx * .3;
 	matt += float4( offset, .0 );
 
-	uint radiusIndex = ( DTid.x % (50) ) * 4;
+	uint radiusIndex = ( DTid.x % (nSegmentsPerEdge_) ) * 4;
 	float radius = asfloat( BufferRadius.Load( radiusIndex ) );
 	float thickness = .1;
 	float3 thicknessDir = thickness * matz.xyz;
