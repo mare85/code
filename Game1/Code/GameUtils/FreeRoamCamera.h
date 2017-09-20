@@ -32,9 +32,9 @@ class FreeRoamCamera
 public:
 	FreeRoamCamera( Game::Scene* scene, const char* name );
 	~FreeRoamCamera() {}
-	void start();
-	void update( const Game::UpdateContext* uctx );
-	void stop();
+	void start() override;
+	void update( const Game::UpdateContext* uctx ) override;
+	void stop() override;
 	vmath::Vector3 getFront() { return front_; }
 	vmath::Vector3 getPosition() { return position_; }
 };

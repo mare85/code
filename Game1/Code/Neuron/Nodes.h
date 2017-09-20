@@ -16,9 +16,9 @@ struct Nodes
 	static const float BoostFadeOffSpeed;
 	static const float BoostStrength;
 	enum {
-		nNodes = 300,
-		nEdges = 600,
-		nEdgesPerNode = 15,
+		nNodes = 450,
+		nEdges = 900,
+		nEdgesPerNode = 5,
 	};
 	struct Node
 	{

@@ -1,6 +1,6 @@
 6
-music_room startMusicRoom
 neural_network startNeuron
+music_room startMusicRoom
 new_game start
 edit_scene editor
 anim_editor animEditor

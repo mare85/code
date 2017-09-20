@@ -76,8 +76,9 @@ public:
 	void start() override;
 	void update(const Game::UpdateContext* uctx) override;
 	void stop() override;
+	bool isUpdaterManagedByScene() const override { return false; }
 
-	bool isUpdaterManagedByScene() const { return false; }
+	Nodes* getNodes() { return nodes_; }
 };
 
 }

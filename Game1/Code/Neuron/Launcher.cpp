@@ -8,6 +8,7 @@
 #include <Game/Scene.h>
 #include <GameUtils/StartMenuTrigger.h>
 #include <Neuron/Network.h>
+#include <Neuron/TravelCamera.h>
 #include <GameUtils/FreeRoamCamera.h>
 void Neuron::launch()
 {
@@ -24,7 +25,8 @@ void Neuron::launch()
 	Neuron::Network* network = new Neuron::Network();
 	scene->addUpdater(network);
 
-	GameUtils::FreeRoamCamera* cam = new GameUtils::FreeRoamCamera( scene, "camera" );
+	//GameUtils::FreeRoamCamera* cam = new GameUtils::FreeRoamCamera( scene, "camera" );
+	Neuron::TravelCamera* cam = new Neuron::TravelCamera( scene, network->getNodes(), "travelCam" );
 	(void)cam;
 
 	Game::Transform* networkTransform = new Game::Transform("walls");
