@@ -602,7 +602,7 @@ Graphics::ComputeShader * Graphics::GdiContext::createComputeShader(const char *
 	ComputeShader* out = new ComputeShader();
 	ID3D10Blob* compiledShader = nullptr;
 	{
-		LPCSTR profile = "cs_4_0";//( d3dDevice_->GetFeatureLevel() >= D3D_FEATURE_LEVEL_11_0 ) ? "cs_5_0" : "cs_4_0";
+		LPCSTR profile = "cs_5_0";//( d3dDevice_->GetFeatureLevel() >= D3D_FEATURE_LEVEL_11_0 ) ? "cs_5_0" : "cs_4_0";
 		bool compileRes = _CompileShader(filename, entryname, profile, &compiledShader);
 		if (compileRes == false)
 		{

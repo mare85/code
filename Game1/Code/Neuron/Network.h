@@ -37,6 +37,7 @@ class Network :
 	Graphics::Buffer* beziersBuffer_ = nullptr;
 	Graphics::Buffer* matrixBuffer_ = nullptr;
 	Graphics::Buffer* vertexPosBuffer_ = nullptr;
+	Graphics::Buffer* vertexColBuffer_ = nullptr;
 	Graphics::Buffer* drawCBuff_ = nullptr;
 	Graphics::Buffer* computeCBuff_ = nullptr;
 	Graphics::Buffer* indexBuffer_ = nullptr;
@@ -50,6 +51,7 @@ class Network :
 	Graphics::Srv* srvMatrix_ = nullptr;
 	Graphics::Srv* srvOffsets_ = nullptr;
 	Graphics::Uav* uavVertexPos_ = nullptr;
+	Graphics::Uav* uavVertexCol_ = nullptr;
 
 	Nodes* nodes_ = nullptr;
 	float nodeRadius_ = .5f;

@@ -214,11 +214,11 @@ void Game::App::loadMenu( const char *menuName )
 	menuScene_->createOrtographicCamera(mainCam->getHashName(), 1.0f);
 
 	Game::Transform* fpsTextTransf = new Game::Transform("fpsText");
-	fpsTextTransf->setTranslation(vmath::Vector3(-1.7f, 0.95f, .0f));
+	fpsTextTransf->setTranslation(vmath::Vector3(-1.4f, 0.95f, .0f));
 	fpsTextTransf->setScale(vmath::Vector3(2.0f, 2.0f, 1.0f));
 	Game::Text* fpsText = new Game::Text("fpsText");
 	
-	fpsText->setColor(vmath::Vector4(1.0f, 1.0f, .0f, 0.7f));
+	fpsText->setColor(vmath::Vector4(1.0f, 1.0f, 1.0f, 0.2f));
 	fpsText->prepareFont("assets/fonts/script");
 	fpsTextTransf->carryObject(fpsText);
 	GameUtils::FpsDisplay* fpsDisplay = new GameUtils::FpsDisplay(fpsText);

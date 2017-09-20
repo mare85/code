@@ -25,8 +25,8 @@ void Neuron::launch()
 	Neuron::Network* network = new Neuron::Network();
 	scene->addUpdater(network);
 
-	//GameUtils::FreeRoamCamera* cam = new GameUtils::FreeRoamCamera( scene, "camera" );
-	Neuron::TravelCamera* cam = new Neuron::TravelCamera( scene, network->getNodes(), "travelCam" );
+	GameUtils::FreeRoamCamera* cam = new GameUtils::FreeRoamCamera( scene, "camera" );
+	//Neuron::TravelCamera* cam = new Neuron::TravelCamera( scene, network->getNodes(), "travelCam" );
 	(void)cam;
 
 	Game::Transform* networkTransform = new Game::Transform("walls");

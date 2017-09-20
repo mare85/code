@@ -12,7 +12,7 @@ namespace Neuron {
 
 const unsigned int Network::nSegmentsPerEdge = 50;
 const float Network::NodesRange = 25.0f;
-const float Network::NodeOffsetRange = .2f;
+const float Network::NodeOffsetRange = .5f;
 
 
 // Neuron::Network
@@ -153,8 +153,11 @@ void Network::loadData(Graphics::GdiContext* gdiContext)
 	nIndices_ = nodes_->nEdges * nSegmentsPerEdge * 60;
 	unsigned int nRings = nodes_->nEdges * nSegmentsPerEdge;
 	unsigned int nPosBytes = nVerts_ * 12;
-	vertexPosBuffer_ = gdiContext->createBuffer( nullptr, nPosBytes, Graphics::BufferType::ComputeToVertex);
+	unsigned int nColBytes = nVerts_ * 4;
+	vertexPosBuffer_ = gdiContext->createBuffer( nullptr, nPosBytes, Graphics::BufferType::ComputeToVertex );
 	uavVertexPos_ = gdiContext->createByteAddressUav( vertexPosBuffer_ );
+	vertexColBuffer_ = gdiContext->createBuffer( nullptr, nColBytes, Graphics::BufferType::ComputeToVertex );
+	uavVertexCol_ = gdiContext->createByteAddressUav( vertexColBuffer_ );
 	unsigned int* indices = new unsigned int [ nIndices_ ];
 	{
 		unsigned int* outIndex = indices;
@@ -184,8 +187,8 @@ void Network::loadData(Graphics::GdiContext* gdiContext)
 	indexBuffer_ = gdiContext->createBuffer( indices, nIndices_ * sizeof(unsigned int), Graphics::BufferType::Index );
 	delete[] indices;
 	typedef Graphics::Semantic S;
-	Graphics::VertexDesc vDescPos = { { S::Pos3 } };
-	sh_ = gdiContext->createShader( "assets/Shaders/neuronColor.fx", &vDescPos, "neuronColor" );
+	Graphics::VertexDesc vDesc = { { S::Pos3 }, { S::Col1 } };
+	sh_ = gdiContext->createShader( "assets/Shaders/neuronColor.fx", &vDesc, "neuronColor" );
 	csVPos_ = gdiContext->createComputeShader( "assets/Shaders/neuron_cs.fx","cs_getVPos", "neuron/csvpos" );
 	
 	//debugBuffer_ = gdiContext->createBuffer( nullptr, nPosBytes, Graphics::BufferType::Debug );
@@ -196,6 +199,7 @@ void Network::unloadData(Graphics::GdiContext* gdiContext)
 	gdiContext->releaseComputeShader( csVPos_ );
 	gdiContext->releaseShader( sh_ );
 	gdiContext->releaseUav( uavVertexPos_ );
+	gdiContext->releaseUav( uavVertexCol_ );
 	gdiContext->releaseSrv( srvMatrix_ );
 	gdiContext->releaseSrv( srvRadiuses_ );
 	gdiContext->releaseSrv( srvBeziers_ );
@@ -206,6 +210,7 @@ void Network::unloadData(Graphics::GdiContext* gdiContext)
 	gdiContext->releaseBuffer( computeCBuff_ );
 	gdiContext->releaseBuffer( indexBuffer_ );
 	gdiContext->releaseBuffer( vertexPosBuffer_ );
+	gdiContext->releaseBuffer( vertexColBuffer_ );
 	gdiContext->releaseBuffer( matrixBuffer_ );
 	gdiContext->releaseBuffer( radiusesBuffer_ );
 	gdiContext->releaseBuffer( beziersBuffer_ );
@@ -223,7 +228,7 @@ void Network::render(Graphics::GdiContext* gdiContext, Graphics::RenderContext* 
 	gdiContext->bindShader(sh_);
 	gdiContext->updateBuffer(drawCBuff_, &cbData);
 	gdiContext->setConstantBuffer(drawCBuff_);
-	gdiContext->drawTriangles(indexBuffer_, vertexPosBuffer_, nIndices_);
+	gdiContext->drawTriangles(indexBuffer_, {vertexPosBuffer_, vertexColBuffer_}, nIndices_);
 }
 
 void Network::updateGfx(Graphics::GdiContext* gdiContext) 
@@ -258,7 +263,7 @@ void Network::updateGfx(Graphics::GdiContext* gdiContext)
 	cbData.offsetRange_ = NodeOffsetRange;
 	gdiContext->updateBuffer(computeCBuff_, &cbData);
 	gdiContext->setCsConstantBuffer(computeCBuff_);
-	gdiContext->dispatchComputeShader(csVPos_,{srvMatrix_,srvRadiuses_,srvProgAmp_,srvBeziers_, srvOffsets_},{uavVertexPos_},nMats_);
+	gdiContext->dispatchComputeShader( csVPos_,{ srvMatrix_,srvRadiuses_,srvProgAmp_,srvBeziers_, srvOffsets_ },{ uavVertexPos_, uavVertexCol_ },nMats_ );
 
 }
 

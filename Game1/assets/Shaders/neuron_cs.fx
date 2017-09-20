@@ -11,6 +11,7 @@ ByteAddressBuffer BufferProgAmp: register(t2);
 ByteAddressBuffer BufferBeziers: register(t3);
 ByteAddressBuffer BufferOffsets: register(t4);
 RWByteAddressBuffer vpos: register(u0);
+RWByteAddressBuffer vcol: register(u1);
 
 [numthreads(64, 1, 1)]
 void cs_getVPos( uint3 DTid : SV_DispatchThreadID )
@@ -27,7 +28,9 @@ void cs_getVPos( uint3 DTid : SV_DispatchThreadID )
 	float amp = asfloat( BufferProgAmp.Load( progAmpIndex + 4 ) );
 	float x = t - prog;
 	float pulse0 = max(.0f, 1.0 - 10.0 * x*x);
-	pulse0 *= amp * 16.0 * prog * (1.0 - prog) * t * (1.0 - t);
+	pulse0 *= 16.0 * prog * (1.0 - prog) * t * (1.0 - t);
+	float col = pulse0;
+	pulse0 *= amp;
 	float pulse = pulse0 + 1.0;
 
 	float4 matx = asfloat( BufferMatrix.Load4( DTid.x * 64 ) );
@@ -52,6 +55,7 @@ void cs_getVPos( uint3 DTid : SV_DispatchThreadID )
 	float sins[] = {.0, .951, .5878, -.5878, -.951};
 	float coss[] = {1.0, .309, -.809, -.809, .309 };
 	uint outIndex = 120 * DTid.x;
+	uint outIndexCol = 40 * DTid.x;
 	[unroll]
 	for( unsigned int i = 0; i < 5; ++i )
 	{
@@ -61,6 +65,8 @@ void cs_getVPos( uint3 DTid : SV_DispatchThreadID )
 		float3 pos2 = pos1 + thicknessDir;
 		vpos.Store3( outIndex, asuint(pos1) );
 		vpos.Store3( outIndex + 12, asuint(pos2) );
+		vcol.Store( outIndexCol, asuint(col) );
+		vcol.Store( outIndexCol + 4, asuint(col) );
 		outIndex += 24;
 	}
 }
