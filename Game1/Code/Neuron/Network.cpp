@@ -247,14 +247,14 @@ void Network::updateGfx(Graphics::GdiContext* gdiContext)
 	gdiContext->unmap( progAmpBuffer_ );
 
 	//updating offsets
-	vmath::Vector3* offsetsPtr = reinterpret_cast< vmath::Vector3* >( gdiContext->mapWrite( offsetsBuffer_ ) );
+	vmath::Vector4* offsetsPtr = reinterpret_cast< vmath::Vector4* >( gdiContext->mapWrite( offsetsBuffer_ ) );
 	for( unsigned int i = 0; i < nodes_->nEdges; ++i )
 	{
 		Nodes::Edge& e = nodes_->edges_[ i ];
 		Nodes::Node& n0 = nodes_->nodes_[ e.index0_ ];
 		Nodes::Node& n1 = nodes_->nodes_[ e.index1_ ];
-		*offsetsPtr = n0.offsetPhase_; ++offsetsPtr;
-		*offsetsPtr = n1.offsetPhase_; ++offsetsPtr;
+		*offsetsPtr = vmath::Vector4( n0.offsetPhase_, n0.visualBoostColor_ ); ++offsetsPtr; 
+		*offsetsPtr = vmath::Vector4( n1.offsetPhase_, n1.visualBoostColor_ ); ++offsetsPtr;
 	}
 	gdiContext->unmap( offsetsBuffer_ );
 
@@ -278,7 +278,7 @@ void Network::update(const Game::UpdateContext* uctx)
 	if( pulseTimer < .0f )
 	{
 		nodes_->burstSignal( gen->getUint( nodes_->nNodes ),Nodes::StartingAmp );
-		pulseTimer = 2.8f;
+		pulseTimer = .8f;
 	}
 	
 	nodes_->update(uctx->deltaTime);

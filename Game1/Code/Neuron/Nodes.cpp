@@ -8,10 +8,11 @@
 namespace Neuron {
 
 const float Nodes::StartingAmp = 4.0f;
-const float Nodes::AmpFadeOff = Nodes::StartingAmp * .05f;
+const float Nodes::AmpFadeOff = Nodes::StartingAmp * .15f;
 const float Nodes::DefaultProgressSpeed = 5.0f;
 const float Nodes::FadeOffTime = 2.0f;
 const float Nodes::BoostFadeOffSpeed = 2.5f;
+const float Nodes::VisualBoostFadeOffSpeed = 2.f;
 const float Nodes::BoostStrength = 20.0f;
 
 Nodes::Nodes( float range )
@@ -145,9 +146,13 @@ void Nodes::update( float deltaTime )
 	{
 		Node& n = nodes_[ i ];
 		n.fadeOffTimer_ = fmaxf( n.fadeOffTimer_ - deltaTime, .0f ); 
+		n.visualBoostTimer_ = fmaxf( n.visualBoostTimer_ - deltaTime * VisualBoostFadeOffSpeed, .0f );
 		n.offsetBoost_ = fmaxf( n.offsetBoost_ - deltaTime * BoostFadeOffSpeed * n.boostAmp_, .0f );
 		float boost = 1.0f - n.offsetBoost_;
+
 		boost = n.offsetBoost_ * boost * boost * 7.0f; // 7 reaches value of about 1.0 at maximum t*(1.0 - t)^2
+		float visualBoostTimerRev = 1.0f - n.visualBoostTimer_;
+		n.visualBoostColor_ = 7.0f * n.visualBoostTimer_ * visualBoostTimerRev * visualBoostTimerRev;
 		vmath::Vector3 speed = n.offsetSpeed_ * (1.0f + BoostStrength * boost );
 		n.offsetPhase_ += deltaTime * speed;
 		n.offsetPhase_ -= HalfVec + // non iffy fractPerElem 
@@ -164,6 +169,7 @@ void Nodes::burstSignal( unsigned int nodeIndex, float amp )
 
 	n.fadeOffTimer_ = FadeOffTime;
 	n.offsetBoost_ = 1.0f;
+	n.visualBoostTimer_ = 1.0;
 	n.boostAmp_ = amp;
 	float speedRandomness = .6f / 15.0f;
 

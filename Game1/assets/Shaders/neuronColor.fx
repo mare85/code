@@ -34,7 +34,8 @@ PS_Input vs_main(VS_Input vertex)
 float4 ps_main(PS_Input frag ) : SV_TARGET
 {
 	float col = max( .025, 1.0 - frag.dist * .015 ) * .8;
-	float4 col4 = float4( col, col, col, 1.0);
-	col4.z += max( .0, 100.0* frag.col * (.5 + .5 * col) );
+	float4 col4 = col * float4( .8, .7, .5, .0);
+	col4 += max( .0, 100.0* frag.col * (.5 + .5 * col) ) * float4(.0, .4, 1.0, .0);
+	col4.w = 1.0;
 	return col4;//float4(col, col, col, 1.0); 
 }

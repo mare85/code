@@ -14,6 +14,7 @@ struct Nodes
 	static const float DefaultProgressSpeed;
 	static const float FadeOffTime;
 	static const float BoostFadeOffSpeed;
+	static const float VisualBoostFadeOffSpeed;
 	static const float BoostStrength;
 	enum {
 		nNodes = 450,
@@ -26,6 +27,8 @@ struct Nodes
 		vmath::Vector3 offsetPhase_;
 		vmath::Vector3 offsetSpeed_;
 		float offsetBoost_ = .0f;
+		float visualBoostTimer_ = .0f;
+		float visualBoostColor_ = .0f;
 		float boostAmp_ = .0f;
 		float fadeOffTimer_ = .0f;
 		unsigned int nConnections_ = 0;

@@ -40,10 +40,16 @@ void cs_getVPos( uint3 DTid : SV_DispatchThreadID )
 
 	float3 offs1 = asfloat( BufferOffsets.Load3( offsetIndex1 ) );
 	float3 offs2 = asfloat( BufferOffsets.Load3( offsetIndex2 ) );
+
+	float color1 = asfloat( BufferOffsets.Load( offsetIndex1 + 12 ) );
+	float color2 = asfloat( BufferOffsets.Load( offsetIndex2 + 12 ) );
+
 	float4 b = asfloat( BufferBeziers.Load4( beziersIndex ) );
 	offs1 = offsetRange_ * sin( offs1 * 6.283 );
 	offs2 = offsetRange_ * sin( offs2 * 6.283 );
 	float3 offset = offs1 * (b.x + b.y ) + offs2 * (b.z + b.w) + pulse0 * matx * .3;
+	col += ( color1 * b.x  + color2 * b.w ) * .4;
+	col *= .0125;
 	matt += float4( offset, .0 );
 
 	uint radiusIndex = ( DTid.x % (nSegmentsPerEdge_) ) * 4;
@@ -68,5 +74,6 @@ void cs_getVPos( uint3 DTid : SV_DispatchThreadID )
 		vcol.Store( outIndexCol, asuint(col) );
 		vcol.Store( outIndexCol + 4, asuint(col) );
 		outIndex += 24;
+		outIndexCol += 8;
 	}
 }
