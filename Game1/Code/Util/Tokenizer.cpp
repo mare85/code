@@ -4,6 +4,7 @@
  * Util::Collisions
  */
 #include <string.h>
+#include <algorithm>
 namespace Util {
 
 Tokenizer::Tokenizer()
@@ -29,6 +30,7 @@ size_t bufferLength = strlen( data );
 	{
 		char c = data[ i ];
 		isSeparator = false;
+
 		for( size_t si = 0; si != nSeparators; ++si )
 			isSeparator |= ( separators[ si ] == c );
 		if( isSeparator )
@@ -63,15 +65,9 @@ size_t bufferLength = strlen( data );
 
 unsigned int Tokenizer::numberOf( const char* value )
 {
-	unsigned int outVal = 0;
-	
-	for( char* token : *this )
-	{
-		if( strcmp( token, value ) == 0 )
-			outVal++;
-	}
-
-	return outVal;
+	return std::count_if( begin(*this), end(*this),
+		[value] ( char* token ) { return 0 == strcmp( token, value ); }
+		);
 }
 
 Tokenizer::Iterator Tokenizer::find(const char * value, Tokenizer::Iterator st, Tokenizer::Iterator en)

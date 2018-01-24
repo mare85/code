@@ -1,5 +1,6 @@
 #ifndef UTIL_TOKENIZER_DEF
 #define UTIL_TOKENIZER_DEF
+#include <iterator>
 /*
  * Created by Marek Bielawski
  * Util::Collisions
@@ -22,6 +23,13 @@ public:
 		Tokenizer* tokenizer_ = nullptr;
 		unsigned int index_ = 0;
 	public:
+		typedef std::random_access_iterator_tag iterator_category;
+		typedef char* value_type;
+		typedef int difference_type;
+		typedef char** pointer;
+		typedef char*& reference;
+
+
 		char* operator * () const { return (*tokenizer_)[ index_]; }
 		Iterator operator++ () { ++index_; return *this; } 
 		Iterator operator++ ( int ) { Iterator out = *this; ++index_; return out; }

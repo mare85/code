@@ -10,8 +10,8 @@ namespace Game
 {
 	class Camera;
 
-	typedef std::list<Game::Object*> ObjectList;
-	typedef std::list<Game::Updater*> UpdaterList;
+	typedef std::list<Object*> ObjectList;
+	typedef std::list<Updater*> UpdaterList;
 	typedef std::map<unsigned int, Game::Camera*> CameraMap;
 	class BlendState;
 

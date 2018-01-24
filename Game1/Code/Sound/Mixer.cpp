@@ -173,7 +173,7 @@ void Sound::Mixer::__process()
 		playSector += 4;
 	}
 	playSector = playSector % 4;
-		if (playSector - capturePosition_ < 2)
+	if (playSector - capturePosition_ < 2)
 	{
 		return;
 	}

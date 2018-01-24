@@ -99,15 +99,11 @@ namespace Game
 
 	Object * Scene::findObject(unsigned int hash)
 	{
-		for (Object* obj : objects_)
-		{
-			if (obj->getHashName() == hash)
-			{
-				return obj;
-			}
-		}
-		return nullptr;
-		
+		ObjectList::iterator result = std::find_if( 
+			begin( objects_ ), end( objects_ ), 
+			[hash]( Object* obj ) { return obj->getHashName() == hash; } 
+		);
+		return *result;
 	}
 
 	Scene::~Scene()
